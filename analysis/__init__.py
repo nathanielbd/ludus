@@ -1,12 +1,15 @@
 import numpy as np
-from typing import Callable, Any, Iterable
+from typing import Callable, Sequence, TypeVar
+
+Deck = TypeVar("Deck")
+
 
 def analytic_pareto(
-        payoff_fn: Callable[[Any, Any], float],
-        decks: Iterable[Any],
+        payoff_fn: Callable[[Deck, Deck], float],
+        decks: Sequence[Deck],
         zero_sum: bool = False,
         threshold: float = 0,
-) -> list[Any]:
+) -> list[Deck]:
     n_decks = len(decks)
     payoffs = np.empty((n_decks, n_decks))
     for (i, deck_0) in enumerate(decks):
@@ -20,4 +23,8 @@ def analytic_pareto(
 
     best = np.amax(payoff_sums)
 
-    return [deck for (deck, payoff) in zip(decks, payoff_sums) if abs(best - payoff) <= threshold]
+    return [
+        deck for (deck, payoff)
+        in zip(decks, payoff_sums)
+        if abs(best - payoff) <= threshold
+    ]

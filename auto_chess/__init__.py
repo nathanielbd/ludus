@@ -50,7 +50,8 @@ If you want do define a new hook on Card, you must:
 """
 
 import collections
-from typing import Iterable, Optional, Any, Callable
+from typing import Iterable, Optional, Sequence
+
 
 class Monster:
     """A monster wihin an active game of auto-chess."""
@@ -63,7 +64,8 @@ class Monster:
         return self._remaining_health > 0
 
     def print_at_game_state(self, game) -> str:
-        return f"<monster {self._name} ({self.atk(game)}/{self._remaining_health}) : {self._card}>"
+        return f"<monster {self._name} ({self.atk(game)}/{self._remaining_health}) \
+                 : {self._card}>"
 
     # convenience methods which defer to the Card:
     def atk(self, state) -> int:
@@ -75,21 +77,26 @@ class Monster:
     def on_death(self, game):
         self._card.on_death(self, game)
 
+
 _next_monster_id: int = 0
+
+
 def _get_monster_id() -> int:
     global _next_monster_id
     current = _next_monster_id
     _next_monster_id += 1
     return current
 
+
 GameState = collections.namedtuple(
     "GameState",
     ["print_output", "player", "opponent", "defender"],
-    defaults = [None], # note that defaults apply to the rightmost
-                       # fields, so this default is for defender (as
-                       # there will be times when no defender is
-                       # active)
+    defaults=[None],  # note that defaults apply to the rightmost
+                      # fields, so this default is for defender (as
+                      # there will be times when no defender is
+                      # active)
 )
+
 
 class Card:
     """A game piece which represents a monster to be used in a game of auto-chess.
@@ -106,8 +113,10 @@ class Card:
         self.base_atk = atk
         self.health = health
         self.name = name
+
     def __str__(self):
         return f"<card {self.name} ({self.base_atk}/{self.health})>"
+
     def _monster_name(self):
         return f"{self.name}-{_get_monster_id()}"
 
@@ -140,16 +149,23 @@ class Card:
     def on_death(self, monster, gamestate):
         """Hook called when a monster would die.
 
-        If this hook restore's the monster's health, it will not be treated as dead.
+        If this hook restore's the monster's health, it will not be
+        treated as dead.
 
-        If the monster should actually die, defer to the superclass method.
+        If the monster should actually die, defer to the superclass
+        method.
+
         """
         gamestate.player._remove_monster(monster)
         if gamestate.print_output:
-            print(f"{gamestate.player}'s {monster.print_at_game_state(self)} has died.")
+            print(f"{gamestate.player}'s \
+                    {monster.print_at_game_state(self)} \
+                    has died.")
+
 
 def _instantiate_deck(deck: Iterable[Card]) -> collections.deque[Monster]:
     return collections.deque(map(Monster, deck))
+
 
 class Player:
     def __init__(self, deck: Iterable[Card]):
@@ -173,9 +189,11 @@ class Player:
         if monster in self.monsters:
             self.monsters.remove(monster)
 
+
 P0_WIN = 1
 P1_WIN = -1
 TIE = 0
+
 
 class Game:
     """A running game of auto chess.
@@ -189,7 +207,8 @@ class Game:
             p1_deck: Iterable[Card],
             print_output: bool = True,
     ):
-        self._players: tuple[Player, Player] = (Player(p0_deck), Player(p1_deck))
+        self._players: tuple[Player, Player] \
+            = (Player(p0_deck), Player(p1_deck))
         self.print_output = print_output
 
     def _p0(self) -> Player:
@@ -199,7 +218,8 @@ class Game:
         return self._players[1]
 
     def _maybe_end(self) -> Optional[int]:
-        """If the game is over, returns p0's payoff. Otherwise, returns False."""
+        """If the game is over, returns p0's payoff. Otherwise, returns False.
+        """
         if self._p0().has_monsters() and self._p1().has_monsters():
             return None
         elif self._p0().has_monsters():
@@ -209,28 +229,38 @@ class Game:
         else:
             return TIE
 
-    def _gamestates(self, monsters: Optional[list[Monster]] = None) -> list[GameState]:
-        if monsters is None:
-            monsters = [None, None]
-        assert len(monsters) == 2
+    def _gamestates(
+            self,
+            monsters: Optional[Sequence[Monster]] = None,
+    ) -> list[GameState]:
+        if monsters is not None:
+            assert len(monsters) == 2
+
         return list(map(
             GameState,
-            [self.print_output, self.print_output], # GameState.print_output
-            self._players, # GameState.player
-            reversed(self._players), # GameState.opponent
-            reversed(monsters), # GameState.defender
+            [self.print_output, self.print_output],  # GameState.print_output
+            self._players,                           # GameState.player
+            reversed(self._players),                 # GameState.opponent
+            reversed(monsters or (None, None)),      # GameState.defender
         ))
 
     def _fight_in_parallel(self, monsters: list[Monster]):
         if self.print_output:
             print(
-                f"{monsters[0].print_at_game_state(self)} is fighting {monsters[1].print_at_game_state(self)}"
+                f"{monsters[0].print_at_game_state(self)} \
+                  is fighting \
+                  {monsters[1].print_at_game_state(self)}"
             )
 
         gamestates = self._gamestates(monsters)
 
-        # read these in parallel before writing anything, in case taking damage changes them
-        atks = [monster.atk(gamestate) for (monster, gamestate) in zip(monsters, gamestates)]
+        # read these in parallel before writing anything, in case
+        # taking damage changes them
+        atks = [
+            monster.atk(gamestate)
+            for (monster, gamestate)
+            in zip(monsters, gamestates)
+        ]
 
         for (monster, damage, gamestate) in zip(
                 monsters,
@@ -262,6 +292,7 @@ class Game:
             # this nasty line brought to you by 0 being falsey and == to False
             if res is not None:
                 return res
+
 
 def play_auto_chess(
         p0_deck: Iterable[Card],
