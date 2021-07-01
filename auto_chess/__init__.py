@@ -3,10 +3,8 @@
 FIXME: detect case where zero-attack monsters will cause an infinite
        battle and return a tie
 
-FIXME: do something sensible for negative-attack monsters - clamp to zero?
-
-FIXME: some way for monster hooks to get a handle on the monster
-       they're fighting.
+FIXME: do something sensible for negative-attack monsters - clamp to
+       zero?
 
 You are intended to create cards with interesting abilities by
 subclassing Card, and defining methods on its various hooks. Each of
@@ -14,10 +12,19 @@ these hooks will take at least three arguments:
 - The Card as self. This must be immutable, as it is shared between
   many monsters and many games.
 - The Monster, which is a mutable in-game representation.
-- The Game, a mutable representation of the game state.
-The game's Game.active_player and Game.opponent methods will return
-Player objects denoting the monster's controller and opponent,
-respectively.
+- The GameState, a namedtuple which includes handles on various
+  mutable aspects of the game state.
+  - GameState.player is a Player object for the controller of the
+    monster whose method is being invoked. Depending on the context,
+    that monster may or may not appear in that Player's monsters
+    deque.
+  - GameState.opponent is a Player object for the other player.
+  - GameState.defender is the other Monster involved in battle, or
+    None in contexts where no Monster vs Monster combat is
+    happening. If GameState.defender is not None, that monster will
+    not appear in the Gamestate.opponent.monsters deque.
+  - GameState.print_output is a boolean, which if True means verbose
+    output should be printed to stdout about the progress of the game.
 
 Generally, you should not subclass Monster, as they are intended only
 as proxy objects for accessing Cards. You may, however, store
@@ -28,18 +35,17 @@ card.
 If you want do define a new hook on Card, you must:
 
 - define a method on Card which takes as arguments: self, monster,
-  game, followed by any others.
-- define a method on _Monster which takes as arguments: self, game,
-  followed by any others, and invokes the associated method on
-  Monster._card.
+  gamestate, followed by any others.
+- define a method on Monster which takes as arguments: self,
+  gamestate, followed by any others, and invokes the associated method
+  on Monster._card.
 - Find the appropriate spot in Game to invoke that method. At that
   spot:
-  1. get a handle on the monster and its controlling player
-  2. construct a local function of no arguments which invokes the
-     appropriate method on the monster.
-  3. pass that function to Game._call_with_active_player.
-  This will arrange for the game's Game.active_player and
-  Game.opponent methods to return appropriate values.
+  1. construct a GameState object with handles on each Player in
+     player and opponent. If during combat, also put a handle on the
+     other monster in defender.
+  2. invoke the method on Monster, with the GameState and any other
+     arguments.
 
 """
 
@@ -60,8 +66,8 @@ class Monster:
         return f"<monster {self._name} ({self.atk(game)}/{self._remaining_health}) : {self._card}>"
 
     # convenience methods which defer to the Card:
-    def atk(self, game) -> int:
-        return self._card.current_atk(self, game)
+    def atk(self, state) -> int:
+        return self._card.current_atk(self, state)
 
     def take_damage(self, game, damage: int):
         self._card.take_damage(self, game, damage)
@@ -75,6 +81,15 @@ def _get_monster_id() -> int:
     current = _next_monster_id
     _next_monster_id += 1
     return current
+
+GameState = collections.namedtuple(
+    "GameState",
+    ["print_output", "player", "opponent", "defender"],
+    defaults = [None], # note that defaults apply to the rightmost
+                       # fields, so this default is for defender (as
+                       # there will be times when no defender is
+                       # active)
+)
 
 class Card:
     """A game piece which represents a monster to be used in a game of auto-chess.
@@ -97,7 +112,7 @@ class Card:
         return f"{self.name}-{_get_monster_id()}"
 
     # user-extensible methods:
-    def take_damage(self, monster, game, damage):
+    def take_damage(self, monster, gamestate, damage):
         """Called when monster would take damage during a fight.
 
         If the monster should actually take damage, defer to the
@@ -105,7 +120,10 @@ class Card:
         monster._remaining_health.
         """
         monster._remaining_health -= damage
-    def current_atk(self, monster, game) -> int:
+        if not monster.is_alive():
+            monster.on_death(gamestate)
+
+    def current_atk(self, monster, gamestate) -> int:
         """Compute and return monster's atk at a given game state.
 
         May call super().current_atk(monster, game) to defer to the
@@ -118,13 +136,17 @@ class Card:
         the monster, as they may be called multiple times.
         """
         return self.base_atk
-    def on_death(self, monster, game):
-        """Hook called when a monster dies.
 
-        Note that, by this point, the monster is already dead - this
-        hook cannot revive it.
+    def on_death(self, monster, gamestate):
+        """Hook called when a monster would die.
+
+        If this hook restore's the monster's health, it will not be treated as dead.
+
+        If the monster should actually die, defer to the superclass method.
         """
-        pass
+        gamestate.player._remove_monster(monster)
+        if gamestate.print_output:
+            print(f"{gamestate.player}'s {monster.print_at_game_state(self)} has died.")
 
 def _instantiate_deck(deck: Iterable[Card]) -> collections.deque[Monster]:
     return collections.deque(map(Monster, deck))
@@ -132,16 +154,24 @@ def _instantiate_deck(deck: Iterable[Card]) -> collections.deque[Monster]:
 class Player:
     def __init__(self, deck: Iterable[Card]):
         self.monsters: collections.deque[Monster] = _instantiate_deck(deck)
+
     def has_monsters(self) -> bool:
         return len(self.monsters) > 0
+
     def _next_monster(self) -> Optional[Monster]:
-        while self.has_monsters():
+        if self.has_monsters():
             monster = self.monsters.popleft()
-            if monster.is_alive():
-                return monster
-        return None
+            assert monster.is_alive()
+            return monster
+        else:
+            return None
+
     def _enqueue_monster(self, monster):
         self.monsters.append(monster)
+
+    def _remove_monster(self, monster):
+        if monster in self.monsters:
+            self.monsters.remove(monster)
 
 P0_WIN = 1
 P1_WIN = -1
@@ -161,28 +191,12 @@ class Game:
     ):
         self._players: tuple[Player, Player] = (Player(p0_deck), Player(p1_deck))
         self.print_output = print_output
-        self._active_player: Optional[Player] = None
 
     def _p0(self) -> Player:
         return self._players[0]
 
     def _p1(self) -> Player:
         return self._players[1]
-
-    def active_player(self) -> Player:
-        """Return the Player which controlsthe active monster"""
-        assert isinstance(self._active_player, Player)
-        return self._active_player
-
-    def opponent(self) -> Player:
-        """Return the Player which is the opponent of the active monster's controller."""
-        active = self.active_player()
-        if active is self._players[0]:
-            return self._players[1]
-        elif active is self._players[1]:
-            return self._players[0]
-        else:
-            raise Exception(f"Game.active_player() {active} is not in Game._players! {self._players}")
 
     def _maybe_end(self) -> Optional[int]:
         """If the game is over, returns p0's payoff. Otherwise, returns False."""
@@ -195,48 +209,50 @@ class Game:
         else:
             return TIE
 
-    def _call_with_active_player(self, player, fn: Callable[[], Any]):
-        """Every call to a Monster or Card hook must be enclosed in a
-        _call_with_active_player which binds that monster's controller.
-        """
-        self._active_player = player
-        fn()
-        self._active_player = None
+    def _gamestates(self, monsters: Optional[list[Monster]] = None) -> list[GameState]:
+        if monsters is None:
+            monsters = [None, None]
+        assert len(monsters) == 2
+        return list(map(
+            GameState,
+            [self.print_output, self.print_output], # GameState.print_output
+            self._players, # GameState.player
+            reversed(self._players), # GameState.opponent
+            reversed(monsters), # GameState.defender
+        ))
 
     def _fight_in_parallel(self, monsters: list[Monster]):
         if self.print_output:
-            print(f"{monsters[0].print_at_game_state(self)} is fighting {monsters[1].print_at_game_state(self)}")
+            print(
+                f"{monsters[0].print_at_game_state(self)} is fighting {monsters[1].print_at_game_state(self)}"
+            )
+
+        gamestates = self._gamestates(monsters)
+
         # read these in parallel before writing anything, in case taking damage changes them
-        atks = [m.atk(self) for m in monsters]
+        atks = [monster.atk(gamestate) for (monster, gamestate) in zip(monsters, gamestates)]
 
-        for (active_player, monster, damage) in zip(self._players, monsters, reversed(atks)):
-            def monster_damaged():
-                monster.take_damage(self, damage)
-            self._call_with_active_player(active_player, monster_damaged)
+        for (monster, damage, gamestate) in zip(
+                monsters,
+                reversed(atks),
+                gamestates,
+        ):
+            monster.take_damage(gamestate, damage)
 
-        for (active_player, monster) in zip(self._players, monsters):
+        for (monster, gamestate) in zip(monsters, gamestates):
             if monster.is_alive():
-                active_player._enqueue_monster(monster)
-            else:
-                def monster_dies():
-                    if self.print_output:
-                        print(f"{active_player}'s {monster.print_at_game_state(self)} has died.")
-                    monster.on_death(self)
-                self._call_with_active_player(active_player, monster_dies)
+                gamestate.player._enqueue_monster(monster)
 
         return self._maybe_end()
 
     def _single_turn(self):
+        res = self._maybe_end()
+        if res is not None:
+            return res
         monsters = [player._next_monster() for player in self._players]
         [m0, m1] = monsters
-        if m0 and m1:
-            return self._fight_in_parallel(monsters)
-        elif m0:
-            return P0_WIN
-        elif m1:
-            return P1_WIN
-        else:
-            return TIE
+        assert m0 and m0.is_alive() and m1 and m1.is_alive()
+        self._fight_in_parallel(monsters)
 
     def _play(self):
         while True:
