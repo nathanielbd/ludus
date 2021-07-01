@@ -1,11 +1,12 @@
 import numpy as np
+from typing import Callable, Any, Iterable
 
 def analytic_pareto(
-        payoff_fn,
-        decks,
-        zero_sum = False,
-        threshold = 0,
-):
+        payoff_fn: Callable[[Any, Any], float],
+        decks: Iterable[Any],
+        zero_sum: bool = False,
+        threshold: float = 0,
+) -> list[Any]:
     n_decks = len(decks)
     payoffs = np.empty((n_decks, n_decks))
     for (i, deck_0) in enumerate(decks):

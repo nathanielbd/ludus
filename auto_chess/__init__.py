@@ -44,32 +44,33 @@ If you want do define a new hook on Card, you must:
 """
 
 import collections
+from typing import Iterable, Optional, Any, Callable
 
 class Monster:
     """A monster wihin an active game of auto-chess."""
     def __init__(self, card):
         self._card = card
-        self._remaining_health = card.health
+        self._remaining_health: int = card.health
         self._name = card._monster_name()
 
-    def is_alive(self):
+    def is_alive(self) -> int:
         return self._remaining_health > 0
 
-    def print_at_game_state(self, game):
+    def print_at_game_state(self, game) -> str:
         return f"<monster {self._name} ({self.atk(game)}/{self._remaining_health}) : {self._card}>"
 
     # convenience methods which defer to the Card:
-    def atk(self, game):
+    def atk(self, game) -> int:
         return self._card.current_atk(self, game)
 
-    def take_damage(self, game, damage):
+    def take_damage(self, game, damage: int):
         self._card.take_damage(self, game, damage)
 
     def on_death(self, game):
         self._card.on_death(self, game)
 
-_next_monster_id = 0
-def _get_monster_id():
+_next_monster_id: int = 0
+def _get_monster_id() -> int:
     global _next_monster_id
     current = _next_monster_id
     _next_monster_id += 1
@@ -86,7 +87,7 @@ class Card:
     fight and both die, their cards' on_death methods may be called
     either m0 -> m1 or m1 -> m0.
     """
-    def __init__(self, atk, health, name):
+    def __init__(self, atk: int, health: int, name: str):
         self.base_atk = atk
         self.health = health
         self.name = name
@@ -104,7 +105,7 @@ class Card:
         monster._remaining_health.
         """
         monster._remaining_health -= damage
-    def current_atk(self, monster, game):
+    def current_atk(self, monster, game) -> int:
         """Compute and return monster's atk at a given game state.
 
         May call super().current_atk(monster, game) to defer to the
@@ -125,20 +126,20 @@ class Card:
         """
         pass
 
-def _instantiate_deck(deck):
+def _instantiate_deck(deck: Iterable[Card]) -> collections.deque[Monster]:
     return collections.deque(map(Monster, deck))
 
 class Player:
-    def __init__(self, deck):
-        self.monsters = _instantiate_deck(deck)
-    def has_monsters(self):
+    def __init__(self, deck: Iterable[Card]):
+        self.monsters: collections.deque[Monster] = _instantiate_deck(deck)
+    def has_monsters(self) -> bool:
         return len(self.monsters) > 0
-    def _next_monster(self):
+    def _next_monster(self) -> Optional[Monster]:
         while self.has_monsters():
             monster = self.monsters.popleft()
             if monster.is_alive():
                 return monster
-        return False
+        return None
     def _enqueue_monster(self, monster):
         self.monsters.append(monster)
 
@@ -152,23 +153,28 @@ class Game:
     Most hook methods on Card will take a Game object as an argument,
     so that effects may alter the game state.
     """
-    def __init__(self, p0_deck, p1_deck, print_output=True):
-        self._players = [Player(p0_deck), Player(p1_deck)]
+    def __init__(
+            self,
+            p0_deck: Iterable[Card],
+            p1_deck: Iterable[Card],
+            print_output: bool = True,
+    ):
+        self._players: tuple[Player, Player] = (Player(p0_deck), Player(p1_deck))
         self.print_output = print_output
-        self._active_player = None
+        self._active_player: Optional[Player] = None
 
-    def _p0(self):
+    def _p0(self) -> Player:
         return self._players[0]
 
-    def _p1(self):
+    def _p1(self) -> Player:
         return self._players[1]
 
-    def active_player(self):
+    def active_player(self) -> Player:
         """Return the Player which controlsthe active monster"""
         assert isinstance(self._active_player, Player)
         return self._active_player
 
-    def opponent(self):
+    def opponent(self) -> Player:
         """Return the Player which is the opponent of the active monster's controller."""
         active = self.active_player()
         if active is self._players[0]:
@@ -178,10 +184,10 @@ class Game:
         else:
             raise Exception(f"Game.active_player() {active} is not in Game._players! {self._players}")
 
-    def _maybe_end(self):
+    def _maybe_end(self) -> Optional[int]:
         """If the game is over, returns p0's payoff. Otherwise, returns False."""
         if self._p0().has_monsters() and self._p1().has_monsters():
-            return False
+            return None
         elif self._p0().has_monsters():
             return P0_WIN
         elif self._p1().has_monsters():
@@ -189,7 +195,7 @@ class Game:
         else:
             return TIE
 
-    def _call_with_active_player(self, player, fn):
+    def _call_with_active_player(self, player, fn: Callable[[], Any]):
         """Every call to a Monster or Card hook must be enclosed in a
         _call_with_active_player which binds that monster's controller.
         """
@@ -197,7 +203,7 @@ class Game:
         fn()
         self._active_player = None
 
-    def _fight_in_parallel(self, monsters):
+    def _fight_in_parallel(self, monsters: list[Monster]):
         if self.print_output:
             print(f"{monsters[0].print_at_game_state(self)} is fighting {monsters[1].print_at_game_state(self)}")
         # read these in parallel before writing anything, in case taking damage changes them
@@ -238,10 +244,14 @@ class Game:
             if self.print_output:
                 print(f"that turn's result was {res}")
             # this nasty line brought to you by 0 being falsey and == to False
-            if res is not False:
+            if res is not None:
                 return res
 
-def play_auto_chess(p0_deck, p1_deck, print_output=True):
+def play_auto_chess(
+        p0_deck: Iterable[Card],
+        p1_deck: Iterable[Card],
+        print_output: bool = True,
+):
     """Entry point: run a game between two decks.
 
     p0_deck and p1_deck should each be a list (or possibly an
