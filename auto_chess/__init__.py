@@ -11,7 +11,8 @@ subclassing Card, and defining methods on its various hooks. Each of
 these hooks will take at least three arguments:
 - The Card as self. This must be immutable, as it is shared between
   many monsters and many games.
-- The Monster, which is a mutable in-game representation.
+- The Monster, which is a mutable in-game representation and behaves
+  like a dict.
 - The GameState, a namedtuple which includes handles on various
   mutable aspects of the game state.
   - GameState.player is a Player object for the controller of the
@@ -23,14 +24,12 @@ these hooks will take at least three arguments:
     None in contexts where no Monster vs Monster combat is
     happening. If GameState.defender is not None, that monster will
     not appear in the Gamestate.opponent.monsters deque.
-  - GameState.print_output is a boolean, which if True means verbose
-    output should be printed to stdout about the progress of the game.
 
 Generally, you should not subclass Monster, as they are intended only
 as proxy objects for accessing Cards. You may, however, store
-arbitrary mutable properties within a Monster. You should not mutate
-the private properties defined in Monster below, nor overwrite its
-card.
+arbitrary mutable properties within a Monster, as if it were a
+dict. You should not mutate the private properties defined in Monster
+below, nor overwrite its card.
 
 If you want do define a new hook on Card, you must:
 
@@ -50,32 +49,55 @@ If you want do define a new hook on Card, you must:
 """
 
 import collections
-from typing import Iterable, Optional, Sequence
+from typing import Iterable, Optional, NamedTuple
+import logging
+
+
+log = logging.getLogger(__name__)
+
+
+class GameState(NamedTuple):
+    player: 'Player'
+    opponent: 'Player'
+    defender: Optional['Monster'] = None
 
 
 class Monster:
     """A monster wihin an active game of auto-chess."""
-    def __init__(self, card):
-        self._card = card
+    def __init__(self, card: 'Card'):
+        self._card: 'Card' = card
         self._remaining_health: int = card.health
-        self._name = card._monster_name()
+        self._name: str = card._monster_name()
+        self._dict: dict = {}
 
-    def is_alive(self) -> int:
+    def __getitem__(self, key):
+        return self._dict[key]
+
+    def __setitem__(self, key, value) -> None:
+        self._dict[key] = value
+
+    def __str__(self) -> str:
+        return f"{self._name} {self._dict}"
+
+    def is_alive(self) -> bool:
         return self._remaining_health > 0
 
-    def print_at_game_state(self, game) -> str:
+    def print_at_game_state(self, game: GameState) -> str:
         return f"<monster {self._name} ({self.atk(game)}/{self._remaining_health}) \
-                 : {self._card}>"
+: {self._card}>"
 
     # convenience methods which defer to the Card:
-    def atk(self, state) -> int:
+    def atk(self, state: GameState) -> int:
         return self._card.current_atk(self, state)
 
-    def take_damage(self, game, damage: int):
+    def take_damage(self, game: GameState, damage: int) -> None:
         self._card.take_damage(self, game, damage)
 
-    def on_death(self, game):
+    def on_death(self, game: GameState) -> None:
         self._card.on_death(self, game)
+
+    def on_battle_start(self, game: GameState) -> None:
+        self._card.on_battle_start(self, game)
 
 
 _next_monster_id: int = 0
@@ -86,16 +108,6 @@ def _get_monster_id() -> int:
     current = _next_monster_id
     _next_monster_id += 1
     return current
-
-
-GameState = collections.namedtuple(
-    "GameState",
-    ["print_output", "player", "opponent", "defender"],
-    defaults=[None],  # note that defaults apply to the rightmost
-                      # fields, so this default is for defender (as
-                      # there will be times when no defender is
-                      # active)
-)
 
 
 class Card:
@@ -121,18 +133,23 @@ class Card:
         return f"{self.name}-{_get_monster_id()}"
 
     # user-extensible methods:
-    def take_damage(self, monster, gamestate, damage):
+    def on_battle_start(self, monster: Monster, gamestate: GameState) -> None:
+        """Called at the start of the battle."""
+        pass
+
+    def take_damage(self, monster: Monster, gamestate: GameState, damage: int) -> None:
         """Called when monster would take damage during a fight.
 
         If the monster should actually take damage, defer to the
         superclass method rather than directly assigning
         monster._remaining_health.
         """
+        log.info(f"{monster.print_at_game_state(gamestate)} takes {damage} damage")
         monster._remaining_health -= damage
         if not monster.is_alive():
             monster.on_death(gamestate)
 
-    def current_atk(self, monster, gamestate) -> int:
+    def current_atk(self, monster: Monster, gamestate: GameState) -> int:
         """Compute and return monster's atk at a given game state.
 
         May call super().current_atk(monster, game) to defer to the
@@ -146,7 +163,7 @@ class Card:
         """
         return self.base_atk
 
-    def on_death(self, monster, gamestate):
+    def on_death(self, monster: Monster, gamestate: GameState) -> None:
         """Hook called when a monster would die.
 
         If this hook restore's the monster's health, it will not be
@@ -157,10 +174,9 @@ class Card:
 
         """
         gamestate.player._remove_monster(monster)
-        if gamestate.print_output:
-            print(f"{gamestate.player}'s \
-                    {monster.print_at_game_state(self)} \
-                    has died.")
+        log.info(f"{gamestate.player}'s \
+{monster.print_at_game_state(gamestate)} \
+has died.")
 
 
 def _instantiate_deck(deck: Iterable[Card]) -> collections.deque[Monster]:
@@ -168,8 +184,18 @@ def _instantiate_deck(deck: Iterable[Card]) -> collections.deque[Monster]:
 
 
 class Player:
-    def __init__(self, deck: Iterable[Card]):
+    def __init__(self, deck: Iterable[Card], name: Optional[str] = None):
+        self.name: str = name or f"player-{_get_monster_id()}"
         self.monsters: collections.deque[Monster] = _instantiate_deck(deck)
+
+    def __str__(self) -> str:
+        return " ".join([
+            "<player",
+            self.name,
+            "controls",
+            ", ".join(map(str, self.monsters)),
+            ">"
+        ])
 
     def has_monsters(self) -> bool:
         return len(self.monsters) > 0
@@ -178,18 +204,27 @@ class Player:
         if self.has_monsters():
             monster = self.monsters.popleft()
             assert monster.is_alive()
+            log.info(f"{self}'s next monster is {monster}")
             return monster
         else:
+            log.info(f"{self} has no monsters")
             return None
 
     def _enqueue_monster(self, monster):
         self.monsters.append(monster)
 
     def _remove_monster(self, monster):
+        log.debug(f"{self} will remove {monster}")
         try:
             self.monsters.remove(monster)
+            log.debug(f"{self} has removed {monster}")
         except ValueError:
+            log.debug(f"{self} did not contain {monster}")
             pass
+
+    def _on_battle_start(self, gamestate):
+        for monster in self.monsters:
+            monster.on_battle_start(gamestate)
 
 
 P0_WIN = 1
@@ -207,11 +242,9 @@ class Game:
             self,
             p0_deck: Iterable[Card],
             p1_deck: Iterable[Card],
-            print_output: bool = True,
     ):
         self._players: tuple[Player, Player] \
-            = (Player(p0_deck), Player(p1_deck))
-        self.print_output = print_output
+            = (Player(p0_deck, "zero"), Player(p1_deck, "one"))
 
     def _p0(self) -> Player:
         return self._players[0]
@@ -233,28 +266,29 @@ class Game:
 
     def _gamestates(
             self,
-            monsters: Optional[Sequence[Monster]] = None,
-    ) -> list[GameState]:
-        if monsters is not None:
-            assert len(monsters) == 2
+            monsters: tuple[Optional[Monster], Optional[Monster]] = (None, None),
+    ) -> tuple[GameState, GameState]:
+        assert isinstance(monsters, tuple), f"{monsters} is a {type(monsters)}"
+        if monsters[0] is not None:
+            assert monsters[1] is not None
+        else:
+            assert monsters[1] is None
 
-        return list(map(
-            GameState,
-            [self.print_output, self.print_output],  # GameState.print_output
-            self._players,                           # GameState.player
-            reversed(self._players),                 # GameState.opponent
-            reversed(monsters or (None, None)),      # GameState.defender
-        ))
+        return (GameState(self._players[0],
+                          self._players[1],
+                          monsters[1]),
+                GameState(self._players[1],
+                          self._players[0],
+                          monsters[0]))
 
-    def _fight_in_parallel(self, monsters: list[Monster]):
-        if self.print_output:
-            print(
-                f"{monsters[0].print_at_game_state(self)} \
-                  is fighting \
-                  {monsters[1].print_at_game_state(self)}"
-            )
-
+    def _fight_in_parallel(self, monsters: tuple[Monster, Monster]):
         gamestates = self._gamestates(monsters)
+
+        log.info(
+                f"{monsters[0].print_at_game_state(gamestates[0])} \
+is fighting \
+{monsters[1].print_at_game_state(gamestates[1])}"
+            )
 
         # read these in parallel before writing anything, in case
         # taking damage changes them
@@ -281,17 +315,31 @@ class Game:
         res = self._maybe_end()
         if res is not None:
             return res
-        monsters = [player._next_monster() for player in self._players]
-        [m0, m1] = monsters
-        assert m0 and m0.is_alive() and m1 and m1.is_alive()
+        monsters = tuple(player._next_monster() for player in self._players)
+        (m0, m1) = monsters
+        assert m0 is not None
+        assert m0.is_alive()
+        assert m1 is not None
+        assert m1.is_alive()
         self._fight_in_parallel(monsters)
+        self._print_players()
+
+    def _start_battle(self):
+        for gamestate in self._gamestates():
+            gamestate.player._on_battle_start(gamestate)
+            self._print_players()
+
+    def _print_players(self):
+        for gamestate in self._gamestates():
+            log.info(f"{gamestate.player}:")
+            for monster in gamestate.player.monsters:
+                log.info(f"  {monster.print_at_game_state(gamestate)}")
 
     def _play(self):
+        self._start_battle()
         while True:
             res = self._single_turn()
-            if self.print_output:
-                print(f"that turn's result was {res}")
-            # this nasty line brought to you by 0 being falsey and == to False
+            log.info(f"that turn's result was {res}")
             if res is not None:
                 return res
 
@@ -299,7 +347,6 @@ class Game:
 def play_auto_chess(
         p0_deck: Iterable[Card],
         p1_deck: Iterable[Card],
-        print_output: bool = True,
 ):
     """Entry point: run a game between two decks.
 
@@ -309,8 +356,5 @@ def play_auto_chess(
     Return's p0's payoff against p1: 1 if p0 wins, -1 if p1 wins, 0 if
     tie.
 
-    Unless print_output is supplied and false-ey, will print game
-    status to standard output.
-
     """
-    return Game(p0_deck, p1_deck, print_output)._play()
+    return Game(p0_deck, p1_deck)._play()
