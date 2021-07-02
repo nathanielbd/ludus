@@ -1,5 +1,5 @@
 import numpy as np
-import pathos.multiprocessing as mproc
+import pathos.multiprocessing as mproc  # type: ignore
 import itertools
 import collections
 from typing import Callable, Sequence, TypeVar, Iterable
