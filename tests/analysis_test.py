@@ -43,3 +43,23 @@ def test_skewed_frontier():
         [ROCK, SCISSORS],
     )
     assert just_rock == [ROCK]
+
+
+def test_multiprocessing():
+    parallel_frontier_zero_sum = analysis.analytic_pareto(
+        play_rock_paper_scissors,
+        ROCK_PAPER_SCISSORS,
+        zero_sum=True,
+        multiprocess=True,
+    )
+    parallel_frontier = analysis.analytic_pareto(
+        play_rock_paper_scissors,
+        ROCK_PAPER_SCISSORS,
+        multiprocess=True,
+    )
+    sequential_frontier = analysis.analytic_pareto(
+        play_rock_paper_scissors,
+        ROCK_PAPER_SCISSORS,
+    )
+    assert parallel_frontier == sequential_frontier
+    assert parallel_frontier_zero_sum == sequential_frontier

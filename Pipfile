@@ -6,6 +6,7 @@ name = "pypi"
 [packages]
 pytest = "*"
 numpy = "*"
+pathos = "*"
 
 [dev-packages]
 mypy = "*"
