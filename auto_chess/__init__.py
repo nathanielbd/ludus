@@ -186,8 +186,10 @@ class Player:
         self.monsters.append(monster)
 
     def _remove_monster(self, monster):
-        if monster in self.monsters:
+        try:
             self.monsters.remove(monster)
+        except ValueError:
+            pass
 
 
 P0_WIN = 1
