@@ -11,6 +11,8 @@ class ExplodeOnDeath(Card):
         super().__init__(*args, **kwargs)
 
     def on_death(self, monster: Monster, gamestate: GameState) -> None:
+        log.info(f"{monster.print_at_game_state(gamestate)} explodes \
+for {self.explode_damage} damage")
         opponent_gamestate = gamestate.invert()
         for enemy in gamestate.opponent.monsters:
             enemy.take_damage(opponent_gamestate, self.explode_damage)
