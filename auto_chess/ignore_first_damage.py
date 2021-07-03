@@ -9,7 +9,7 @@ class IgnoreFirstDamage(Card):
     def __init__(
             self,
             *args,
-            armor_points=1,
+            armor_points: int = 1,
             **kwargs
     ):
         self.armor_points = armor_points

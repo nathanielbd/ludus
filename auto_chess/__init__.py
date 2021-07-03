@@ -61,6 +61,9 @@ class GameState(NamedTuple):
     opponent: 'Player'
     defender: Optional['Monster'] = None
 
+    def invert(self, attacker=None) -> 'GameState':
+        return GameState(self.opponent, self.player, attacker)
+
 
 class Monster:
     """A monster wihin an active game of auto-chess."""

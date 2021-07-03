@@ -1,5 +1,9 @@
 import auto_chess
 from auto_chess.ignore_first_damage import IgnoreFirstDamage
+from auto_chess.explode_on_death import ExplodeOnDeath
+
+
+BEAR = auto_chess.Card(2, 2, "bear")
 
 
 def test_one():
@@ -15,9 +19,14 @@ def test_one():
 
 def test_armor_points():
     armor = IgnoreFirstDamage(3, 1, "armor", armor_points=1)
-    bear = auto_chess.Card(2, 2, "bear")
     deck_0 = [armor]
-    deck_1 = [bear]
+    deck_1 = [BEAR]
     assert auto_chess.play_auto_chess(deck_0, deck_1) == 1
     assert auto_chess.play_auto_chess(deck_1, deck_0) == -1
     assert auto_chess.play_auto_chess(deck_0, deck_0) == 0
+
+
+def test_explode_on_death():
+    bomb = ExplodeOnDeath(1, 1, "bomb", explode_damage=1)
+    assert auto_chess.play_auto_chess([bomb], [BEAR]) == 0
+    assert auto_chess.play_auto_chess([BEAR], [bomb]) == 0
