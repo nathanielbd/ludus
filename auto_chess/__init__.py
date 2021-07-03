@@ -232,39 +232,35 @@ P1_WIN = -1
 TIE = 0
 
 
-class Game:
-    """A running game of auto chess.
-
-    Most hook methods on Card will take a Game object as an argument,
-    so that effects may alter the game state.
-    """
+class _Game:
+    """A running game of auto chess."""
     def __init__(
             self,
             p0_deck: Iterable[Card],
             p1_deck: Iterable[Card],
     ):
-        self._players: tuple[Player, Player] \
+        self.players: tuple[Player, Player] \
             = (Player(p0_deck, "zero"), Player(p1_deck, "one"))
 
-    def _p0(self) -> Player:
-        return self._players[0]
+    def p0(self) -> Player:
+        return self.players[0]
 
-    def _p1(self) -> Player:
-        return self._players[1]
+    def p1(self) -> Player:
+        return self.players[1]
 
-    def _maybe_end(self) -> Optional[int]:
+    def maybe_end(self) -> Optional[int]:
         """If the game is over, returns p0's payoff. Otherwise, returns False.
         """
-        if self._p0().has_monsters() and self._p1().has_monsters():
+        if self.p0().has_monsters() and self.p1().has_monsters():
             return None
-        elif self._p0().has_monsters():
+        elif self.p0().has_monsters():
             return P0_WIN
-        elif self._p1().has_monsters():
+        elif self.p1().has_monsters():
             return P1_WIN
         else:
             return TIE
 
-    def _gamestates(
+    def gamestates(
             self,
             monsters: tuple[Optional[Monster], Optional[Monster]] = (None, None),
     ) -> tuple[GameState, GameState]:
@@ -274,15 +270,15 @@ class Game:
         else:
             assert monsters[1] is None
 
-        return (GameState(self._players[0],
-                          self._players[1],
+        return (GameState(self.players[0],
+                          self.players[1],
                           monsters[1]),
-                GameState(self._players[1],
-                          self._players[0],
+                GameState(self.players[1],
+                          self.players[0],
                           monsters[0]))
 
-    def _fight_in_parallel(self, monsters: tuple[Monster, Monster]):
-        gamestates = self._gamestates(monsters)
+    def fight_in_parallel(self, monsters: tuple[Monster, Monster]):
+        gamestates = self.gamestates(monsters)
 
         log.info(
                 f"{monsters[0].print_at_game_state(gamestates[0])} \
@@ -309,36 +305,36 @@ is fighting \
             if monster.is_alive():
                 gamestate.player._enqueue_monster(monster)
 
-        return self._maybe_end()
+        return self.maybe_end()
 
-    def _single_turn(self):
-        res = self._maybe_end()
+    def single_turn(self):
+        res = self.maybe_end()
         if res is not None:
             return res
-        monsters = tuple(player._next_monster() for player in self._players)
+        monsters = tuple(player._next_monster() for player in self.players)
         (m0, m1) = monsters
         assert m0 is not None
         assert m0.is_alive()
         assert m1 is not None
         assert m1.is_alive()
-        self._fight_in_parallel(monsters)
-        self._print_players()
+        self.fight_in_parallel(monsters)
+        self.print_players()
 
-    def _start_battle(self):
-        for gamestate in self._gamestates():
+    def start_battle(self):
+        for gamestate in self.gamestates():
             gamestate.player._on_battle_start(gamestate)
-            self._print_players()
+            self.print_players()
 
-    def _print_players(self):
-        for gamestate in self._gamestates():
+    def print_players(self):
+        for gamestate in self.gamestates():
             log.info(f"{gamestate.player}:")
             for monster in gamestate.player.monsters:
                 log.info(f"  {monster.print_at_game_state(gamestate)}")
 
-    def _play(self):
-        self._start_battle()
+    def play(self):
+        self.start_battle()
         while True:
-            res = self._single_turn()
+            res = self.single_turn()
             log.info(f"that turn's result was {res}")
             if res is not None:
                 return res
@@ -357,4 +353,4 @@ def play_auto_chess(
     tie.
 
     """
-    return Game(p0_deck, p1_deck)._play()
+    return _Game(p0_deck, p1_deck).play()
