@@ -132,12 +132,12 @@ def analytic_pareto(
         zero_sum,
     )
 
-    payoff_sums = np.sum(payoffs, 1)
+    payoff_avgs = np.mean(payoffs, axis=1, dtype=np.float64)
 
-    best = np.amax(payoff_sums)
+    best = np.amax(payoff_avgs)
 
     return [
         deck for (deck, payoff)
-        in zip(decks, payoff_sums)
+        in zip(decks, payoff_avgs)
         if abs(best - payoff) <= threshold
     ]
