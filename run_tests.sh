@@ -5,6 +5,7 @@ status=0
 message() {
     echo ""
     echo "$1"
+    echo "--------------------------------------------------------------------------------"
     echo ""
 }
 
@@ -13,8 +14,13 @@ emessage() {
 }
 
 run_with_log() {
-    cmd="$1"
-    logfile="${cmd}.log"
+    program="$1"
+    args="$2"
+    logfile="${program}.log"
+    cmd="${program} ${args}"
+
+    message "running ${cmd}"
+    
     if ${cmd} 2>&1 | tee ${logfile}; then
         rm ${logfile}
     else
@@ -26,7 +32,7 @@ run_with_log() {
 
 run_with_log mypy
 run_with_log pytest
-run_with_log flake8
+run_with_log flake8 --count
 
 if [ ${status} -ne 0 ]; then
     emessage "something failed! please fix it before committing"
