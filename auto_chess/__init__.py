@@ -51,6 +51,7 @@ If you want do define a new hook on Card, you must:
 import collections
 from typing import Iterable, Optional, NamedTuple
 import logging
+from analysis import GamePayoffs
 
 
 log = logging.getLogger(__name__)
@@ -230,9 +231,9 @@ class Player:
             monster.on_battle_start(gamestate)
 
 
-P0_WIN = 1
-P1_WIN = -1
-TIE = 0
+P0_WIN = GamePayoffs.zero_sum_payoff(1)
+P1_WIN = GamePayoffs.zero_sum_payoff(-1)
+TIE = GamePayoffs.zero_sum_payoff(0)
 
 
 class _Game:
@@ -251,7 +252,7 @@ class _Game:
     def p1(self) -> Player:
         return self.players[1]
 
-    def maybe_end(self) -> Optional[int]:
+    def maybe_end(self) -> Optional[GamePayoffs]:
         """If the game is over, returns p0's payoff. Otherwise, returns False.
         """
         if self.p0().has_monsters() and self.p1().has_monsters():
@@ -308,31 +309,35 @@ class _Game:
 
         return self.maybe_end()
 
-    def single_turn(self):
+    def get_monsters(self) -> tuple[Monster, Monster]:
+        m0 = self.p0()._next_monster()
+        assert m0 is not None
+        assert m0.is_alive()
+        m1 = self.p1()._next_monster()
+        assert m1 is not None
+        assert m1.is_alive()
+        return (m0, m1)
+
+    def single_turn(self) -> Optional[GamePayoffs]:
         res = self.maybe_end()
         if res is not None:
             return res
-        monsters = tuple(player._next_monster() for player in self.players)
-        (m0, m1) = monsters
-        assert m0 is not None
-        assert m0.is_alive()
-        assert m1 is not None
-        assert m1.is_alive()
-        self.fight_in_parallel(monsters)
+        self.fight_in_parallel(self.get_monsters())
         self.print_players()
+        return None
 
-    def start_battle(self):
+    def start_battle(self) -> None:
         for gamestate in self.gamestates():
             gamestate.player._on_battle_start(gamestate)
             self.print_players()
 
-    def print_players(self):
+    def print_players(self) -> None:
         for gamestate in self.gamestates():
             log.info(f"{gamestate.player}:")
             for monster in gamestate.player.monsters:
                 log.info(f"  {monster.print_at_game_state(gamestate)}")
 
-    def play(self):
+    def play(self) -> GamePayoffs:
         self.start_battle()
         while True:
             res = self.single_turn()
@@ -344,7 +349,7 @@ class _Game:
 def play_auto_chess(
         p0_deck: Iterable[Card],
         p1_deck: Iterable[Card],
-):
+) -> GamePayoffs:
     """Entry point: run a game between two decks.
 
     p0_deck and p1_deck should each be a list (or possibly an
