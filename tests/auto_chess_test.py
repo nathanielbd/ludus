@@ -32,3 +32,13 @@ def test_explode_on_death():
     assert play_auto_chess([bomb], [BEAR]) == TIE
     assert play_auto_chess([BEAR], [bomb]) == TIE
 
+
+def test_heal_on_death():
+    good_healer = HealOnDeath(1, 1, "good_healer", explode_heal=3)
+    bad_healer = HealOnDeath(1, 1, "bad_healer", explode_heal=1)
+    assert play_auto_chess([BRUISER, TANK],
+                           [TANK, good_healer]) == P1_WIN
+    assert play_auto_chess([BRUISER, TANK],
+                           [TANK, bad_healer]) == P0_WIN
+    assert play_auto_chess([TANK, good_healer],
+                           [TANK, bad_healer]) == TIE

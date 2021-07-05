@@ -94,6 +94,9 @@ class Monster:
     def atk(self, state: GameState) -> int:
         return self._card.current_atk(self, state)
 
+    def heal(self, state: GameState, health: int) -> None:
+        self._card.heal(self, state, health)
+
     def take_damage(self, game: GameState, damage: int) -> None:
         self._card.take_damage(self, game, damage)
 
@@ -140,6 +143,19 @@ class Card:
     def on_battle_start(self, monster: Monster, gamestate: GameState) -> None:
         """Called at the start of the battle."""
         pass
+
+    def heal(self, monster: Monster, gamestate: GameState, health: int) -> None:
+        """Called when monster would restore health during a fight.
+
+        If the health should actually be restored, defer to the
+        superclass method rather than directly assigning
+        monster._remaining_health.
+        """
+        new_hp = monster._remaining_health + health
+        if new_hp > self.health:
+            log.debug(f"claming healing {monster} for {health} at {self.health}")
+            new_hp = self.health
+        monster._remaining_health = new_hp
 
     def take_damage(self, monster: Monster, gamestate: GameState, damage: int) -> None:
         """Called when monster would take damage during a fight.
