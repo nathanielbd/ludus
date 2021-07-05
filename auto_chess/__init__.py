@@ -86,8 +86,8 @@ class Monster:
         return self._remaining_health > 0
 
     def print_at_game_state(self, game: GameState) -> str:
-        return f"<monster {self._name} ({self.atk(game)}/{self._remaining_health}) \
-: {self._card}>"
+        return (f"<monster {self._name} ({self.atk(game)}/{self._remaining_health}) "
+                f": {self._card}>")
 
     # convenience methods which defer to the Card:
     def atk(self, state: GameState) -> int:
@@ -177,9 +177,9 @@ class Card:
 
         """
         gamestate.player._remove_monster(monster)
-        log.info(f"{gamestate.player}'s \
-{monster.print_at_game_state(gamestate)} \
-has died.")
+        log.info((f"{gamestate.player}'s "
+                  f"{monster.print_at_game_state(gamestate)} "
+                  "has died."))
 
 
 def _instantiate_deck(deck: Iterable[Card]) -> collections.deque[Monster]:
@@ -283,11 +283,9 @@ class _Game:
     def fight_in_parallel(self, monsters: tuple[Monster, Monster]):
         gamestates = self.gamestates(monsters)
 
-        log.info(
-                f"{monsters[0].print_at_game_state(gamestates[0])} \
-is fighting \
-{monsters[1].print_at_game_state(gamestates[1])}"
-            )
+        log.info((f"{monsters[0].print_at_game_state(gamestates[0])} "
+                  "is fighting "
+                  f"{monsters[1].print_at_game_state(gamestates[1])}"))
 
         # read these in parallel before writing anything, in case
         # taking damage changes them
