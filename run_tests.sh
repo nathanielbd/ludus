@@ -31,7 +31,7 @@ run_with_log() {
 }
 
 run_with_log mypy
-run_with_log pytest
+run_with_log pytest "--log-level info"
 run_with_log flake8 --count
 
 if [ ${status} -ne 0 ]; then
