@@ -148,6 +148,9 @@ class Card:
         superclass method rather than directly assigning
         monster._remaining_health.
         """
+        if health <= 0:
+            return
+        log.info(f"{monster.print_at_game_state(gamestate)} heals {health} health")
         new_hp = monster._remaining_health + health
         if new_hp > self.health:
             log.debug(f"claming healing {monster} for {health} at {self.health}")
@@ -161,6 +164,8 @@ class Card:
         superclass method rather than directly assigning
         monster._remaining_health.
         """
+        if damage <= 0:
+            return
         log.info(f"{monster.print_at_game_state(gamestate)} takes {damage} damage")
         monster._remaining_health -= damage
         if not monster.is_alive():
