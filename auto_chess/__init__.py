@@ -1,8 +1,5 @@
 """An auto-chess game
 
-FIXME: detect case where zero-attack monsters will cause an infinite
-       battle and return a tie
-
 FIXME: do something sensible for negative-attack monsters - clamp to
        zero?
 
@@ -220,6 +217,11 @@ class Player:
     def has_monsters(self) -> bool:
         return len(self.monsters) > 0
 
+    def has_atk(self, gamestate: GameState) -> bool:
+        def monster_has_attack(monster: Monster) -> bool:
+            return monster.atk(gamestate) > 0
+        return any(map(monster_has_attack, self.monsters))
+
     def _next_monster(self) -> Optional[Monster]:
         if self.has_monsters():
             monster = self.monsters.popleft()
@@ -259,8 +261,8 @@ class _Game:
             p0_deck: Iterable[Card],
             p1_deck: Iterable[Card],
     ):
-        self.players: tuple[Player, Player] \
-            = (Player(p0_deck, "zero"), Player(p1_deck, "one"))
+        self.players: tuple[Player, Player] = (Player(p0_deck, "zero"),
+                                               Player(p1_deck, "one"))
 
     def p0(self) -> Player:
         return self.players[0]
@@ -272,7 +274,11 @@ class _Game:
         """If the game is over, returns p0's payoff. Otherwise, returns False.
         """
         if self.p0().has_monsters() and self.p1().has_monsters():
-            return None
+            (gs0, gs1) = self.gamestates()
+            if not (self.p0().has_atk(gs0) or self.p1().has_atk(gs1)):
+                return TIE
+            else:
+                return None
         elif self.p0().has_monsters():
             return P0_WIN
         elif self.p1().has_monsters():

@@ -3,6 +3,8 @@ from auto_chess.ignore_first_damage import IgnoreFirstDamage
 from auto_chess.explode_on_death import ExplodeOnDeath
 from auto_chess.heal_allies_on_death import HealOnDeath
 
+import pytest
+
 
 BEAR = Card(2, 2, "bear")
 TANK = Card(1, 4, "tank")
@@ -42,3 +44,9 @@ def test_heal_on_death():
                            [TANK, bad_healer]) == P0_WIN
     assert play_auto_chess([TANK, good_healer],
                            [TANK, bad_healer]) == TIE
+
+
+@pytest.mark.timeout(1)  # in seconds
+def test_zero_atk_tie():
+    zeroatk = Card(0, 1, "zeroatk")
+    assert play_auto_chess([zeroatk], [zeroatk]) == TIE
