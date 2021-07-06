@@ -2,6 +2,7 @@ import auto_chess as ac
 from auto_chess.ignore_first_damage import IgnoreFirstDamage
 from auto_chess.explode_on_death import ExplodeOnDeath
 from auto_chess.heal_allies_on_death import HealOnDeath
+from auto_chess.grow_on_damage import GrowOnDamage
 
 import pytest
 
@@ -74,3 +75,8 @@ def test_negative_heal():
         before_hp = bear._remaining_health
         bear.heal(phony_gamestate(), i)
         assert bear._remaining_health == before_hp
+
+
+def test_grows_on_attack():
+    bezerker = GrowOnDamage(0, 7, "bezerker", atk_per_hit=2)
+    assert ac.play_auto_chess([bezerker], [BEAR, BEAR]) == ac.P0_WIN
