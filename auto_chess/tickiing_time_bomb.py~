@@ -1,0 +1,14 @@
+#With each interaction (damage or heal), gets a token => if in a battle with enough tokens, simply self destructs to kill both it and the defender
+
+from auto_chess import Card, Monster, GameState
+import logging
+
+
+log = logging.getLogger(__name__)
+
+
+class TimeBomb(Card):
+    def __init__(self, *args, target_age: int = 4, **kwargs):
+        self.target_age = target_age #Minimum desired age for defeath/death
+        self.current_age = 0 #Begin at youngest age
+        super().__init__(*args, **kwargs)
