@@ -21,7 +21,7 @@ class MorphOpponents(Card):
         if gamestate.opponent.defender is not None:
             modulus = modulus + 1
         #0 offset is the defender, if one exists
-        if ((self.next_to_morph % modulus) = 0) and gamestate.opponent.defender is not None:
+        if ((self.next_to_morph % modulus) == 0) and gamestate.opponent.defender is not None:
             monster["current_atk"] = gamestate.defender.base_atk
         #non-0 offset is another opponent, if there was a defender
         elif gamestate.opponent.defender is not None:

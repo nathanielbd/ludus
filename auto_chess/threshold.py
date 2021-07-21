@@ -10,7 +10,7 @@ log = logging.getLogger(__name__)
 
 class ThreshOld(Card):
     def __init__(self, *args, target_age: int = 4, **kwargs):
-        self.target_age = target_age #Minimum desired age for defeath/death
+        self.target_age = target_age #Minimum desired age for defeat/death
         self.current_age = 0 #Begin at youngest age
         super().__init__(*args, **kwargs)
 
@@ -29,7 +29,7 @@ class ThreshOld(Card):
                 enemy.take_damage(opponent_gamestate, self.target_age)
         else:
             log.info((f"{monster.print_at_game_state(gamestate)} "
-                      f"died before target {self.target_age} units and heals gap in ages to all allies"))
+                      f"died before target {self.target_age} units and heals its age to all allies"))
             for ally in gamestate.player.monsters:
                 if ally is not self:
-                    ally.heal(gamestate, self.target_age - self.current_age)
+                    ally.heal(gamestate, self.current_age)

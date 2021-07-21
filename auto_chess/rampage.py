@@ -21,11 +21,11 @@ class RampAge(Card):
         super().on_battle_start(monster, gamestate)
 
     def current_atk(self, monster: Monster, gamestate: GameState) -> int:
-        if self.current_age <= self.midde_age:
+        if self.current_age <= self.middle_age:
             log.info((f"{monster.print_at_game_state(gamestate)} "
                       f"is younger than {self.middle_age} units and gets stronger"))
             return self.base_atk + self.current_age
         else:
             log.info((f"{monster.print_at_game_state(gamestate)} "
                       f"is older than {self.middle_age} units and gets weaker"))
-            return self.base_atk - (self.current_age - self.middle_age)
+            return self.base_atk + self.middle_age - (self.current_age - self.middle_age)

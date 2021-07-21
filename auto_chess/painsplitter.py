@@ -24,7 +24,7 @@ class PainSplitter(Card):
             #NOTE: Round for this monster such that the remaining damage to distribute is even (handling either 1 or 2 remaining without reducing total damage taken)
             else:
                 log.info((f"{monster.print_at_game_state(gamestate)} shares damage with allies, "
-                          f"takes {sef.dmg_percent} percent of {damage} damage"))
+                          f"takes {self.dmg_percent} percent of {damage} damage"))
                 received_dmg = ((damage * self.dmg_percent) / 100) + ((damage - ((damage * self.dmg_percent) / 100)) % 2)
                 super().take_damage(monster, gamestate, received_damage)
                 ally_dmg = (damage - received_dmg) / len(gamestate.player)
