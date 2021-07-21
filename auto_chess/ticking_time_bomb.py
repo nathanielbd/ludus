@@ -20,7 +20,7 @@ class TimeBomb(Card):
         super().take_damage(monster, gamestate, damage)
 
     def heal(self, monster: Monster, gamestate: GameState, health: int) -> None:
-        if health >= 0:
+        if health > 0:
             self.current_time += 1 #Interaction via healing, increase countdown
         super().heal(monster, gamestate, health)
 
