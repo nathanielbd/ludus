@@ -1,2 +1,0 @@
-#Morph has a variable attack stat, copying the opponent's card's attack values
-#  To maintain determinism, iterate over the opponent's cards in order

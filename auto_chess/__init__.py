@@ -80,6 +80,9 @@ class Monster:
     def __str__(self) -> str:
         return f"{self._name} {self._dict}"
 
+    def current_atk(self, gamestate: GameState) -> int:
+        return self._card.current_atk(self, gamestate)
+
     def is_alive(self) -> bool:
         return self._remaining_health > 0
 
@@ -100,8 +103,11 @@ class Monster:
     def on_death(self, game: GameState) -> None:
         self._card.on_death(self, game)
 
-    def on_battle_start(self, game: GameState) -> None:
-        self._card.on_battle_start(self, game)
+    def on_game_start(self, game: GameState) -> None:
+        self._card.on_game_start(self, game)
+
+    def before_combat(self, game: GameState) -> None:
+        self._card.before_combat(self, game)
 
 
 _next_monster_id: int = 0
@@ -137,8 +143,18 @@ class Card:
         return f"{self.name}-{_get_monster_id()}"
 
     # user-extensible methods:
-    def on_battle_start(self, monster: Monster, gamestate: GameState) -> None:
-        """Called at the start of the battle."""
+    def on_game_start(self, monster: Monster, gamestate: GameState) -> None:
+        """Called at the start of the game.
+
+        This is where you initialize card-specific properties of the monster.
+        """
+        pass
+
+    def before_combat(self, monster: Monster, gamestate: GameState) -> None:
+        """Called before this monster punches an opposing monster
+
+        (and gets punched back)
+        """
         pass
 
     def heal(self, monster: Monster, gamestate: GameState, health: int) -> None:
@@ -193,8 +209,9 @@ class Card:
 
         If the monster should actually die, defer to the superclass
         method.
-
         """
+        # assign this to ensure is_alive returns false in the future
+        monster._remaining_health = 0
         gamestate.player._remove_monster(monster)
         log.info((f"{gamestate.player}'s "
                   f"{monster.print_at_game_state(gamestate)} "
@@ -249,9 +266,9 @@ class Player:
             log.debug(f"{self} did not contain {monster}")
             pass
 
-    def _on_battle_start(self, gamestate):
+    def _on_game_start(self, gamestate):
         for monster in self.monsters:
-            monster.on_battle_start(gamestate)
+            monster.on_game_start(gamestate)
 
 
 P0_WIN = GamePayoffs.zero_sum_payoff(1)
@@ -315,6 +332,9 @@ class _Game:
                   "is fighting "
                   f"{monsters[1].print_at_game_state(gamestates[1])}"))
 
+        for (monster, gamestate) in zip(monsters, gamestates):
+            monster.before_combat(gamestate)
+
         # read these in parallel before writing anything, in case
         # taking damage changes them
         atks = [
@@ -355,7 +375,7 @@ class _Game:
 
     def start_battle(self) -> None:
         for gamestate in self.gamestates():
-            gamestate.player._on_battle_start(gamestate)
+            gamestate.player._on_game_start(gamestate)
             self.print_players()
 
     def print_players(self) -> None:

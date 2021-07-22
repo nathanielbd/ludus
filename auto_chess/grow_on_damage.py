@@ -10,9 +10,9 @@ class GrowOnDamage(Card):
         self.atk_per_hit = atk_per_hit
         super().__init__(*args, **kwargs)
 
-    def on_battle_start(self, monster: Monster, gamestate: GameState) -> None:
+    def on_game_start(self, monster: Monster, gamestate: GameState) -> None:
         monster["current_atk"] = self.base_atk
-        super().on_battle_start(monster, gamestate)
+        super().on_game_start(monster, gamestate)
 
     def current_atk(self, monster: Monster, gamestate: GameState) -> int:
         return monster["current_atk"]

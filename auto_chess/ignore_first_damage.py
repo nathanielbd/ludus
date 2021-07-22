@@ -15,7 +15,7 @@ class IgnoreFirstDamage(Card):
         self.armor_points = armor_points
         super().__init__(*args, **kwargs)
 
-    def on_battle_start(self, monster: Monster, gamestate: GameState) -> None:
+    def on_game_start(self, monster: Monster, gamestate: GameState) -> None:
         monster["armor_points"] = self.armor_points
 
     def take_damage(self, monster: Monster, gamestate: GameState, damage: int) -> None:
