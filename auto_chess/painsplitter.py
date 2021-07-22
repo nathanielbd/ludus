@@ -15,8 +15,10 @@ class PainSplitter(Card):
         super().__init__(*args, **kwargs)
 
     def take_damage(self, monster: Monster, gamestate: GameState, damage: int) -> None:
-        if damage > 0:
-            if len(gamestate.player.monsters) == 0:
+        if damage > 0 and monster.is_alive():
+            friends = [m for m in gamestate.player.monsters
+                       if m is not monster]
+            if len(friends) == 0:
                 # If no additional allies left, then this card
                 # receives all the damage regardless
                 log.info((f"{monster.print_at_game_state(gamestate)} shares"
@@ -36,6 +38,6 @@ class PainSplitter(Card):
                     + ((damage - ((damage * self.dmg_percent) // 100)) % 2)
                 super().take_damage(monster, gamestate, received_dmg)
                 ally_dmg = (damage - received_dmg) // len(gamestate.player.monsters)
-                for ally in gamestate.player.monsters:
+                for ally in friends:
                     if ally is not self:
                         ally.take_damage(gamestate, ally_dmg)

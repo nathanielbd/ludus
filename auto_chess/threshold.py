@@ -33,13 +33,13 @@ class ThreshOld(Card):
                       f"died on or after target {self.target_age} units "
                       "and deals that much damage to all enemies"))
             opponent_gamestate = gamestate.invert()
-            for enemy in gamestate.opponent.monsters:
+            for enemy in list(gamestate.opponent.monsters):
                 enemy.take_damage(opponent_gamestate, self.target_age)
         else:
             log.info((f"{monster.print_at_game_state(gamestate)} "
                       f"died before target {self.target_age} units "
                       "and heals its age to all allies"))
-            for ally in gamestate.player.monsters:
+            for ally in list(gamestate.player.monsters):
                 if ally is not self:
                     ally.heal(gamestate, monster["current_age"])
         super().on_death(monster, gamestate)

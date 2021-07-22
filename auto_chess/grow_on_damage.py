@@ -15,7 +15,10 @@ class GrowOnDamage(Card):
         super().on_game_start(monster, gamestate)
 
     def current_atk(self, monster: Monster, gamestate: GameState) -> int:
-        return monster["current_atk"]
+        try:
+            return monster["current_atk"]
+        except KeyError:
+            return self.base_atk
 
     def take_damage(self, monster: Monster, gamestate: GameState, damage: int) -> None:
         if damage > 0:

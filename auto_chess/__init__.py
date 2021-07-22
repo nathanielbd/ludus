@@ -181,7 +181,7 @@ class Card:
         superclass method rather than directly assigning
         monster._remaining_health.
         """
-        if damage <= 0:
+        if damage <= 0 or not monster.is_alive():
             return
         log.info(f"{monster.print_at_game_state(gamestate)} takes {damage} damage")
         monster._remaining_health -= damage
@@ -268,7 +268,7 @@ class Player:
             pass
 
     def _on_game_start(self, gamestate):
-        for monster in self.monsters:
+        for monster in list(self.monsters):
             monster.on_game_start(gamestate)
 
 

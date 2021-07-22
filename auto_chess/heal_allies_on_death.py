@@ -13,7 +13,7 @@ class HealOnDeath(Card):
     def on_death(self, monster: Monster, gamestate: GameState) -> None:
         log.info((f"{monster.print_at_game_state(gamestate)} "
                   f"heals its allies for {self.explode_heal} health"))
-        for ally in gamestate.player.monsters:
+        for ally in list(gamestate.player.monsters):
             if ally is not self:
                 ally.heal(gamestate, self.explode_heal)
         super().on_death(monster, gamestate)

@@ -19,7 +19,7 @@ class TimeBomb(Card):
 
     def before_combat(self, monster: Monster, gamestate: GameState) -> None:
         """If enough time has elapsed, explode!"""
-        if monster["current_time"] > monster["detonation_time"]:
+        if monster["current_time"] > self.detonation_time:
             log.info((f"{monster.print_at_game_state(gamestate)} detonates "
                       f"to kill itself and {gamestate.defender} "))
             self.on_death(monster, gamestate)

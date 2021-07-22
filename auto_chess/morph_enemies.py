@@ -31,4 +31,7 @@ class MorphOpponents(Card):
         monster["next_to_morph"] += 1
 
     def current_atk(self, monster: Monster, gamestate: GameState) -> int:
-        return monster["current_atk"]
+        try:
+            return monster["current_atk"]
+        except KeyError:
+            return self.base_atk

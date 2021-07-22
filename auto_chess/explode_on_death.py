@@ -14,7 +14,7 @@ class ExplodeOnDeath(Card):
         log.info((f"{monster.print_at_game_state(gamestate)} explodes "
                   f"for {self.explode_damage} damage"))
         opponent_gamestate = gamestate.invert()
-        for enemy in gamestate.opponent.monsters:
+        for enemy in list(gamestate.opponent.monsters):
             enemy.take_damage(opponent_gamestate, self.explode_damage)
         if gamestate.defender and gamestate.defender.is_alive():
             gamestate.defender.take_damage(opponent_gamestate, self.explode_damage)

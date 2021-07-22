@@ -17,7 +17,10 @@ class Survivalist(Card):
         super().on_game_start(monster, game)
 
     def current_atk(self, monster: Monster, game: GameState) -> int:
-        return monster["atk"]
+        try:
+            return monster["atk"]
+        except KeyError:
+            return self.base_atk
 
     def take_damage(self, monster: Monster, gamestate: GameState, damage: int) -> None:
         super().take_damage(monster, gamestate, damage)
