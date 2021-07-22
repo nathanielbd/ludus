@@ -46,7 +46,8 @@ If you want do define a new hook on Card, you must:
 """
 
 import collections
-from typing import Iterable, Optional, NamedTuple
+import itertools
+from typing import Iterable, Optional, NamedTuple, Sequence
 import logging
 from analysis import GamePayoffs
 
@@ -410,3 +411,7 @@ def play_auto_chess(
 
     """
     return _Game(p0_deck, p1_deck).play()
+
+
+def possible_decks(deck_size: int, cards: Sequence[Card]) -> Sequence[Sequence[Card]]:
+    return list(itertools.combinations_with_replacement(cards, deck_size))

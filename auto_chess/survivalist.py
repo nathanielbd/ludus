@@ -8,7 +8,7 @@ import logging
 log = logging.getLogger(__name__)
 
 
-class PainSplitter(Card):
+class Survivalist(Card):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
