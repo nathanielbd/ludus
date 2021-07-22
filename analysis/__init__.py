@@ -2,9 +2,13 @@ import numpy as np
 import pathos.multiprocessing as mproc  # type: ignore
 import itertools
 from typing import Callable, Sequence, TypeVar, Iterable, NamedTuple, Any
+import logging
 
 
 Deck = TypeVar("Deck")
+
+
+log = logging.getLogger(__name__)
 
 
 # each Job stores the indices with which it corresponds in the payoff
@@ -84,11 +88,18 @@ def _run_multiprocess(
 
 
 def _collect_finished_jobs(
+        total_jobs: int,
         matrix: np.ndarray,
         jobs: Iterable[FinishedJob],
 ) -> np.ndarray:
     """Insert the results of all the finished jobs into a payoff matrix"""
+    finished_jobs = 0
+    percent = (total_jobs // 100) or 1
     for (job, payoffs) in jobs:
+        finished_jobs += 1
+        if (finished_jobs % percent) == 0:
+            log.info(f"{finished_jobs // percent} percent of the way done!")
+
         i = job.i
         j = job.j
 
@@ -141,7 +152,11 @@ def analytic_pareto(
     n_decks = len(decks)
     payoffs = np.empty((n_decks, n_decks))
 
+    # n_decks choose 2 + n_decks
+    total_jobs = (n_decks * (n_decks - 1)) // 2 + n_decks
+
     payoffs = _collect_finished_jobs(
+        total_jobs,
         payoffs,
         _runner_fn(multiprocess)(
             payoff_fn,

@@ -16,6 +16,11 @@ from auto_chess.ticking_time_bomb import TimeBomb
 
 from typing import Sequence
 
+import logging
+
+
+log = logging.getLogger(__name__)
+
 
 EXPLODE_ON_DEATH = ExplodeOnDeath(1, 1, "volatile")
 GROW_ON_DAMAGE = GrowOnDamage(0, 5, "bezerker")
@@ -45,6 +50,8 @@ all_cards = (EXPLODE_ON_DEATH,
 
 def run_tourney() -> list[Sequence[ac.Card]]:
     decks = ac.possible_decks(3, all_cards)
+    log.info(("running a round-robin tournament between "
+              f"{len(decks)} decks composed of {len(all_cards)} cards"))
     return analysis.analytic_pareto(
         ac.play_auto_chess,
         decks,
@@ -54,5 +61,8 @@ def run_tourney() -> list[Sequence[ac.Card]]:
 
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.WARNING)
+    log.setLevel(logging.INFO)
+    analysis.log.setLevel(logging.INFO)
     res = run_tourney()
-    print(res)
+    log.info(f"the winners of the tournament are: {res}")

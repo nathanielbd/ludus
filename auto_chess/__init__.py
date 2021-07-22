@@ -414,4 +414,4 @@ def play_auto_chess(
 
 
 def possible_decks(deck_size: int, cards: Sequence[Card]) -> Sequence[Sequence[Card]]:
-    return list(itertools.combinations_with_replacement(cards, deck_size))
+    return list(itertools.product(cards, repeat=deck_size))
