@@ -335,20 +335,23 @@ class _Game:
         for (monster, gamestate) in zip(monsters, gamestates):
             monster.before_combat(gamestate)
 
-        # read these in parallel before writing anything, in case
-        # taking damage changes them
-        atks = [
-            monster.atk(gamestate)
-            for (monster, gamestate)
-            in zip(monsters, gamestates)
-        ]
+        # the above step may have killed one or both monsters, so test
+        # for that before battling.
+        if all(monster.is_alive() for monster in monsters):
+            # read these in parallel before writing anything, in case
+            # taking damage changes them
+            atks = [
+                monster.atk(gamestate)
+                for (monster, gamestate)
+                in zip(monsters, gamestates)
+            ]
 
-        for (monster, damage, gamestate) in zip(
-                monsters,
-                reversed(atks),
-                gamestates,
-        ):
-            monster.take_damage(gamestate, damage)
+            for (monster, damage, gamestate) in zip(
+                    monsters,
+                    reversed(atks),
+                    gamestates,
+            ):
+                monster.take_damage(gamestate, damage)
 
         for (monster, gamestate) in zip(monsters, gamestates):
             if monster.is_alive():
