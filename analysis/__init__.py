@@ -88,18 +88,11 @@ def _run_multiprocess(
 
 
 def _collect_finished_jobs(
-        total_jobs: int,
         matrix: np.ndarray,
         jobs: Iterable[FinishedJob],
 ) -> np.ndarray:
     """Insert the results of all the finished jobs into a payoff matrix"""
-    finished_jobs = 0
-    percent = (total_jobs // 100) or 1
     for (job, payoffs) in jobs:
-        finished_jobs += 1
-        if (finished_jobs % percent) == 0:
-            log.info(f"{finished_jobs // percent} percent of the way done!")
-
         i = job.i
         j = job.j
 
