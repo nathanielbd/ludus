@@ -23,6 +23,7 @@ log = logging.getLogger(__name__)
 
 
 EXPLODE_ON_DEATH = ExplodeOnDeath(1, 1, "volatile")
+FRIENDLY_VAMPIRE = FriendlyVampire(1, 3, "friendly vampire")
 GROW_ON_DAMAGE = GrowOnDamage(0, 5, "bezerker")
 HEAL_ALLIES_ON_DEATH = HealOnDeath(1, 1, "suicidal cleric")
 HEALTHDONOR = HealthDonor(1, 4, "good friend")
@@ -35,7 +36,8 @@ THRESHOLD = ThreshOld(2, 2, "curmudgeon")
 TIME_BOMB = TimeBomb(0, 10, "time bomb")
 
 
-all_cards = (EXPLODE_ON_DEATH,
+ALL_CARDS = (EXPLODE_ON_DEATH,
+             FRIENDLY_VAMPIRE,
              GROW_ON_DAMAGE,
              HEAL_ALLIES_ON_DEATH,
              HEALTHDONOR,

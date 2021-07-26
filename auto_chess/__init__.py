@@ -283,7 +283,10 @@ class _Game:
             self,
             p0_deck: Iterable[Card],
             p1_deck: Iterable[Card],
+            *,
+            max_turns: int = 128,
     ):
+        self.max_turns = max_turns
         self.players: tuple[Player, Player] = (Player(p0_deck, "zero"),
                                                Player(p1_deck, "one"))
 
@@ -390,11 +393,13 @@ class _Game:
 
     def play(self) -> GamePayoffs:
         self.start_battle()
-        while True:
+        for i in range(self.max_turns):
             res = self.single_turn()
-            log.info(f"that turn's result was {res}")
+            log.debug("that turn's result was %d", res)
             if res is not None:
                 return res
+        log.warn("Cutting off a game at %d turns", self.max_turns)
+        return TIE
 
 
 def play_auto_chess(
