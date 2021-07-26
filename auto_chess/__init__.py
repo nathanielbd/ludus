@@ -167,10 +167,16 @@ class Card:
         """
         if health <= 0:
             return
-        log.info(f"{monster.print_at_game_state(gamestate)} heals {health} health")
+        log.info(
+            "%s heals %d health",
+            monster.print_at_game_state(gamestate), health,
+        )
         new_hp = monster._remaining_health + health
         if new_hp > self.health:
-            log.debug(f"claming healing {monster} for {health} at {self.health}")
+            log.debug(
+                "clamping healing %s for %d at %d",
+                monster.print_at_game_state(gamestate), health, self.health,
+            )
             new_hp = self.health
         monster._remaining_health = new_hp
 
@@ -183,7 +189,8 @@ class Card:
         """
         if damage <= 0 or not monster.is_alive():
             return
-        log.info(f"{monster.print_at_game_state(gamestate)} takes {damage} damage")
+        log.info("%s takes %d damage",
+                 monster.print_at_game_state(gamestate), damage)
         monster._remaining_health -= damage
         if not monster.is_alive():
             monster.on_death(gamestate)
@@ -214,9 +221,9 @@ class Card:
         # assign this to ensure is_alive returns false in the future
         monster._remaining_health = 0
         gamestate.player._remove_monster(monster)
-        log.info((f"{gamestate.player}'s "
-                  f"{monster.print_at_game_state(gamestate)} "
-                  "has died."))
+        log.info("%s's %s has died",
+                 gamestate.player,
+                 monster.print_at_game_state(gamestate))
 
 
 def _instantiate_deck(deck: Iterable[Card]) -> collections.deque[Monster]:
@@ -249,22 +256,34 @@ class Player:
         if self.has_monsters():
             monster = self.monsters.popleft()
             assert monster.is_alive()
-            log.info(f"{self}'s next monster is {monster}")
+            log.info(
+                "%s's next monster is %s",
+                self, monster,
+            )
             return monster
         else:
-            log.info(f"{self} has no monsters")
+            log.info("%s has no monsters", self)
             return None
 
     def _enqueue_monster(self, monster):
         self.monsters.append(monster)
 
     def _remove_monster(self, monster):
-        log.debug(f"{self} will remove {monster}")
+        log.debug(
+            "%s will remove %s",
+            self, monster,
+        )
         try:
             self.monsters.remove(monster)
-            log.debug(f"{self} has removed {monster}")
+            log.debug(
+                "%s has removed %s",
+                self, monster,
+            )
         except ValueError:
-            log.debug(f"{self} did not contain {monster}")
+            log.debug(
+                "%s did not contain %s",
+                self, monster,
+            )
             pass
 
     def _on_game_start(self, gamestate):
@@ -332,9 +351,11 @@ class _Game:
     def fight_in_parallel(self, monsters: tuple[Monster, Monster]):
         gamestates = self.gamestates(monsters)
 
-        log.info((f"{monsters[0].print_at_game_state(gamestates[0])} "
-                  "is fighting "
-                  f"{monsters[1].print_at_game_state(gamestates[1])}"))
+        log.info(
+            "%s is fighting %s",
+            monsters[0].print_at_game_state(gamestates[0]),
+            monsters[1].print_at_game_state(gamestates[1]),
+        )
 
         for (monster, gamestate) in zip(monsters, gamestates):
             monster.before_combat(gamestate)

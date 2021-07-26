@@ -2,6 +2,7 @@ import auto_chess as ac
 import analysis
 
 from auto_chess.explode_on_death import ExplodeOnDeath
+from auto_chess.friendly_vampire import FriendlyVampire
 from auto_chess.grow_on_damage import GrowOnDamage
 from auto_chess.heal_allies_on_death import HealOnDeath
 from auto_chess.healthdonor import HealthDonor

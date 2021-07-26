@@ -145,11 +145,13 @@ def analytic_pareto(
     n_decks = len(decks)
     payoffs = np.empty((n_decks, n_decks))
 
-    # n_decks choose 2 + n_decks
-    total_jobs = (n_decks * (n_decks - 1)) // 2 + n_decks
+    log.info(
+        "this tournament is %d matches",
+        # (n_decks choose 2) + n_decks
+        (n_decks * (n_decks - 1)) // 2 + n_decks,
+    )
 
     payoffs = _collect_finished_jobs(
-        total_jobs,
         payoffs,
         _runner_fn(multiprocess)(
             payoff_fn,
