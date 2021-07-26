@@ -1,5 +1,6 @@
 import auto_chess as ac
 import analysis
+import analysis.sampling as sampling
 
 from auto_chess.explode_on_death import ExplodeOnDeath
 from auto_chess.friendly_vampire import FriendlyVampire
@@ -23,18 +24,18 @@ import logging
 log = logging.getLogger(__name__)
 
 
-EXPLODE_ON_DEATH = ExplodeOnDeath(1, 1, "volatile")
+EXPLODE_ON_DEATH = ExplodeOnDeath(2, 1, "volatile")
 FRIENDLY_VAMPIRE = FriendlyVampire(1, 3, "friendly vampire")
 GROW_ON_DAMAGE = GrowOnDamage(0, 5, "bezerker")
-HEAL_ALLIES_ON_DEATH = HealOnDeath(1, 1, "suicidal cleric")
+HEAL_ALLIES_ON_DEATH = HealOnDeath(1, 2, "suicidal cleric")
 HEALTHDONOR = HealthDonor(1, 4, "good friend")
 IGNORE_FIRST_DAMAGE = IgnoreFirstDamage(2, 1, "armor")
 MORPH_ENEMIES = MorphOpponents(0, 3, "morph ball")
 PAINSPLITTER = PainSplitter(2, 2, "bad friend")
-RAMPAGE = RampAge(0, 5, "old fogey")
-SURVIVALIST = Survivalist(3, 3, "coward")
+RAMPAGE = RampAge(0, 4, "old fogey")
+SURVIVALIST = Survivalist(2, 2, "coward")
 THRESHOLD = ThreshOld(2, 2, "curmudgeon")
-TIME_BOMB = TimeBomb(0, 10, "time bomb")
+TIME_BOMB = TimeBomb(1, 8, "time bomb")
 
 
 ALL_CARDS = (EXPLODE_ON_DEATH,
@@ -51,21 +52,31 @@ ALL_CARDS = (EXPLODE_ON_DEATH,
              TIME_BOMB)
 
 
-def run_tourney() -> list[Sequence[ac.Card]]:
-    decks = ac.possible_decks(3, all_cards)
-    log.info(("running a round-robin tournament between "
-              f"{len(decks)} decks composed of {len(all_cards)} cards"))
+def run_tourney() -> Sequence[Sequence[ac.Card]]:
+    decks = ac.possible_decks(3, ALL_CARDS)
+    log.info(
+        "running a 2-stage group tournament between %d decks composed of %d cards",
+        len(decks), len(ALL_CARDS),
+    )
     return analysis.analytic_pareto(
         ac.play_auto_chess,
         decks,
         threshold=0.01,
         multiprocess=True,
     )
+    # return sampling.approximate_pareto_group_tournament(
+    #     ac.play_auto_chess,
+    #     decks,
+    #     threshold=0.01,
+    #     stages_before_finals=2,
+    #     group_size=512,
+    # )
 
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.WARNING)
     log.setLevel(logging.INFO)
     analysis.log.setLevel(logging.INFO)
+    sampling.log.setLevel(logging.INFO)
     res = run_tourney()
-    log.info(f"the winners of the tournament are: {res}")
+    log.info("the winners of the tournament are: %s", res)
