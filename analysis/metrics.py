@@ -18,4 +18,4 @@ def average_win_rate_metric(results: Iterable[DeckResults]) -> float:
         count += 1
         total += results.avg_winrate
     avg = total / count
-    return abs(0.5 - avg) * 2.0  # how close is it to 0.5?
+    return 1.0 - (abs(0.5 - avg) * 2.0)  # how close is it to 0.5?
