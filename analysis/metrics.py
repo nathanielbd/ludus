@@ -10,5 +10,11 @@ class DeckResults(NamedTuple):
 Metric = Callable[[Iterable[DeckResults]], float]
 
 
-def frontier_size_metric(frontier: Iterable[DeckResults]) -> float:
-    return sum(1 for _ in frontier)
+def average_win_rate_metric(results: Iterable[DeckResults]) -> float:
+    count = 0
+    total = 0
+    for result in results:
+        count += 1
+        total += results.avg_winrate
+    avg = total / count
+    return abs(0.5 - avg) * 2.0  # how close is it to 0.5?
