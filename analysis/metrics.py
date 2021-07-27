@@ -7,6 +7,7 @@ class DeckResults(NamedTuple):
     deck: Any
 
 
+# the result should be a float between 0 and 1, where 0 is bad and 1 is good.
 Metric = Callable[[Iterable[DeckResults]], float]
 
 
