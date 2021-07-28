@@ -16,9 +16,8 @@ from auto_chess.survivalist import Survivalist
 from auto_chess.threshold import ThreshOld
 from auto_chess.ticking_time_bomb import TimeBomb
 
-
 from typing import Iterable
-
+import math
 import logging
 
 
@@ -55,7 +54,10 @@ ALL_CARDS = (EXPLODE_ON_DEATH,
 
 METRICS: tuple[tuple[str, metrics.Metric], ...] = (
     ("average payoff deviance", metrics.average_payoff_metric),
-    ("square-root payoff deviance", metrics.sqrt_average_payoff_metric),
+    ("square-root payoff deviance",
+     lambda i: metrics.average_payoff_metric(i, key=math.sqrt)),
+    ("squared payoff deviance",
+     lambda i: metrics.average_payoff_metric(i, key=lambda n: n**2)),
 )
 
 
