@@ -16,7 +16,7 @@ from auto_chess.threshold import ThreshOld
 from auto_chess.ticking_time_bomb import TimeBomb
 
 
-from typing import Sequence
+from typing import Iterable
 
 import logging
 
@@ -52,25 +52,23 @@ ALL_CARDS = (EXPLODE_ON_DEATH,
              TIME_BOMB)
 
 
-def run_tourney() -> Sequence[Sequence[ac.Card]]:
+def run_tourney() -> Iterable[analysis.DeckResults]:
     decks = ac.possible_decks(3, ALL_CARDS)
     log.info(
         "running a 2-stage group tournament between %d decks composed of %d cards",
         len(decks), len(ALL_CARDS),
     )
-    return analysis.analytic_pareto(
-        ac.play_auto_chess,
-        decks,
-        threshold=0.01,
-        multiprocess=True,
-    )
-    # return sampling.approximate_pareto_group_tournament(
+    # return analysis.round_robin(
     #     ac.play_auto_chess,
     #     decks,
-    #     threshold=0.01,
-    #     stages_before_finals=2,
-    #     group_size=512,
+    #     multiprocess=True,
     # )
+    return sampling.group_tournament(
+        ac.play_auto_chess,
+        decks,
+        stages_before_finals=2,
+        group_size=512,
+    )
 
 
 if __name__ == "__main__":
@@ -79,4 +77,4 @@ if __name__ == "__main__":
     analysis.log.setLevel(logging.INFO)
     sampling.log.setLevel(logging.INFO)
     res = run_tourney()
-    log.info("the winners of the tournament are: %s", res)
+    log.info("tournament results are are:\n%s", list(res))
