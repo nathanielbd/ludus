@@ -54,7 +54,8 @@ ALL_CARDS = (EXPLODE_ON_DEATH,
 
 
 METRICS: tuple[tuple[str, metrics.Metric], ...] = (
-    ("average win rate nearness to 50%", metrics.average_win_rate_metric),
+    ("average payoff deviance", metrics.average_payoff_metric),
+    ("square-root payoff deviance", metrics.sqrt_average_payoff_metric),
 )
 
 
