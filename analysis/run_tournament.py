@@ -1,6 +1,7 @@
 import auto_chess as ac
 import analysis
 import analysis.sampling as sampling
+import analysis.metrics as metrics
 
 from auto_chess.explode_on_death import ExplodeOnDeath
 from auto_chess.friendly_vampire import FriendlyVampire
@@ -52,6 +53,11 @@ ALL_CARDS = (EXPLODE_ON_DEATH,
              TIME_BOMB)
 
 
+METRICS: tuple[tuple[str, metrics.Metric], ...] = (
+    ("average win rate nearness to 50%", metrics.average_win_rate_metric),
+)
+
+
 def run_tourney() -> Iterable[analysis.DeckResults]:
     decks = ac.possible_decks(3, ALL_CARDS)
     log.info(
@@ -76,5 +82,8 @@ if __name__ == "__main__":
     log.setLevel(logging.INFO)
     analysis.log.setLevel(logging.INFO)
     sampling.log.setLevel(logging.INFO)
-    res = run_tourney()
-    log.info("tournament results are are:\n%s", list(res))
+    res = list(run_tourney())
+    for (name, metric) in METRICS:
+        log.info("metric %s = %f", name, metric(res))
+
+    log.debug("results are are:\n%s", res)
