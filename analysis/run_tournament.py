@@ -61,7 +61,7 @@ METRICS: tuple[tuple[str, metrics.Metric], ...] = (
 def run_tourney() -> Iterable[analysis.DeckResults]:
     decks = ac.possible_decks(3, ALL_CARDS)
     log.info(
-        "running a 2-stage group tournament between %d decks composed of %d cards",
+        "running a group tournament between %d decks composed of %d cards",
         len(decks), len(ALL_CARDS),
     )
     # return analysis.round_robin(
@@ -72,8 +72,10 @@ def run_tourney() -> Iterable[analysis.DeckResults]:
     return sampling.group_tournament(
         ac.play_auto_chess,
         decks,
-        stages_before_finals=2,
-        group_size=512,
+
+        # large number; we'll cut to finals as soon as enough decks
+        # are eliminated
+        stages_before_finals=1024,
     )
 
 

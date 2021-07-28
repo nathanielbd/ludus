@@ -29,13 +29,13 @@ def group_tournament(
         ))
 
         # these have to be functions because python can't map accessors...
-        def winrate(res: DeckResults) -> float:
-            return res.avg_winrate
+        def payoff(res: DeckResults) -> float:
+            return res.avg_payoff
 
         def deck(res: DeckResults) -> Deck:
             return res.deck
 
-        results.sort(reverse=True, key=winrate)
+        results.sort(reverse=True, key=payoff)
         return list(map(deck, results[:8]))
 
     remaining_decks: list = list(decks)

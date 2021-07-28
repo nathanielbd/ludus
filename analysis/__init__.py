@@ -32,7 +32,10 @@ class Job(NamedTuple):
 
 class DeckResults(NamedTuple):
     deck: Any
-    avg_winrate: float
+    avg_payoff: float
+
+    def __str__(self) -> str:
+        return f"DeckResults({self.deck}, {self.avg_payoff})"
 
 
 class GamePayoffs(NamedTuple):
@@ -162,6 +165,6 @@ def round_robin(
     payoff_avgs = np.mean(payoffs, axis=1, dtype=np.float64)
 
     return (
-        DeckResults(deck, winrate) for (deck, winrate)
+        DeckResults(deck, payoff) for (deck, payoff)
         in zip(decks, payoff_avgs)
     )
