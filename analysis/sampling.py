@@ -1,7 +1,7 @@
 import pathos.multiprocessing as mproc  # type: ignore
 import logging
 from typing import Sequence, Iterable
-from analysis import Deck, analytic_pareto, PayoffFn
+from analysis import Deck, round_robin, PayoffFn, DeckResults
 from random import shuffle
 
 
@@ -13,24 +13,32 @@ def partition(elts: Sequence[Deck], group_size: int) -> Iterable[Sequence[Deck]]
         yield elts[start:start + group_size]
 
 
-def approximate_pareto_group_tournament(
+def group_tournament(
         payoff_fn: PayoffFn,
         decks: Sequence[Deck],
         *,
-        threshold: float = 0,
         group_size: int = 64,
+        group_winners: int = 8,  # the number of decks that will "survive" each group
         stages_before_finals: int = 1,
-) -> Sequence[Deck]:
-    shuffle(decks)
-    def run_group_stage(group: list[Deck]) -> list[Deck]:
-        return analytic_pareto(
+) -> Iterable[DeckResults]:
+    def run_group_stage(group: list[Deck]) -> Iterable[Deck]:
+        results = list(round_robin(
             payoff_fn,
             group,
-            threshold=threshold,
             multiprocess=False,
-        )
+        ))
 
-    remaining_decks = decks
+        # these have to be functions because python can't map accessors...
+        def payoff(res: DeckResults) -> float:
+            return res.avg_payoff
+
+        def deck(res: DeckResults) -> Deck:
+            return res.deck
+
+        results.sort(reverse=True, key=payoff)
+        return list(map(deck, results[:8]))
+
+    remaining_decks: list = list(decks)
 
     with mproc.ProcessPool() as pool:
         for stage in range(stages_before_finals):
@@ -42,9 +50,9 @@ def approximate_pareto_group_tournament(
                 stage, len(groups), group_size, len(decks),
             )
 
-            group_winners = pool.uimap(run_group_stage, groups)
+            winners = pool.uimap(run_group_stage, groups)
 
-            remaining_decks = [deck for group in group_winners for deck in group]
+            remaining_decks = [deck for group in winners for deck in group]
 
             log.info(
                 "after group stage %d, there are %d decks (%f percent of the field)",
@@ -63,9 +71,8 @@ def approximate_pareto_group_tournament(
     )
     log.debug("the finalists after the group stages are: %s", remaining_decks)
 
-    return analytic_pareto(
+    return round_robin(
         payoff_fn,
         remaining_decks,
-        threshold=threshold,
         multiprocess=True,
     )

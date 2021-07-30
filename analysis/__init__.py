@@ -30,6 +30,14 @@ class Job(NamedTuple):
     deck_j: Any
 
 
+class DeckResults(NamedTuple):
+    deck: Any
+    avg_payoff: float
+
+    def __str__(self) -> str:
+        return f"DeckResults({self.deck}, {self.avg_payoff})"
+
+
 class GamePayoffs(NamedTuple):
     p0_payoff: float
     p1_payoff: float

@@ -30,6 +30,7 @@ pip install pipenv
 Install from `Pipfile`
 ```
 pipenv install
+pipenv install -d # install dev packages
 ```
 
 Activate virtual environment
