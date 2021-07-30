@@ -123,13 +123,12 @@ def _runner_fn(multiprocess: bool) -> RunnerFn:
         return _run_sequentially
 
 
-def analytic_pareto(
+def round_robin(
         payoff_fn: PayoffFn,
         decks: Sequence[Deck],
         *,
-        threshold: float = 0,
         multiprocess: bool = False,
-) -> list[Deck]:
+) -> Iterable[DeckResults]:
     """Compute and return the Pareto optimal frontier among the decks.
 
     payoff_fn should be a function from two decks, d0 and d1, which
@@ -139,10 +138,6 @@ def analytic_pareto(
     a payoff function for both players, or may use
     GamePayoffs.zero_sum_payoff in their payoff functions to return a
     value.
-
-    If threshold is provided, it should be a non-negative real
-    number. Any deck whose total payoff is within threshold of the
-    optimum will be treated as optimal.
 
     If multiprocess is provided and True, payoff_fn will be evaluated
     in parallel using multiple processes. If multiprocess is False or
@@ -169,10 +164,7 @@ def analytic_pareto(
 
     payoff_avgs = np.mean(payoffs, axis=1, dtype=np.float64)
 
-    best = np.amax(payoff_avgs)
-
-    return [
-        deck for (deck, payoff)
+    return (
+        DeckResults(deck, payoff) for (deck, payoff)
         in zip(decks, payoff_avgs)
-        if abs(best - payoff) <= threshold
-    ]
+    )

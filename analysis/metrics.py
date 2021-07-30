@@ -22,10 +22,12 @@ def average_payoff_metric(
 ) -> float:
     """Good if most decks have close to zero average payoff, bad if their
 average payoff is high or low.
+
     If provided, key should be a function from a float between 0 and 1
     to a float in the same range. Juicy examples might be math.sqrt
     (to punish small deviations disproportionately) or lambda n: n**2
     (to punish large deviations disproportionately)
+
     """
     count: int = 0
     total: float = 0
