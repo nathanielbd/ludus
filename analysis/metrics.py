@@ -46,8 +46,9 @@ average payoff is high or low.
 
     return 1.0 - avg  # how close is it to 0.0?
 
+
 def sum_cards(results: Iterable[DeckResults]) -> Dict[Card, int]:
-    cards = dict()
+    cards: Dict[Card, int] = dict()
     for result in results:
         for card in result.deck:
             if card in cards:
@@ -56,17 +57,19 @@ def sum_cards(results: Iterable[DeckResults]) -> Dict[Card, int]:
                 cards[card] = 1
     return cards
 
+
 def same_cards_metric(
         results: Iterable[DeckResults],
         *,
         key: Callable[[float], float] = lambda n: n,
 ) -> float:
     cards = sum_cards(results)
-    
+
     sum = 0
     for card in cards:
         sum += cards[card]
     return sum / len(cards)
+
 
 def entropy_metric(
         results: Iterable[DeckResults],
@@ -78,10 +81,10 @@ def entropy_metric(
     sum = 0
     for card in cards:
         sum += cards[card]
-    
+
     entropy = 0.0
     for card in cards:
         p = cards[card] / sum
         entropy -= p * math.log(p)
-    
+
     return entropy

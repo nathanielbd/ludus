@@ -1,7 +1,7 @@
 import numpy as np
 import pathos.multiprocessing as mproc  # type: ignore
 import itertools
-from typing import Callable, Dict, Sequence, TypeVar, Iterable, NamedTuple, Any
+from typing import Callable, Sequence, TypeVar, Iterable, NamedTuple, Any
 import logging
 
 

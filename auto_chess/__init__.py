@@ -140,6 +140,20 @@ class Card:
     def __str__(self):
         return f"<card {self.name} ({self.base_atk}/{self.health})>"
 
+    def __repr__(self):
+        return self.__str__()
+
+    def __eq__(self, other):
+        return self.name == other.name \
+            and self.base_atk == other.base_atk \
+            and self.health == other.health
+
+    def __ne__(self, other):
+        return not self.__eq__(self, other)
+
+    def __hash__(self):
+        return hash((self.name, self.base_atk, self.health))
+
     def _monster_name(self):
         return f"{self.name}-{_get_monster_id()}"
 

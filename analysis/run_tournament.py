@@ -16,10 +16,9 @@ from auto_chess.survivalist import Survivalist
 from auto_chess.threshold import ThreshOld
 from auto_chess.ticking_time_bomb import TimeBomb
 
-from typing import Iterable
+from typing import Iterable, List
 import math
 import logging
-
 
 log = logging.getLogger(__name__)
 
@@ -39,12 +38,11 @@ SURVIVALIST = Survivalist(2, 2, "coward")
 THRESHOLD = ThreshOld(2, 2, "curmudgeon")
 TIME_BOMB = TimeBomb(1, 8, "time bomb")
 
+SIMPLE_CARDS = [BEAR,
+                TANK,
+                BRUISER]
 
-SIMPLE_CARDS = (BEAR,
-             TANK,
-             BRUISER)
-
-ALL_CARDS = (BEAR,
+ALL_CARDS = [BEAR,
              TANK,
              BRUISER,
              EXPLODE_ON_DEATH,
@@ -58,7 +56,7 @@ ALL_CARDS = (BEAR,
              RAMPAGE,
              SURVIVALIST,
              THRESHOLD,
-             TIME_BOMB)
+             TIME_BOMB]
 
 
 METRICS: tuple[tuple[str, metrics.Metric], ...] = (
@@ -72,11 +70,12 @@ METRICS: tuple[tuple[str, metrics.Metric], ...] = (
 )
 
 
-def run_tourney() -> Iterable[analysis.DeckResults]:
-    decks = ac.possible_decks(3, ALL_CARDS)
+def run_tourney(cards: List[ac.Card], deck_size=3, stages_before_finals=1024) -> \
+        Iterable[analysis.DeckResults]:
+    decks = ac.possible_decks(deck_size, cards)
     log.info(
         "running a group tournament between %d decks composed of %d cards",
-        len(decks), len(ALL_CARDS),
+        len(decks), len(cards),
     )
     # return analysis.round_robin(
     #     ac.play_auto_chess,
@@ -86,10 +85,9 @@ def run_tourney() -> Iterable[analysis.DeckResults]:
     return sampling.group_tournament(
         ac.play_auto_chess,
         decks,
-
         # large number; we'll cut to finals as soon as enough decks
         # are eliminated
-        stages_before_finals=1024,
+        stages_before_finals=stages_before_finals,
     )
 
 
@@ -98,8 +96,10 @@ if __name__ == "__main__":
     log.setLevel(logging.INFO)
     analysis.log.setLevel(logging.INFO)
     sampling.log.setLevel(logging.INFO)
-    res = list(run_tourney())
+    res = list(run_tourney(ALL_CARDS))
     for (name, metric) in METRICS:
         log.info("metric %s = %f", name, metric(res))
+
+    print(metrics.sum_cards(res))
 
     log.debug("results are are:\n%s", res)
