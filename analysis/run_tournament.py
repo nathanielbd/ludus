@@ -23,7 +23,9 @@ import logging
 
 log = logging.getLogger(__name__)
 
-
+BEAR = ac.Card(2, 2, "bear")
+TANK = ac.Card(1, 4, "tank")
+BRUISER = ac.Card(3, 1, "bruiser")
 EXPLODE_ON_DEATH = ExplodeOnDeath(2, 1, "volatile")
 FRIENDLY_VAMPIRE = FriendlyVampire(1, 3, "friendly vampire")
 GROW_ON_DAMAGE = GrowOnDamage(0, 5, "bezerker")
@@ -38,7 +40,14 @@ THRESHOLD = ThreshOld(2, 2, "curmudgeon")
 TIME_BOMB = TimeBomb(1, 8, "time bomb")
 
 
-ALL_CARDS = (EXPLODE_ON_DEATH,
+SIMPLE_CARDS = (BEAR,
+             TANK,
+             BRUISER)
+
+ALL_CARDS = (BEAR,
+             TANK,
+             BRUISER,
+             EXPLODE_ON_DEATH,
              FRIENDLY_VAMPIRE,
              GROW_ON_DAMAGE,
              HEAL_ALLIES_ON_DEATH,
@@ -58,6 +67,7 @@ METRICS: tuple[tuple[str, metrics.Metric], ...] = (
      lambda i: metrics.average_payoff_metric(i, key=math.sqrt)),
     ("squared payoff deviance",
      lambda i: metrics.average_payoff_metric(i, key=lambda n: n**2)),
+    ("same card metric", metrics.same_cards_metric),
 )
 
 

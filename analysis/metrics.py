@@ -43,3 +43,21 @@ average payoff is high or low.
     )
 
     return 1.0 - avg  # how close is it to 0.0?
+
+def same_cards_metric(
+        results: Iterable[DeckResults],
+        *,
+        key: Callable[[float], float] = lambda n: n,
+) -> float:
+    cards = dict()
+    for result in results:
+        for card in result.deck:
+            if card in cards:
+                cards[card] += 1
+            else:
+                cards[card] = 1
+    
+    sum = 0
+    for card in cards:
+        sum += cards[card]
+    return sum / len(cards)
