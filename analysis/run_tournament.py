@@ -68,6 +68,7 @@ METRICS: tuple[tuple[str, metrics.Metric], ...] = (
     ("squared payoff deviance",
      lambda i: metrics.average_payoff_metric(i, key=lambda n: n**2)),
     ("same card metric", metrics.same_cards_metric),
+    ("entropy metric", metrics.entropy_metric),
 )
 
 
