@@ -65,7 +65,9 @@ METRICS: tuple[tuple[str, metrics.Metric], ...] = (
      lambda i: metrics.average_payoff_metric(i, key=math.sqrt)),
     ("squared payoff deviance",
      lambda i: metrics.average_payoff_metric(i, key=lambda n: n**2)),
-    ("same card metric", metrics.same_cards_metric),
+    ("per-card winrate", metrics.per_card_winrate),
+    ("squared per-card winrate",
+     lambda i: metrics.per_card_winrate(i, variance_key=lambda n: n**2)),
     ("entropy metric", metrics.entropy_metric),
 )
 
@@ -77,18 +79,18 @@ def run_tourney(cards: List[ac.Card], deck_size=3, stages_before_finals=1024) ->
         "running a group tournament between %d decks composed of %d cards",
         len(decks), len(cards),
     )
-    # return analysis.round_robin(
-    #     ac.play_auto_chess,
-    #     decks,
-    #     multiprocess=True,
-    # )
-    return sampling.group_tournament(
+    return analysis.round_robin(
         ac.play_auto_chess,
         decks,
-        # large number; we'll cut to finals as soon as enough decks
-        # are eliminated
-        stages_before_finals=stages_before_finals,
+        multiprocess=True,
     )
+    # return sampling.group_tournament(
+    #     ac.play_auto_chess,
+    #     decks,
+    #     # large number; we'll cut to finals as soon as enough decks
+    #     # are eliminated
+    #     stages_before_finals=stages_before_finals,
+    # )
 
 
 if __name__ == "__main__":
@@ -99,7 +101,5 @@ if __name__ == "__main__":
     res = list(run_tourney(ALL_CARDS))
     for (name, metric) in METRICS:
         log.info("metric %s = %f", name, metric(res))
-
-    print(metrics.sum_cards(res))
 
     log.debug("results are are:\n%s", res)

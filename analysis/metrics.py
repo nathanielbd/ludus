@@ -17,6 +17,11 @@ def payoff_winrate(payoff: float) -> float:
     return (payoff / 2) + 0.5
 
 
+def winrate_payoff(winrate: float) -> float:
+    """from a winrate between 0 and 1, return a payoff between -1 and 1"""
+    return (winrate * 2) - 1
+
+
 def average_payoff_metric(
         results: Iterable[DeckResults],
         *,
@@ -47,28 +52,42 @@ average payoff is high or low.
     return 1.0 - avg  # how close is it to 0.0?
 
 
-def sum_cards(results: Iterable[DeckResults]) -> Dict[Card, int]:
-    cards: Dict[Card, int] = dict()
-    for result in results:
-        for card in result.deck:
-            if card in cards:
-                cards[card] += 1
-            else:
-                cards[card] = 1
-    return cards
-
-
-def same_cards_metric(
+def weighted_sum_cards(
         results: Iterable[DeckResults],
         *,
         key: Callable[[float], float] = lambda n: n,
-) -> float:
-    cards = sum_cards(results)
+) -> Dict[Card, float]:
+    """Returns a mapping from cards to the average winrate of decks they appear in"""
+    # sums maps cards to the total winrates of all the decks they appear in
+    sums: dict[Card, float] = dict()
+    count = 0
+    for result in results:
+        count += 1
+        for card in result.deck:
+            try:
+                prev = sums[card]
+            except KeyError:
+                prev = 0
+            sums[card] = prev + key(payoff_winrate(result.avg_payoff))
 
-    sum = 0
-    for card in cards:
-        sum += cards[card]
-    return sum / len(cards)
+    # weights normalizes sums to be in the range 0..=1
+    weights = dict()
+    for card, winsum in sums.items():
+        weights[card] = winsum / count
+    return weights
+
+
+def per_card_winrate(
+        results: Iterable[DeckResults],
+        *,
+        winrate_key: Callable[[float], float] = lambda n: n,
+        variance_key: Callable[[float], float] = lambda n: n,
+) -> float:
+    per_card_payoffs = weighted_sum_cards(results, key=winrate_key).values()
+    return sum(
+        variance_key(abs(winrate_payoff(payoff)))
+        for payoff in per_card_payoffs
+    ) / len(per_card_payoffs)
 
 
 def entropy_metric(
@@ -77,8 +96,8 @@ def entropy_metric(
         key: Callable[[float], float] = lambda n: n,
 ) -> float:
     # S = \sum{p_i ln(p_i)}
-    cards = sum_cards(results)
-    sum = 0
+    cards = weighted_sum_cards(results)
+    sum = 0.0
     for card in cards:
         sum += cards[card]
 
