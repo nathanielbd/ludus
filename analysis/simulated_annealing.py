@@ -24,11 +24,12 @@ import logging
 
 log = logging.getLogger(__name__)
 
+# choose metric
+from analysis.metrics import average_payoff_metric
 
 # try only perturbing the mechanic stats
 # if no curse of dimensionality, try perturbing hp/atk too
 def opt_fun(
-    metric: Callable[[Iterable[DeckResults]], float],
     explode_damage: int = 1,
     heal_amount: int = 1,
     atk_per_hit: int = 1,
@@ -77,13 +78,13 @@ def opt_fun(
         decks,
         stages_before_finals=n_iters
     )
-    score = metric(results)
+    score = average_payoff_metric(results)
     return -score
 
 
-def optimize(metric, iterations):
+def optimize(iterations):
     return basinhopping(opt_fun,
-                [metric, 1, 1, 1, 1, 50, 1, 50, 4, 4, 10, iterations]
+                [1, 1, 1, 1, 50, 1, 50, 4, 4, 10, iterations]
     )
 
 # also have a general function that will be able to work with
