@@ -1,8 +1,5 @@
 # import analysis.run_tournament as run_tournament
-from typing import Callable, Iterable
 from scipy.optimize import basinhopping
-from analysis import DeckResults
-from analysis import DeckResults
 import analysis.sampling as sampling
 
 import auto_chess as ac
@@ -19,29 +16,34 @@ from auto_chess.survivalist import Survivalist
 from auto_chess.threshold import ThreshOld
 from auto_chess.ticking_time_bomb import TimeBomb
 
+# choose metric
+from analysis.metrics import average_payoff_metric
+
 import logging
 
 
 log = logging.getLogger(__name__)
 
-# choose metric
-from analysis.metrics import average_payoff_metric
 
 # try only perturbing the mechanic stats
 # if no curse of dimensionality, try perturbing hp/atk too
 def opt_fun(
-    explode_damage: int = 1,
-    heal_amount: int = 1,
-    atk_per_hit: int = 1,
-    explode_heal: int = 1,
-    heal_percent: int = 50,
-    armor_points: int = 1,
-    dmg_percent: int = 50,
-    middle_age: int = 4,
-    target_age: int = 4,
-    detonation_time: int = 10,
-    n_iters: int = 1024
+    # explode_damage: int = 1,
+    # heal_amount: int = 1,
+    # atk_per_hit: int = 1,
+    # explode_heal: int = 1,
+    # heal_percent: int = 50,
+    # armor_points: int = 1,
+    # dmg_percent: int = 50,
+    # middle_age: int = 4,
+    # target_age: int = 4,
+    # detonation_time: int = 10,
+    # n_iters: int = 1024
+    x0: list[int, int, int, int, int, int, int, int, int, int]
 ) -> float:
+    explode_damage, heal_amount, atk_per_hit, explode_heal, \
+        heal_percent, armor_points, dmg_percent, middle_age, \
+            target_age, detonation_time = x0
     explode_on_death = ExplodeOnDeath(2, 1, "bomb", explode_damage=explode_damage)
     friendly_vampire = FriendlyVampire(1, 3, "friendly vampire", heal_amount=heal_amount)
     grow_on_damage = GrowOnDamage(0, 5, "berserker", atk_per_hit=atk_per_hit)
@@ -76,17 +78,18 @@ def opt_fun(
     results = sampling.group_tournament(
         ac.play_auto_chess,
         decks,
-        stages_before_finals=n_iters
+        stages_before_finals=2
     )
     score = average_payoff_metric(results)
     return -score
 
 
-def optimize(iterations):
+# really ugly system right now
+# figure out how to do currying so that extra parameters 
+# can be added before injection into simulated annealing
+
+
+def optimize():
     return basinhopping(opt_fun,
-                [1, 1, 1, 1, 50, 1, 50, 4, 4, 10, iterations]
+                        [1, 1, 1, 1, 50, 1, 50, 4, 4, 10]
     )
-
-# also have a general function that will be able to work with
-# optimizing in batches
-
