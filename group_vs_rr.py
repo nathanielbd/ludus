@@ -1,7 +1,6 @@
 import auto_chess as ac
 import analysis
 import analysis.sampling as sampling
-import analysis.metrics as metrics
 import run_tournament as tourney
 import pickle
 import math
@@ -12,7 +11,7 @@ import logging
 log = logging.getLogger(__name__)
 
 
-def compare_sampling(cards: List[ac.Card], deck_size=3) -> None:
+def compare_sampling(cards: list[ac.Card], deck_size=3) -> None:
     decks = ac.possible_decks(deck_size, cards)
 
     def output_trial_data(subdir, trial_number, data):
