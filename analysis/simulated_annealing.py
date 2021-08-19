@@ -1,6 +1,8 @@
 # import analysis.run_tournament as run_tournament
 from scipy.optimize import basinhopping
 import analysis.sampling as sampling
+from analysis import DeckResults
+from typing import Callable, Iterable
 
 import auto_chess as ac
 from auto_chess.explode_on_death import ExplodeOnDeath
@@ -16,8 +18,10 @@ from auto_chess.survivalist import Survivalist
 from auto_chess.threshold import ThreshOld
 from auto_chess.ticking_time_bomb import TimeBomb
 
+from functools import partial
+
 # choose metric
-from analysis.metrics import average_payoff_metric
+# from analysis.metrics import average_payoff_metric
 
 import logging
 
@@ -28,6 +32,8 @@ log = logging.getLogger(__name__)
 # try only perturbing the mechanic stats
 # if no curse of dimensionality, try perturbing hp/atk too
 def opt_fun(
+    metric: Callable[[Iterable[DeckResults]], float],
+    n_iters: int,
     # explode_damage: int = 1,
     # heal_amount: int = 1,
     # atk_per_hit: int = 1,
@@ -80,7 +86,8 @@ def opt_fun(
         decks,
         stages_before_finals=2
     )
-    score = average_payoff_metric(results)
+    # score = average_payoff_metric(results)
+    score = metric
     return -score
 
 
@@ -89,7 +96,7 @@ def opt_fun(
 # can be added before injection into simulated annealing
 
 
-def optimize():
-    return basinhopping(opt_fun,
+def optimize(metric, n_iters):
+    return basinhopping(partial(opt_fun, metric, n_iters),
                         [1, 1, 1, 1, 50, 1, 50, 4, 4, 10]
     )
