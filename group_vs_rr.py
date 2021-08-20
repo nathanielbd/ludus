@@ -20,7 +20,7 @@ def compare_sampling(cards: list[ac.Card], deck_size=3) -> None:
             pickle.dump(list(data), outfile)
 
     for i in range(1, math.floor(math.log2(len(decks)))):
-        group_size = i**2
+        group_size = 2**i
 
         subdir = "group_size_" + str(group_size)
 
