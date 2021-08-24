@@ -33,7 +33,8 @@ log = logging.getLogger(__name__)
 # if no curse of dimensionality, try perturbing hp/atk too
 def opt_fun(
     metric: Callable[[Iterable[DeckResults]], float],
-    n_iters: int,
+    stages: int,
+    # group_size: int,
     # explode_damage: int = 1,
     # heal_amount: int = 1,
     # atk_per_hit: int = 1,
@@ -84,10 +85,10 @@ def opt_fun(
     results = sampling.group_tournament(
         ac.play_auto_chess,
         decks,
-        stages_before_finals=2
+        stages_before_finals=stages
     )
     # score = average_payoff_metric(results)
-    score = metric
+    score = metric(results)
     return -score
 
 
@@ -96,7 +97,12 @@ def opt_fun(
 # can be added before injection into simulated annealing
 
 
-def optimize(metric, n_iters):
-    return basinhopping(partial(opt_fun, metric, n_iters),
-                        [1, 1, 1, 1, 50, 1, 50, 4, 4, 10]
+# look into using `minimizer_kwargs = {"method":"L-BFGS-B", "jac":True}`
+# 
+
+
+def optimize(metric, stages, opt_iters):
+    return basinhopping(partial(opt_fun, metric, stages),
+                        [1, 1, 1, 1, 50, 1, 50, 4, 4, 10],
+                        niter=opt_iters
     )
