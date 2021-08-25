@@ -22,7 +22,7 @@ class PainSplitter(Card):
                 # If no additional allies left, then this card
                 # receives all the damage regardless
                 log.info((f"{monster.print_at_game_state(gamestate)} shares"
-                          " damage with allies, but no allies left"))
+                          f" {damage} damage with allies, but no allies left"))
                 super().take_damage(monster, gamestate, damage)
             else:
                 # Compute damage allocated to current card and allies,
