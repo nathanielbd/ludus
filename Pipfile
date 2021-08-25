@@ -9,6 +9,7 @@ numpy = "*"
 pathos = "*"
 pytest-timeout = "*"
 pipfile = "*"
+scipy = "*"
 
 [dev-packages]
 mypy = "*"
