@@ -59,8 +59,7 @@ class StepIntegers:
         step_vec = np.random.rand(10)
         step_vec /= np.linalg.norm(step_vec)
         step_vec *= self.stepsize
-        step_vec.astype(int)
-        return step_vec
+        return (x + step_vec).astype(int)
 
 
 step_integers = StepIntegers()
@@ -71,9 +70,10 @@ def show_minima(x, f, accepted):
 
 
 def optimize(metric, opt_iters, group_size, num_decks):
-    res =  basinhopping(partial(opt_fun, metric, group_size, num_decks),
+    res = basinhopping(partial(opt_fun, metric, group_size, num_decks),
                         [1, 1, 1, 1, 5, 1, 5, 4, 4, 10],
                         # minimizer_kwargs={'method': 'L-BFGS-B', 'jac': True},
+                        # minimizer_kwargs={'method': 'Nelder-Mead'},
                         niter=opt_iters,
                         disp=True,
                         seed=42,
