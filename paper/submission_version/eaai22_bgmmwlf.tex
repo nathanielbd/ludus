@@ -44,8 +44,8 @@
 % or commands are allowed.
 % Keep the /TemplateVersion tag as is
 \pdfinfo{
-/Title (INSERT TITLE HERE!  AND CHECK AUTHORS ARE CORRECT BELOW!)
-/Author (Nathaniel Budijono, Phoebe Goldman, Jack Maloney, Joseph A. Mueller, Phillip Walker, Jack Ladwig, Richard G. Freedman)
+/Title (Finding the Balance: An Exploration of Metrics to Design Balanced Character Stats in Auto Battler Games)
+/Author (Nathaniel Budijono, Phoebe Goldman, Jack Maloney, Joseph B. Mueller, Phillip Walker, Jack Ladwig, Richard G. Freedman)
 /TemplateVersion (2022.1)
 }
 
@@ -158,23 +158,24 @@
 % directly follow a colon or long dash
 %\iffalse
 %Example, Multiple Authors, ->> remove \iffalse,\fi and place them surrounding AAAI title to use it
-\title{INSERT TITLE HERE!}%{My Publication Title --- Multiple Authors}
+\title{Finding the Balance: An Exploration of Metrics to Design Balanced Character Stats in Auto Battler Games}%{My Publication Title --- Multiple Authors}
 \author {
     % Authors
     Nathaniel Budijono\equalcontrib,\textsuperscript{\rm 1}
     Phoebe Goldman\equalcontrib, \textsuperscript{\rm 2}
-    Jack Maloney\equalcontrib, \textsuperscript{\rm 1} \\
-    Joseph A. Mueller, \textsuperscript{\rm 3,4}
-    Phillip Walker, \textsuperscript{\rm 4}
-    Jack Ladwig, \textsuperscript{\rm 4}
-    Richard G. Freedman \textsuperscript{\rm 4}
+    Jack Maloney\equalcontrib, \textsuperscript{\rm 3} \\
+    Joseph B. Mueller, \textsuperscript{\rm 4,5}
+    Phillip Walker, \textsuperscript{\rm 5}
+    Jack Ladwig, \textsuperscript{\rm 5}
+    Richard G. Freedman \textsuperscript{\rm 5}
 }
 \affiliations {
     % Affiliations
     \textsuperscript{\rm 1} University of Minnesota Twin Cities\\
     \textsuperscript{\rm 2} New York University\\
-    \textsuperscript{\rm 3} University of Minnesota\\
-    \textsuperscript{\rm 4} SIFT\\
+    \textsuperscript{\rm 3} University of Wisconsin Madison\\
+    \textsuperscript{\rm 4} University of Minnesota\\
+    \textsuperscript{\rm 5} SIFT\\
     budijono@affiliation1.com, goldman@affilation2.com, maloney@affiliation1.com, jmueller@sift.net, pwalker@sift.net, jladwig@sift.net, rfreedman@sift.net
 }
 %\fi
@@ -190,7 +191,21 @@
 \maketitle
 
 \begin{abstract}
-AAAI creates proceedings, working notes, and technical reports directly from electronic source furnished by the authors. To ensure that all papers in the publication have a uniform appearance, authors must adhere to the following instructions.
+The auto battler is a new video game genre that has been growing in popularity.
+Although the majority of the gameplay is automated via scripted rules, players
+select characters from a pool of options and arrange them on the game board
+before the automation begins.  Like other game formats with many unique components
+that players assemble to customize their content, such as
+trading card games, designers must be careful to balance the components so that
+players feel that there are many reasonable choices of component combinations.
+We developed a framework that combines automated playtesting with global search
+to identify stats for each component that will assist designers in achieving this
+balance.  To guide the global search, we define metrics describing different
+elements of balancing and explore their impacts on the designed game components.
+This work introduces our auto battler game and platform designed for research
+use, describes the framework for balancing the game components used in customized
+content, and provides a preliminary investigation into our exploration of metrics
+and their impacts on various design challenges related to balancing for auto battler games.
 \end{abstract}
 
 \noindent Congratulations on having a paper selected for inclusion in an AAAI Press proceedings or technical report! This document details the requirements necessary to get your accepted paper published using PDF\LaTeX{}. If you are using Microsoft Word, instructions are provided in a different document. AAAI Press does not support any other formatting software.
