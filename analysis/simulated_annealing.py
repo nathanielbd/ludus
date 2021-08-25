@@ -1,27 +1,15 @@
-# import analysis.run_tournament as run_tournament
 from scipy.optimize import basinhopping
+import numpy as np
+import random
 import analysis.sampling as sampling
 from analysis import DeckResults
 from typing import Callable, Iterable
+import run_tournament as tourney
 
 import auto_chess as ac
-from auto_chess.explode_on_death import ExplodeOnDeath
-from auto_chess.friendly_vampire import FriendlyVampire
-from auto_chess.grow_on_damage import GrowOnDamage
-from auto_chess.heal_allies_on_death import HealOnDeath
-from auto_chess.healthdonor import HealthDonor
-from auto_chess.ignore_first_damage import IgnoreFirstDamage
-from auto_chess.morph_enemies import MorphOpponents
-from auto_chess.painsplitter import PainSplitter
-from auto_chess.rampage import RampAge
-from auto_chess.survivalist import Survivalist
-from auto_chess.threshold import ThreshOld
-from auto_chess.ticking_time_bomb import TimeBomb
 
 from functools import partial
 
-# choose metric
-# from analysis.metrics import average_payoff_metric
 
 import logging
 
@@ -33,51 +21,23 @@ log = logging.getLogger(__name__)
 # if no curse of dimensionality, try perturbing hp/atk too
 def opt_fun(
     metric: Callable[[Iterable[DeckResults]], float],
-    stages: int,
-    # group_size: int,
-    # explode_damage: int = 1,
-    # heal_amount: int = 1,
-    # atk_per_hit: int = 1,
-    # explode_heal: int = 1,
-    # heal_percent: int = 50,
-    # armor_points: int = 1,
-    # dmg_percent: int = 50,
-    # middle_age: int = 4,
-    # target_age: int = 4,
-    # detonation_time: int = 10,
-    # n_iters: int = 1024
-    x0: list[int, int, int, int, int, int, int, int, int, int]
+    group_size: int,
+    num_decks: None,
+    x0: list[int]
 ) -> float:
     explode_damage, heal_amount, atk_per_hit, explode_heal, \
         heal_percent, armor_points, dmg_percent, middle_age, \
             target_age, detonation_time = x0
-    explode_on_death = ExplodeOnDeath(2, 1, "bomb", explode_damage=explode_damage)
-    friendly_vampire = FriendlyVampire(1, 3, "friendly vampire", heal_amount=heal_amount)
-    grow_on_damage = GrowOnDamage(0, 5, "berserker", atk_per_hit=atk_per_hit)
-    heal_on_death = HealOnDeath(1, 2, "suicidal cleric", explode_heal=explode_heal)
-    health_donor = HealthDonor(1, 4, "angel", heal_percent=heal_percent)
-    ignore_first_damage = IgnoreFirstDamage(2, 1, "shield warrior", armor_points=armor_points)
-    morph_opponents = MorphOpponents(0, 3, "morpher")
-    painsplitter = PainSplitter(2, 2, 'painsplitter', dmg_percent=dmg_percent)
-    rampage = RampAge(0, 4, 'rampage', middle_age=middle_age)
-    survivalist = Survivalist(2, 2, 'survivalist')
-    threshold = ThreshOld(2, 2, 'threshold', target_age=target_age)
-    time_bomb = TimeBomb(1, 8, 'time bomb', detonation_time=detonation_time)
-
-    cards = (explode_on_death,
-             friendly_vampire,
-             grow_on_damage,
-             heal_on_death,
-             health_donor,
-             ignore_first_damage,
-             morph_opponents,
-             painsplitter,
-             rampage,
-             survivalist,
-             threshold,
-             time_bomb)
+    # improve smoothness of function by decreasing the percent magnitudes
+    heal_percent *= 10
+    dmg_percent *= 10
+    cards = tourney.ALL_CARDS
 
     decks = ac.possible_decks(3, cards)
+
+    if num_decks:
+        decks = random.sample(decks, k=num_decks)
+
     log.info(
             "running a group tournament between %d decks composed of %d cards",
             len(decks), len(cards),
@@ -85,24 +45,40 @@ def opt_fun(
     results = sampling.group_tournament(
         ac.play_auto_chess,
         decks,
-        stages_before_finals=stages
+        group_size=group_size
     )
-    # score = average_payoff_metric(results)
     score = metric(results)
     return -score
 
 
-# really ugly system right now
-# figure out how to do currying so that extra parameters 
-# can be added before injection into simulated annealing
+class StepIntegers:
+    def __init__(self, stepsize=20):
+        self.stepsize = stepsize
+
+    def __call__(self, x):
+        step_vec = np.random.rand(10)
+        step_vec /= np.linalg.norm(step_vec)
+        step_vec *= self.stepsize
+        step_vec.astype(int)
+        return step_vec
 
 
-# look into using `minimizer_kwargs = {"method":"L-BFGS-B", "jac":True}`
-# 
+step_integers = StepIntegers()
 
 
-def optimize(metric, stages, opt_iters):
-    return basinhopping(partial(opt_fun, metric, stages),
-                        [1, 1, 1, 1, 50, 1, 50, 4, 4, 10],
-                        niter=opt_iters
-    )
+def show_minima(x, f, accepted):
+    log.info(f"found minimum at {x} with value {f}; accepted: {accepted}")
+
+
+def optimize(metric, opt_iters, group_size, num_decks):
+    res =  basinhopping(partial(opt_fun, metric, group_size, num_decks),
+                        [1, 1, 1, 1, 5, 1, 5, 4, 4, 10],
+                        # minimizer_kwargs={'method': 'L-BFGS-B', 'jac': True},
+                        niter=opt_iters,
+                        disp=True,
+                        seed=42,
+                        take_step=step_integers,
+                        callback=show_minima
+                        )
+    log.info(res.lowest_optimization_result)
+    return res
