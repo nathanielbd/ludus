@@ -70,7 +70,7 @@ def compute_error_metrics(outfile: IO[str], errors: np.array) -> None:
                         ("median", median),
                         ("high quartile", high_quart),
                         ("max error", max_error),
-                        ("mean", mean)]:
+                        ("mean error", mean)]:
         output_metric(outfile, name, val)
 
 
