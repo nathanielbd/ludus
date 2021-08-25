@@ -430,7 +430,7 @@ class _Game:
         self.start_battle()
         for i in range(self.max_turns):
             res = self.single_turn()
-            log.debug("that turn's result was %d", res)
+            log.debug("that turn's result was {res}")
             if res is not None:
                 return res
         log.warn("Cutting off a game at %d turns", self.max_turns)
