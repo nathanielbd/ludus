@@ -46,4 +46,5 @@ def compare_sampling(cards: list[ac.Card], deck_size=3) -> None:
 if __name__ == "__main__":
     logging.basicConfig(level=logging.WARNING)
     log.setLevel(logging.INFO)
+    ac.log.setLevel(logging.INFO)
     compare_sampling(tourney.ALL_CARDS)

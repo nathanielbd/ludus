@@ -338,12 +338,15 @@ class _Game:
                 return TIE
             else:
                 return None
+        elif (not self.p0().has_monsters()) and (not self.p0().has_monsters()):
+            return TIE
         elif self.p0().has_monsters():
             return P0_WIN
         elif self.p1().has_monsters():
             return P1_WIN
         else:
-            return TIE
+            log.error("What the Heck")
+            exit(1)
 
     def gamestates(
             self,
@@ -427,6 +430,7 @@ class _Game:
                 log.info(f"  {monster.print_at_game_state(gamestate)}")
 
     def play(self) -> GamePayoffs:
+        log.info("Starting game between %s and %s", self.p0(), self.p1())
         self.start_battle()
         for i in range(self.max_turns):
             res = self.single_turn()
