@@ -79,7 +79,7 @@ class Monster:
         self._dict[key] = value
 
     def __str__(self) -> str:
-        return f"{self._name} {self._dict}"
+        return f"<monster {self._name} {self._dict}>"
 
     def current_atk(self, gamestate: GameState) -> int:
         return self._card.current_atk(self, gamestate)
@@ -235,8 +235,8 @@ class Card:
         # assign this to ensure is_alive returns false in the future
         monster._remaining_health = 0
         gamestate.player._remove_monster(monster)
-        log.info("%s's %s has died",
-                 gamestate.player,
+        log.info("player %s's %s has died",
+                 gamestate.player.name,
                  monster.print_at_game_state(gamestate))
 
 
@@ -254,9 +254,8 @@ class Player:
             "<player",
             self.name,
             "controls",
-            ", ".join(map(str, self.monsters)),
-            ">"
-        ])
+            ", ".join(map(str, self.monsters))
+        ]) + ">"
 
     def has_monsters(self) -> bool:
         return len(self.monsters) > 0
@@ -271,8 +270,8 @@ class Player:
             monster = self.monsters.popleft()
             assert monster.is_alive()
             log.info(
-                "%s's next monster is %s",
-                self, monster,
+                "player %s's next monster is %s",
+                self.name, monster,
             )
             return monster
         else:
@@ -434,7 +433,7 @@ class _Game:
         self.start_battle()
         for i in range(self.max_turns):
             res = self.single_turn()
-            log.debug("that turn's result was {res}")
+            log.debug(f"that turn's result was {res}")
             if res is not None:
                 return res
         log.warn("Cutting off a game at %d turns", self.max_turns)
