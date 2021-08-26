@@ -1,3 +1,4 @@
+import logging
 import auto_chess as ac
 from auto_chess.ignore_first_damage import IgnoreFirstDamage
 from auto_chess.explode_on_death import ExplodeOnDeath
@@ -15,6 +16,7 @@ BRUISER = ac.Card(3, 1, "bruiser")
 def test_one():
     deck_0 = [BRUISER, BRUISER]
     deck_1 = [BRUISER, TANK]
+    logging.setLevel(logging.DEBUG)
     assert ac.play_auto_chess(deck_0, deck_1) == ac.P1_WIN
     assert ac.play_auto_chess(deck_1, deck_0) == ac.P0_WIN
     assert ac.play_auto_chess(deck_0, deck_0) == ac.TIE
@@ -57,6 +59,8 @@ def phony_gamestate():
     return ac.GameState(
         ac.Player([]),
         ac.Player([]),
+        None,
+        None
     )
 
 

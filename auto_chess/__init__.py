@@ -58,10 +58,14 @@ log = logging.getLogger(__name__)
 class GameState(NamedTuple):
     player: 'Player'
     opponent: 'Player'
-    defender: Optional['Monster'] = None
+    attacker: Optional['Monster']
+    defender: Optional['Monster']
+    
 
-    def invert(self, attacker=None) -> 'GameState':
-        return GameState(self.opponent, self.player, attacker)
+    def invert(self) -> 'GameState':
+        assert not self.attacker is None
+        assert not self.defender is None
+        return GameState(self.opponent, self.player, self.defender, self.attacker)
 
 
 class Monster:
@@ -359,9 +363,11 @@ class _Game:
 
         return (GameState(self.players[0],
                           self.players[1],
+                          monsters[0],
                           monsters[1]),
                 GameState(self.players[1],
                           self.players[0],
+                          monsters[1],
                           monsters[0]))
 
     def fight_in_parallel(self, monsters: tuple[Monster, Monster]):
