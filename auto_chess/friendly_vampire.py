@@ -16,7 +16,7 @@ class FriendlyVampire(Card):
     def before_combat(self, monster: Monster, gamestate: GameState) -> None:
         heal_target = None
         for friend in reversed(gamestate.player.monsters):
-            if friend is not self:
+            if friend is not monster:
                 heal_target = friend
                 break
 

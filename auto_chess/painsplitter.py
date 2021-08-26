@@ -39,5 +39,5 @@ class PainSplitter(Card):
                 super().take_damage(monster, gamestate, received_dmg)
                 ally_dmg = (damage - received_dmg) // len(gamestate.player.monsters)
                 for ally in friends:
-                    if ally is not self:
+                    if ally is not monster:
                         ally.take_damage(gamestate, ally_dmg)

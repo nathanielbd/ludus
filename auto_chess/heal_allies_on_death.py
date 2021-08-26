@@ -14,6 +14,6 @@ class HealOnDeath(Card):
         log.info((f"{monster.print_at_game_state(gamestate)} "
                   f"heals its allies for {self.explode_heal} health"))
         for ally in list(gamestate.player.monsters):
-            if ally is not self:
+            if ally is not monster:
                 ally.heal(gamestate, self.explode_heal)
         super().on_death(monster, gamestate)

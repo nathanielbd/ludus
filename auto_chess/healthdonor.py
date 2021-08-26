@@ -37,5 +37,5 @@ class HealthDonor(Card):
                 ally_health = (health - received_health) \
                     // len(gamestate.player.monsters)
                 for ally in list(gamestate.player.monsters):
-                    if ally is not self:
+                    if ally is not monster:
                         ally.heal(gamestate, ally_health)
