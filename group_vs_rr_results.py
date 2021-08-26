@@ -21,7 +21,7 @@ def trial_iterator() -> Iterable[tuple[str, str, list[DeckResults]]]:
             for trialname in os.listdir(subdir):
                 fullpath = f"{subdir}/{trialname}"
                 if trialname.startswith("trial_") and os.path.isfile(fullpath):
-                    yield (subdir, trialname, read_trial(trialname))
+                    yield (subdir, trialname, read_trial(fullpath))
 
 
 def output_metric(outfile: IO[str], name: str, value: float) -> None:
@@ -45,7 +45,9 @@ def compute_error_metrics(
         round_robin: dict[Deck, float],
 ) -> None:
     outname = f"{subdir}/{trialname}_metrics.txt"
-    errvec = errors(round_robin, deckresults_dict(results))
+    errvec = np.array(list(
+        errors(round_robin, deckresults_dict(results)).values()
+    ))
     [min_error, low_quart, median, high_quart, max_error] = np.quantile(
         errvec,
         [0.0, 0.25, 0.5, 0.75, 1.0],
