@@ -442,7 +442,7 @@ class _Game:
             log.debug(f"that turn's result was {res}")
             if res is not None:
                 return res
-        log.warn("Cutting off a game at %d turns", self.max_turns)
+        log.info("Cutting off a game at %d turns", self.max_turns)
         return TIE
 
 
