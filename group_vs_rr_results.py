@@ -43,8 +43,7 @@ def compute_error_metrics(
         trialname: str,
         results: list[DeckResults],
         round_robin: dict[Deck, float],
-) -> None:
-    outname = f"{subdir}/{trialname}_metrics.txt"
+) -> tuple[float, ...]:
     errvec = np.array(list(
         errors(round_robin, deckresults_dict(results)).values()
     ))
@@ -53,15 +52,7 @@ def compute_error_metrics(
         [0.0, 0.25, 0.5, 0.75, 1.0],
     )
     mean = np.mean(errvec)
-    print(f"computing metrics for {subdir}/{trialname}")
-    with open(outname, "w") as outfile:
-        for (name, val) in [("min error", min_error),
-                            ("low quartile", low_quart),
-                            ("median", median),
-                            ("high quartile", high_quart),
-                            ("max error", max_error),
-                            ("mean error", mean)]:
-            output_metric(outfile, name, val)
+    return (min_error, low_quart, median, high_quart, max_error, mean)
 
 
 def rr_numbers() -> Iterable[DeckResults]:
@@ -72,9 +63,17 @@ def rr_numbers() -> Iterable[DeckResults]:
 def compare_metrics() -> None:
     round_robin = deckresults_dict(list(rr_numbers()))
 
+    outfiles = {}
     for (trialdir, trialname, results) in trial_iterator():
+        try:
+            out = outfiles[trialdir]
+        except KeyError:
+            out = open(f"{trialdir}_results.txt", "w")
+            out.write("# min error, low quartile, median, high quartile, max error, mean error\n")
         results = list(results)
-        compute_error_metrics(trialdir, trialname, results, round_robin)
+        for metric in compute_error_metrics(trialdir, trialname, results, round_robin):
+            out.write(f"{metric}, ")
+        out.write("\n")
 
 
 if __name__ == "__main__":
