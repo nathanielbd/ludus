@@ -44,7 +44,7 @@
 % or commands are allowed.
 % Keep the /TemplateVersion tag as is
 \pdfinfo{
-/Title (Finding the Balance: An Exploration of Metrics to Design Balanced Character Stats in Auto Battler Games)
+/Title (Ludus: An Optimization Framework to Balance Auto Battler Cards)
 /Author (Nathaniel Budijono, Phoebe Goldman, Jack Maloney, Joseph B. Mueller, Phillip Walker, Jack Ladwig, Richard G. Freedman)
 /TemplateVersion (2022.1)
 }
@@ -158,7 +158,8 @@
 % directly follow a colon or long dash
 %\iffalse
 %Example, Multiple Authors, ->> remove \iffalse,\fi and place them surrounding AAAI title to use it
-\title{Finding the Balance: An Exploration of Metrics to Design Balanced Character Stats in Auto Battler Games}%{My Publication Title --- Multiple Authors}
+\title{{\sc Ludus}: An Optimization Framework to Balance Auto Battler Cards}%{My Publication Title --- Multiple Authors} Framework, No metric exploration, Optimizing (not just balance)
+%%Finding the Balance: An Exploration of Metrics to Design Balanced Character Stats in Auto Battler Games
 \author {
     % Authors
     Nathaniel Budijono\equalcontrib,\textsuperscript{\rm 1}
@@ -173,10 +174,10 @@
     % Affiliations
     \textsuperscript{\rm 1} University of Minnesota Twin Cities\\
     \textsuperscript{\rm 2} New York University\\
-    \textsuperscript{\rm 3} University of Wisconsin Madison\\
+    \textsuperscript{\rm 3} University of Wisconsin-Madison\\
     \textsuperscript{\rm 4} University of Minnesota\\
     \textsuperscript{\rm 5} SIFT\\
-    budijono@affiliation1.com, goldman@affilation2.com, maloney@affiliation1.com, jmueller@sift.net, pwalker@sift.net, jladwig@sift.net, rfreedman@sift.net
+    budij001@umn.edu, phoebe.goldman@nyu.edu, jmaloney3@wisc.edu, jmueller@sift.net, pwalker@sift.net, jladwig@sift.net, rfreedman@sift.net
 }
 %\fi
 
@@ -191,22 +192,20 @@
 \maketitle
 
 \begin{abstract}
-The auto battler is a new video game genre that has been growing in popularity.
-Although the majority of the gameplay is automated via scripted rules, players
-select characters from a pool of options and arrange them on the game board
-before the automation begins.  Like other game formats with many unique components
-that players assemble to customize their content, such as
-trading card games, designers must be careful to balance the components so that
-players feel that there are many reasonable choices of component combinations.
-We developed a framework that combines automated playtesting with global search
-to identify stats for each component that will assist designers in achieving this
-balance.  To guide the global search, we define metrics describing different
-elements of balancing and explore their impacts on the designed game components.
-This work introduces our auto battler game and platform designed for research
-use, describes the framework for balancing the game components used in customized
-content, and provides a preliminary investigation into our exploration of metrics
-and their impacts on various design challenges related to balancing for auto battler games.
+Auto battlers are a recent genre of online deck-building games, where players
+choose and arrange cards that then compete against other players' cards in fully-automated battles. As in other deck-building games, such as trading card games,
+designers must balance the cards to permit a wide variety of
+competitive strategies.
+We present {\sc Ludus}, a framework that combines automated playtesting with global search
+to optimize parameters for each card that will assist designers in balancing
+new content.
+We develop a sampling approach to reduce the playtesting needed during optimization.
+To guide the global search, we define metrics characterizing the health of the
+metagame and explore their impacts on the results of the optimization process.
+Our research focuses on a simplified auto battler game we designed for AI research,
+but our approach is applicable to other auto battler games.
 \end{abstract}
+%Future work: Need to develop AI to play non-auto battler deck-building games in ways representative of the player base.
 
 \noindent Congratulations on having a paper selected for inclusion in an AAAI Press proceedings or technical report! This document details the requirements necessary to get your accepted paper published using PDF\LaTeX{}. If you are using Microsoft Word, instructions are provided in a different document. AAAI Press does not support any other formatting software.
 
