@@ -10,6 +10,7 @@ pathos = "*"
 pytest-timeout = "*"
 pipfile = "*"
 scipy = "*"
+matplotlib = "*"
 
 [dev-packages]
 mypy = "*"

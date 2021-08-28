@@ -10,7 +10,7 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.WARNING)
     sa.log.setLevel(logging.INFO)
     res = sa.optimize(
-        metric=metrics.entropy_metric,
+        metric=metrics.std_dev_metric,
         opt_iters=ITERATIONS,
         group_size=ACCEPTABLE_GROUP_SIZE,
     )

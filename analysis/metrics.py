@@ -3,7 +3,7 @@ from typing import Callable, Dict, Iterable
 from analysis import DeckResults
 import logging
 import math
-
+import numpy as np
 
 log = logging.getLogger(__name__)
 
@@ -92,6 +92,13 @@ def per_card_winrate(
         for payoff in per_card_payoffs
     ) / len(per_card_payoffs)
 
+def std_dev_metric(
+        results: Iterable[DeckResults],
+        *,
+        winrate_key: Callable[[float], float] = lambda n: n,
+        variance_key: Callable[[float], float] = lambda n: n,
+) -> float:
+    return np.std(list(weighted_sum_cards(results, key=winrate_key).values()))
 
 def entropy_metric(
         results: Iterable[DeckResults],
@@ -110,3 +117,4 @@ def entropy_metric(
         entropy -= p * math.log(p)
 
     return entropy
+
