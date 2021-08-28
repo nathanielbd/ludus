@@ -14,6 +14,9 @@ class PainSplitter(Card):
         self.dmg_percent = dmg_percent
         super().__init__(*args, **kwargs)
 
+    def __str__(self) -> str:
+        return f"<PainSplitter({self.dmg_percent}) {self.name} ({self.base_atk}/{self.health})>"
+
     def take_damage(self, monster: Monster, gamestate: GameState, damage: int) -> None:
         if damage > 0 and monster.is_alive():
             friends = [m for m in gamestate.player.monsters

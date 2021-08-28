@@ -10,6 +10,9 @@ class ExplodeOnDeath(Card):
         self.explode_damage = explode_damage
         super().__init__(*args, **kwargs)
 
+    def __str__(self) -> str:
+        return f"<ExplodeOnDeath({self.explode_damage}) {self.name} ({self.base_atk}/{self.health})>"
+
     def on_death(self, monster: Monster, gamestate: GameState) -> None:
         log.info((f"{monster.print_at_game_state(gamestate)} explodes "
                   f"for {self.explode_damage} damage"))

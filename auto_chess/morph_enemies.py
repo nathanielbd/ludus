@@ -14,6 +14,9 @@ class MorphOpponents(Card):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+    def __str__(self) -> str:
+        return f"<MorphOpponents {self.name} ({self.base_atk}/{self.health})>"
+
     def on_game_start(self, monster: Monster, gamestate: GameState) -> None:
         monster["next_to_morph"] = 0   # Always begin with defender as morphing target
 

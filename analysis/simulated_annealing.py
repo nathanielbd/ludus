@@ -1,4 +1,4 @@
-from scipy.optimize import basinhopping
+from scipy.optimize import basinhopping  # type: ignore
 import numpy as np
 import random
 import analysis.sampling as sampling

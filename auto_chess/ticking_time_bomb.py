@@ -17,6 +17,9 @@ class TimeBomb(Card):
         self.detonation_time = detonation_time
         super().__init__(*args, **kwargs)
 
+    def __str__(self) -> str:
+        return f"<TimeBomb({self.detonation_time}) {self.name} ({self.base_atk}/{self.health})>"
+
     def before_combat(self, monster: Monster, gamestate: GameState) -> None:
         """If enough time has elapsed, explode!"""
         if monster["current_time"] > self.detonation_time:

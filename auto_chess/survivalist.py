@@ -12,6 +12,9 @@ class Survivalist(Card):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+    def __str__(self) -> str:
+        return f"<Survivalist {self.name} ({self.base_atk}/{self.health})>"
+
     def on_game_start(self, monster: Monster, game: GameState) -> None:
         monster["atk"] = self.base_atk
         super().on_game_start(monster, game)

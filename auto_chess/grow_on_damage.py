@@ -14,6 +14,9 @@ class GrowOnDamage(Card):
         monster["current_atk"] = self.base_atk
         super().on_game_start(monster, gamestate)
 
+    def __str__(self) -> str:
+        return f"<GrowOndamage({self.atk_per_hit}) {self.name} ({self.base_atk}/{self.health})>"
+
     def current_atk(self, monster: Monster, gamestate: GameState) -> int:
         try:
             return monster["current_atk"]

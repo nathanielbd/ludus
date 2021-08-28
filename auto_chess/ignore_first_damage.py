@@ -18,6 +18,9 @@ class IgnoreFirstDamage(Card):
     def on_game_start(self, monster: Monster, gamestate: GameState) -> None:
         monster["armor_points"] = self.armor_points
 
+    def __str__(self) -> str:
+        return f"<IgnoreFirstdamage({self.armor_points}) {self.name} ({self.base_atk}/{self.health})>"
+
     def take_damage(self, monster: Monster, gamestate: GameState, damage: int) -> None:
         if monster["armor_points"] > 0:
             log.info(f"{monster.print_at_game_state(gamestate)} loses an armor point")

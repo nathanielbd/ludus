@@ -13,6 +13,9 @@ class FriendlyVampire(Card):
         self.heal_amount = heal_amount
         super().__init__(*args, **kwargs)
 
+    def __str__(self) -> str:
+        return f"<FriendlyVampire({self.heal_amount}) {self.name} ({self.base_atk}/{self.health})>"
+
     def before_combat(self, monster: Monster, gamestate: GameState) -> None:
         heal_target = None
         for friend in reversed(gamestate.player.monsters):

@@ -63,8 +63,8 @@ class GameState(NamedTuple):
     
 
     def invert(self) -> 'GameState':
-        assert not self.attacker is None
-        assert not self.defender is None
+        assert self.attacker is not None
+        assert self.defender is not None
         return GameState(self.opponent, self.player, self.defender, self.attacker)
 
 
@@ -92,7 +92,7 @@ class Monster:
         return self._remaining_health > 0
 
     def print_at_game_state(self, game: GameState) -> str:
-        return (f"<monster {self._name} ({self.atk(game)}/{self._remaining_health}) "
+        return (f"<monster {self._name} ({self._remaining_health}) "
                 f": {self._card}>")
 
     # convenience methods which defer to the Card:
@@ -141,7 +141,7 @@ class Card:
         self.health = health
         self.name = name
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"<card {self.name} ({self.base_atk}/{self.health})>"
 
     def __repr__(self):
@@ -462,5 +462,5 @@ def play_auto_chess(
     return _Game(p0_deck, p1_deck).play()
 
 
-def possible_decks(deck_size: int, cards: Sequence[Card]) -> Sequence[Sequence[Card]]:
+def possible_decks(deck_size: int, cards: Sequence[Card]) -> list[Sequence[Card]]:
     return list(itertools.product(cards, repeat=deck_size))

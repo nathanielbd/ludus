@@ -79,18 +79,16 @@ def run_tourney(cards: List[ac.Card], deck_size=3, stages_before_finals=1024) ->
         "running a group tournament between %d decks composed of %d cards",
         len(decks), len(cards),
     )
-    return analysis.round_robin(
-        ac.play_auto_chess,
-        decks,
-        multiprocess=True,
-    )
-    # return sampling.group_tournament(
+    # return analysis.round_robin(
     #     ac.play_auto_chess,
     #     decks,
-    #     # large number; we'll cut to finals as soon as enough decks
-    #     # are eliminated
-    #     stages_before_finals=stages_before_finals,
+    #     multiprocess=True,
     # )
+    return sampling.group_tournament(
+        ac.play_auto_chess,
+        list(decks),
+        group_size = 64,
+    )
 
 
 if __name__ == "__main__":

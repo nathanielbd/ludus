@@ -16,6 +16,9 @@ class RampAge(Card):
         self.middle_age = middle_age
         super().__init__(*args, **kwargs)
 
+    def __str__(self) -> str:
+        return f"<RampAge({self.middle_age}) {self.name} ({self.base_atk}/{self.health})>"
+
     def on_game_start(self, monster: Monster, gamestate: GameState) -> None:
         monster["current_age"] = 0
         super().on_game_start(monster, gamestate)

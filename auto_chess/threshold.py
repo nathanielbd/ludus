@@ -17,6 +17,9 @@ class ThreshOld(Card):
         self.target_age = target_age
         super().__init__(*args, **kwargs)
 
+    def __str__(self) -> str:
+        return f"<ThreshOld({self.target_age}) {self.name} ({self.base_atk}/{self.health})>"
+
     def on_game_start(self, monster: Monster, gamestate: GameState) -> None:
         monster["current_age"] = 0
         super().on_game_start(monster, gamestate)
