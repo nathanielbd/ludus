@@ -48,7 +48,8 @@ if __name__ == "__main__":
     log.setLevel(logging.INFO)
     ac.log.setLevel(logging.DEBUG)
 
-    game = ac.play_auto_chess([tourney.SURVIVALIST, tourney.PAINSPLITTER, tourney.EXPLODE_ON_DEATH], [tourney.SURVIVALIST, tourney.PAINSPLITTER, tourney.EXPLODE_ON_DEATH])
+    # tourney.PAINSPLITTER.dmg_percent = 10
+    game = ac.play_auto_chess([tourney.PAINSPLITTER, tourney.BRUISER, tourney.EXPLODE_ON_DEATH], [tourney.PAINSPLITTER, tourney.BRUISER, tourney.EXPLODE_ON_DEATH])
     print(game)
 
-    # compare_sampling(tourney.ALL_CARDS)
+    # compare_sampling(tourney.ALL_CARDS)``
