@@ -87,7 +87,7 @@ def opt_fun(
         group_size=group_size
     )
     score = metric(results)
-    log.info("metric evaluated to %d (negating before returning)", score)
+    log.info(f"metric evaluated to {score} (negating before returning)")
     return -score
 
 
