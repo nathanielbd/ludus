@@ -105,13 +105,17 @@ def _collect_finished_jobs(
         j = job.j
 
         if i == j:
-            assert payoffs.p0_payoff == payoffs.p1_payoff, \
-                f"""mismatched payoffs {payoffs.p0_payoff}, {payoffs.p1_payoff}
-    in mirror match at ({i}, {j})
-    between {job.deck_i} and {job.deck_j}"""
-
-        matrix[i, j] = payoffs.p0_payoff
-        matrix[j, i] = payoffs.p1_payoff
+            if payoffs.p0_payoff != payoffs.p1_payoff:
+                log.error(
+                    "mismatched payoffs %d, %d in mirror match at (%d, %d) between %s, %s",
+                    payoffs.p0_payoff, payoffs.p1_payoff,
+                    i, j,
+                    job.deck_i, job.deck_j,
+                )
+            matrix[i, j] = 0
+        else:
+            matrix[i, j] = payoffs.p0_payoff
+            matrix[j, i] = payoffs.p1_payoff
 
     return matrix
 
