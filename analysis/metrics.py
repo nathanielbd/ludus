@@ -60,10 +60,13 @@ def weighted_sum_cards(
     """Returns a mapping from cards to the average winrate of decks they appear in"""
     # sums maps cards to the total winrates of all the decks they appear in
     sums: dict[Card, float] = dict()
-    count = 0
+    counts: dict[Card, int] = dict()
     for result in results:
-        count += 1
         for card in result.deck:
+            try:
+                counts[card] += 1
+            except KeyError:
+                counts[card] = 1
             try:
                 prev = sums[card]
             except KeyError:
@@ -73,7 +76,7 @@ def weighted_sum_cards(
     # weights normalizes sums to be in the range 0..=1
     weights = dict()
     for card, winsum in sums.items():
-        weights[card] = winsum / count
+        weights[card] = winsum / counts[card]
     return weights
 
 
