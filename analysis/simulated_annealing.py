@@ -87,8 +87,8 @@ def opt_fun(
         group_size=group_size
     )
     score = metric(results)
-    log.info(f"metric evaluated to {score} (negating before returning)")
-    return -score
+    log.info(f"metric evaluated to {score}")
+    return score
 
 
 class StepIntegers:
