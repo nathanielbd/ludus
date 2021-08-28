@@ -112,7 +112,6 @@ def show_minima(x):
 def optimize(metric, opt_iters, group_size, num_decks=None):
     res = minimize(partial(opt_fun, metric, group_size, num_decks),
                    [1, 1, 1, 1, 5, 1, 5, 4, 4, 10],
-                   niter=opt_iters,
                    options={
                        "eps": 1,
                    },
