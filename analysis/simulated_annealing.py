@@ -114,7 +114,7 @@ def optimize(metric, opt_iters, group_size, num_decks=None):
                    [1, 1, 1, 1, 5, 1, 5, 4, 4, 10],
                    niter=opt_iters,
                    options={
-                       eps: 1,
+                       "eps": 1,
                    },
                    callback=show_minima,
                    )
