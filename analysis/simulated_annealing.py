@@ -1,4 +1,4 @@
-from scipy.optimize import basinhopping  # type: ignore
+from scipy.optimize import minimize  # type: ignore
 import numpy as np
 import random
 import analysis.sampling as sampling
@@ -105,20 +105,18 @@ class StepIntegers:
 step_integers = StepIntegers()
 
 
-def show_minima(x, f, accepted):
-    log.info(f"found minimum at {x} with value {f}; accepted: {accepted}")
+def show_minima(x):
+    log.info(f"found minimum at {x}")
 
 
 def optimize(metric, opt_iters, group_size, num_decks=None):
-    res = basinhopping(partial(opt_fun, metric, group_size, num_decks),
-                        [1, 1, 1, 1, 5, 1, 5, 4, 4, 10],
-                        # minimizer_kwargs={'method': 'L-BFGS-B', 'jac': True},
-                        # minimizer_kwargs={'method': 'Nelder-Mead'},
-                        niter=opt_iters,
-                        disp=True,
-                        seed=42,
-                        take_step=step_integers,
-                        callback=show_minima
-                        )
+    res = minimize(partial(opt_fun, metric, group_size, num_decks),
+                   [1, 1, 1, 1, 5, 1, 5, 4, 4, 10],
+                   niter=opt_iters,
+                   options={
+                       eps: 1,
+                   },
+                   callback=show_minima,
+                   )
     log.info(res.lowest_optimization_result)
     return res
