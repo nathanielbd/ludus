@@ -3,3 +3,5 @@
 **/*.log
 **/*#*
 .pytest_cache/
+paper/submission_version/eaai22_bgmmwlf.pdf
+paper/submission_version/eaai22_bgmmwlf.aux
