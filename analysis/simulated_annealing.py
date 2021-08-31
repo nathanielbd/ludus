@@ -109,10 +109,10 @@ def show_minima(x):
     log.info(f"found minimum at {x}")
 
 
-def optimize(metric, opt_iters, group_size, num_decks=None):
+def optimize(metric, opt_iters, group_size, num_decks=None, initval=([5] * 10)):
     res = minimize(
         partial(opt_fun, metric, group_size, num_decks),
-        [1, 1, 1, 1, 5, 1, 5, 4, 4, 10],
+        initval,
         bounds=[(1, 10)] * 10,
         options={
             "eps": 1,
