@@ -1,0 +1,65 @@
+% shall we have a discussion section after methods and results?
+% Discussion
+% 	- possibility of using the "domination graph" as data,
+% 	where decks are nodes and win rates are the directed
+% 	edges
+% 	- since we operate on discrete distributions, if you
+% 	know your "ideal" distribution, you could use the 
+% 	Wasserstein-1 metric as your loss function for
+% 	optimization
+% 	- there is some correlation in the win rate dictionary
+% 	distribution, as cards appear alongside other cards
+
+% a section to describe the engine itself?
+
+\subsection{Metrics}
+
+We first describe the quantitative measures of metagame health 
+in this section. Playtesting outputs a data vector $v$.
+Each entry $v_i \in [-1, 1]$ represents the average payoff of
+the deck at index $i$ during the last round of playtesting in
+the optimization process. A payoff of 1 indicates a win. A
+payoff of 0 means a tie, and a loss results in a payoff of -1.
+
+We then process $v$ into a dictionary which maps a card to the
+average win rate of the decks in which the card appears. This
+dictionary may be described as a vector $w$ where each entry 
+$w_j \in [0, 1], 1 \leq j \leq n$ is the average win rate of the decks in which
+the card at index $j$ appears. We present three metrics that 
+use this distribution of win rates among the cards.
+
+% what to add?
+% whether to minimize or maximize
+% some intuition
+
+\subsubsection{Per-card payoff}
+
+\begin{equation}
+	\mathrm{PCP} = \frac{1}{n} \sum_j \left|\mathrm{payoff}(w_j)\right|
+\end{equation}
+
+\subsubsection{Standard deviation metric}
+
+\begin{equation}
+	\mathrm{SDM} = \sqrt{\frac{1}{n} \sum_j \left|w_j - \left(\frac{1}{n}\sum_j w_j\right)\right|^2}
+\end{equation}
+
+Standard deviation of the win rates is a metric we may seek to minimize.
+
+\subsubsection{Entropy metric}
+
+\begin{equation}
+	\mathrm{EM} = -\sum_j \frac{w_j}{\sum_j w_j} \log\left(\frac{w_j}{\sum_j w_j}\right)
+\end{equation}
+
+\subsection{Optimization}
+
+We use the L-BFGS-B optimization algorithm included in SciPy. This will attempt to find the optimal values of 
+parameters, which may include the health points, attack points, and stats pertaining to a 
+card's special ability.
+
+\subsection{Experiments}
+
+\subsubsection{Group versus round-robin tournament}
+
+\subsubsection{Metrics comparison}
