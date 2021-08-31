@@ -1,16 +1,10 @@
 #!env sh
 
 status=0
+failures=""
 
-message() {
-    echo ""
-    echo "$1"
-    echo "--------------------------------------------------------------------------------"
-    echo ""
-}
-
-emessage() {
-    message "$1" >&2
+errecho() {
+    echo "$1" >&2
 }
 
 run_with_log() {
@@ -19,25 +13,34 @@ run_with_log() {
     logfile="${program}.log"
     cmd="${program} ${args}"
 
-    message "running ${cmd}"
+    echo ""
+    echo "running ${cmd}"
+
+    ${cmd} 2>&1 > ${logfile}
+    res=$?
     
-    if ${cmd} 2>&1 | tee ${logfile}; then
+    if [ ${res} -eq 0 ]; then
         rm ${logfile}
     else
-        status=$?
-        exho
-        emessage "${cmd} failed with code ${status}. see ${logfile} for details"
+        status=${res}
+        errecho "${cmd} failed with code ${status}. see ${logfile} for details"
+        failures="${program} ${failures}"
+        errecho ""
+        errecho "${logfile}:"
+        errecho "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+        cat "${logfile}" >&2
+        errecho "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
     fi
 }
 
 run_with_log mypy
-run_with_log pytest
-run_with_log flake8 --count
+run_with_log pytest "--log-level info"
+run_with_log flake8
 
 if [ ${status} -ne 0 ]; then
-    emessage "something failed! please fix it before committing"
+    errecho "${failures}failed! please fix before committing"
 else
-    message "looks good! go ahead and commit"
+    echo "looks good! go ahead and commit"
 fi
 
 exit ${status}

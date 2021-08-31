@@ -2,9 +2,13 @@ import numpy as np
 import pathos.multiprocessing as mproc  # type: ignore
 import itertools
 from typing import Callable, Sequence, TypeVar, Iterable, NamedTuple, Any
+import logging
 
 
 Deck = TypeVar("Deck")
+
+
+log = logging.getLogger(__name__)
 
 
 # each Job stores the indices with which it corresponds in the payoff
@@ -24,6 +28,14 @@ class Job(NamedTuple):
     deck_i: Any
     j: int
     deck_j: Any
+
+
+class DeckResults(NamedTuple):
+    deck: Any
+    avg_payoff: float
+
+    def __str__(self) -> str:
+        return f"DeckResults({self.deck}, {self.avg_payoff})"
 
 
 class GamePayoffs(NamedTuple):
@@ -93,13 +105,17 @@ def _collect_finished_jobs(
         j = job.j
 
         if i == j:
-            assert payoffs.p0_payoff == payoffs.p1_payoff, \
-                f"""mismatched payoffs {payoffs.p0_payoff}, {payoffs.p1_payoff}
-    in mirror match at ({i}, {j})
-    between {job.deck_i} and {job.deck_j}"""
-
-        matrix[i, j] = payoffs.p0_payoff
-        matrix[j, i] = payoffs.p1_payoff
+            if payoffs.p0_payoff != payoffs.p1_payoff:
+                log.error(
+                    "mismatched payoffs %d, %d in mirror match at (%d, %d) between %s, %s",
+                    payoffs.p0_payoff, payoffs.p1_payoff,
+                    i, j,
+                    job.deck_i, job.deck_j,
+                )
+            matrix[i, j] = 0
+        else:
+            matrix[i, j] = payoffs.p0_payoff
+            matrix[j, i] = payoffs.p1_payoff
 
     return matrix
 
@@ -111,13 +127,12 @@ def _runner_fn(multiprocess: bool) -> RunnerFn:
         return _run_sequentially
 
 
-def analytic_pareto(
+def round_robin(
         payoff_fn: PayoffFn,
         decks: Sequence[Deck],
         *,
-        threshold: float = 0,
         multiprocess: bool = False,
-) -> list[Deck]:
+) -> Iterable[DeckResults]:
     """Compute and return the Pareto optimal frontier among the decks.
 
     payoff_fn should be a function from two decks, d0 and d1, which
@@ -128,10 +143,6 @@ def analytic_pareto(
     GamePayoffs.zero_sum_payoff in their payoff functions to return a
     value.
 
-    If threshold is provided, it should be a non-negative real
-    number. Any deck whose total payoff is within threshold of the
-    optimum will be treated as optimal.
-
     If multiprocess is provided and True, payoff_fn will be evaluated
     in parallel using multiple processes. If multiprocess is False or
     unspecified, payoff_fn will be evaluated sequentially within the
@@ -140,6 +151,12 @@ def analytic_pareto(
     """
     n_decks = len(decks)
     payoffs = np.empty((n_decks, n_decks))
+
+    log.info(
+        "this tournament is %d matches",
+        # (n_decks choose 2) + n_decks
+        (n_decks * (n_decks - 1)) // 2 + n_decks,
+    )
 
     payoffs = _collect_finished_jobs(
         payoffs,
@@ -151,10 +168,7 @@ def analytic_pareto(
 
     payoff_avgs = np.mean(payoffs, axis=1, dtype=np.float64)
 
-    best = np.amax(payoff_avgs)
-
-    return [
-        deck for (deck, payoff)
+    return (
+        DeckResults(deck, payoff) for (deck, payoff)
         in zip(decks, payoff_avgs)
-        if abs(best - payoff) <= threshold
-    ]
+    )
