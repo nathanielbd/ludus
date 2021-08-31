@@ -61,16 +61,32 @@ def build_cards(
         TimeBomb(1, 8, "time bomb", detonation_time = detonation_time)
     ]
 
+def cards_with_atkhp(
+        surv_atk, surv_hp,
+        morph_atk, morph_hp,
+        armor_atk, armor_hp, armor_points,
+        bomb_atk, bomb_hp, explode_damage,
+        vanilla_atk, vanilla_hp,
+) -> list[ac.Card]:
+    return [
+        Survivalist(surv_atk, surv_hp, "coward"),
+        MorphOpponents(morph_atk, morph_hp, "morph ball"),
+        IgnoreFirstDamage(armor_atk, armor_hp, "armor", armor_points = armor_points),
+        ExplodeOnDeath(bomb_atk, bomb_hp, "volatile", explode_damage = explode_damage),
+        ac.Card(vanilla_atk, vanilla_hp, "vanilla")
+    ]
+
 # try only perturbing the mechanic stats
 # if no curse of dimensionality, try perturbing hp/atk too
 def opt_fun(
         metric: Callable[[Iterable[DeckResults]], float],
+        build_cards_fn: Callable,
         group_size: int,
         num_decks: Optional[int],
         x0: list[int],
 ) -> float:
     log.info("chosen params for this run are %s", x0)
-    cards = build_cards(*x0)
+    cards = build_cards_fn(*x0)
 
     decks = ac.possible_decks(3, cards)
 
@@ -91,6 +107,7 @@ def opt_fun(
     return score
 
 
+
 class StepIntegers:
     def __init__(self, stepsize=20):
         self.stepsize = stepsize
@@ -109,9 +126,9 @@ def show_minima(x):
     log.info(f"found minimum at {x}")
 
 
-def optimize(metric, opt_iters, group_size, num_decks=None, initval=([5] * 10)):
+def optimize(metric, group_size, initval, build_cards_fn, num_decks=None):
     res = minimize(
-        partial(opt_fun, metric, group_size, num_decks),
+        partial(opt_fun, build_cards_fn, metric, group_size, num_decks),
         initval,
         bounds=[(1, 10)] * 10,
         options={
