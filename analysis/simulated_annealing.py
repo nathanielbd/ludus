@@ -110,13 +110,13 @@ def show_minima(x):
 
 
 def optimize(metric, opt_iters, group_size, num_decks=None):
-    res = minimize(partial(opt_fun, metric, group_size, num_decks),
-                   [1, 1, 1, 1, 5, 1, 5, 4, 4, 10],
-                   bounds=[(1, 10)] * 10,
-                   options={
-                       "eps": 1,
-                   },
-                   callback=show_minima,
-                   )
-    log.info(res.lowest_optimization_result)
+    res = minimize(
+        partial(opt_fun, metric, group_size, num_decks),
+        [1, 1, 1, 1, 5, 1, 5, 4, 4, 10],
+        bounds=[(1, 10)] * 10,
+        options={
+            "eps": 1,
+        },
+    )
+    log.info(f"found minumum {res.x} after {res.nit} iterations; {res}")
     return res
