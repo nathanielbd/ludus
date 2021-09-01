@@ -63,10 +63,10 @@ def vanilla_cards_expt():
 
 
 EXPERIMENTS = (
-    (optimize_five_atkhp, "optimize_five_atkhp"),
-    (lambda: optimize_five_atkhp(initval=1), "optimize_five_start_at_one"),
-    (set_rotation, "set_rotation"),
     (vanilla_cards_expt, "vanilla_cards"),
+    (optimize_five_atkhp, "optimize_five_atkhp"),
+    (set_rotation, "set_rotation"),
+    (lambda: optimize_five_atkhp(initval=1), "optimize_five_start_at_one"),
 
     # leave this last!
     (round_robin_optimize, "round_robin_optimize"),
