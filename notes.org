@@ -1,0 +1,43 @@
+* data to collect
+** TODO set of cards
+** TODO number of turns in game
+** TODO set of surviving cards
+   and their stats at the end of the game
+** TODO turn number for each monster to die
+* ways of computing metrics to compare
+** TODO frontier only
+** TODO weighted by win rate
+** TODO weighted by win rate squared
+* experiments to do
+** TODO test convergence of win rate in sampling approach vs overall
+* group vs rr
+** error metrics
+*** mean squared error?
+*** mean error
+*** median error
+*** quartile errors
+*** min error, max error
+** error in our normal metrics
+** euclidean distance
+** results table
+   | group size |              min error |    low quartile error |         median error |  high quartile error |           max error |           mean error | euclidean distance |
+   |------------+------------------------+-----------------------+----------------------+----------------------+---------------------+----------------------+--------------------|
+   |          1 |  0.0002962962962962963 |   0.17007407407407407 |  0.36414814814814817 |   0.5517037037037037 |  0.9804444444444445 |   0.3763458106995885 |  25.83313528812976 |
+   |          2 | 0.00012037037037036791 |   0.09393518518518518 |  0.19250925925925927 |  0.29662962962962963 |  0.6200648148148148 |  0.20348085596707818 | 14.048376829594806 |
+   |          4 |  4.629629629632204e-06 |  0.051018518518518526 |  0.10547222222222219 |  0.16744444444444445 | 0.47035648148148146 |  0.11518004115226338 |  8.044042953047825 |
+   |          8 |  6.944444444434428e-06 |  0.030237268518518517 |  0.06178935185185186 |  0.09954745370370371 |  0.2776990740740741 |   0.0691778945718205 |  4.880107028224922 |
+   |         16 |  8.101851851849418e-06 |  0.019090277777777775 |  0.03842361111111109 |  0.06383391203703706 |  0.2556921296296296 | 0.044535231138545954 | 3.1984305794199495 |
+   |         32 | 1.6782407407434086e-05 |  0.011780960648148153 |  0.02524074074074073 |  0.04301504629629631 |         0.161390625 | 0.029920159465020576 |  2.186862690702724 |
+   |         64 |  7.812500000009548e-06 |  0.008411658417060694 | 0.017538175975177303 | 0.030239149305555574 | 0.10868071562253742 |  0.02119448584478884 |  1.564625039444849 |
+   |        128 | 1.1580230496466282e-05 |  0.006108417676319949 | 0.012973958333333369 |  0.02274992766203701 | 0.08486935763888889 | 0.015858311856083822 | 1.1714794828528157 |
+   |        256 | 1.3093171296295336e-05 |  0.004497714428191496 | 0.010135271990740768 |  0.01828580729166665 |      0.074021484375 | 0.012804660324183521 | 0.9751273306155407 |
+   |        512 |  9.733395214261975e-07 | 0.0035327089349560144 | 0.007749231140561974 | 0.014430991373876961 | 0.06612803640390083 |   0.0105809840477682 | 0.8377999691349421 |
+   |       1024 |  2.805781880166336e-06 | 0.0026037514395970407 | 0.005933013434807011 | 0.011832934758319574 | 0.05887509668935642 | 0.008911270004961528 | 0.7379315752798924 |
+** TODO average together as late as possible in the process
+*** for each trial, compute its error vector compared to the round robin control
+*** for each of those error vectors, compute its min/low quart/median/high quart/max and mean errors
+*** output those six numbers per trial
+* experiments
+** run simulated annealing with round robin tourneys
+** compare to simulated annealing with group tourneys
+** run multiple simulated annealing runs with group tourneys, compare their outcomes
