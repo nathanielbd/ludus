@@ -2,6 +2,7 @@ import analysis.simulated_annealing as sa
 import analysis.metrics as metrics
 import logging
 import pickle
+import auto_chess as ac
 
 
 log = logging.getLogger(__name__)
