@@ -67,7 +67,7 @@ def vanilla_cards_expt():
 
 
 EXPERIMENTS = (
-    # (vanilla_cards_expt, "vanilla_cards"),
+    (vanilla_cards_expt, "vanilla_cards"),
     (optimize_five_atkhp, "optimize_five_atkhp"),
     (set_rotation, "set_rotation"),
     (lambda: optimize_five_atkhp(initval=1), "optimize_five_start_at_one"),
@@ -81,6 +81,7 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.WARNING)
     sa.log.setLevel(logging.INFO)
     for (experiment, name) in EXPERIMENTS:
+        log.info("running experiment %s\n\n", name)
         outfile = f"{name}.txt"
         picklefile = f"{name}.pickle"
         logging.basicConfig(filename=outfile)
