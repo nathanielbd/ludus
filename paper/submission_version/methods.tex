@@ -11,31 +11,40 @@
 % 	distribution, as cards appear alongside other cards
 
 % a section to describe the engine itself?
+\subsection{Playtesting simulation}
+
+
 
 \subsection{Metrics}
 
-We first describe the quantitative measures of metagame health 
-in this section. Playtesting outputs a data vector $v$.
+% can instead just reiterate motivation
+We first describe the quantitative measures of metagame health. 
+Playtesting outputs a data vector $v$.
 Each entry $v_i \in [-1, 1]$ represents the average payoff of
 the deck at index $i$ during the last round of playtesting in
 the optimization process. A payoff of 1 indicates a win. A
 payoff of 0 means a tie, and a loss results in a payoff of -1.
+% additional sentence to clarify that the vector is averaged
 
-We then process $v$ into a dictionary which maps a card to the
+% explicitly say that n is the length of w in its own sentence
+% use d instead of n as it is the number of decks
+% avoid using the word dictionary -- just stick to vector only
+We then transform $v$ into another vector which maps a card to the
 average win rate of the decks in which the card appears. This
-dictionary may be described as a vector $w$ where each entry 
-$w_j \in [0, 1], 1 \leq j \leq n$ is the average win rate of the decks in which
+vector $w$ has entries
+$w_j \in [0, 1], 1 \leq j \leq n$, the average win rate of the decks in which
 the card at index $j$ appears. We present three metrics that 
 use this distribution of win rates among the cards.
 
 % what to add?
 % whether to minimize or maximize
 % some intuition
+% run Jack's `plot.py` script
 
 \subsubsection{Per-card payoff}
 
 \begin{equation}
-	\mathrm{PCP} = \frac{1}{n} \sum_j \left|\mathrm{payoff}(w_j)\right|
+	\mathrm{PCP} = \frac{1}{n} \sum_j \left|\mathrm{payoff}(w_j)\right|^2
 \end{equation}
 
 \subsubsection{Standard deviation metric}
