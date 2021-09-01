@@ -76,6 +76,22 @@ def cards_with_atkhp(
         ac.Card(vanilla_atk, vanilla_hp, "vanilla")
     ]
 
+
+def other_cards_with_atkhp(
+        vamp_atk, vamp_hp, heal_amount,
+        grow_atk, grow_hp, atk_per_hit,
+        cleric_atk, cleric_hp, explode_heal,
+        ramp_atk, ramp_hp, middle_age,
+        vanilla_atk, vanilla_hp,
+):
+    return [
+        FriendlyVampire(vamp_atk, vamp_hp, "friendly vampire", heal_amount = heal_amount),
+        GrowOnDamage(grow_atk, grow_hp, "bezerker", atk_per_hit = atk_per_hit),
+        HealOnDeath(cleric_atk, cleric_hp, "suicidal cleric", explode_heal = explode_heal),
+        RampAge(ramp_atk, ramp_hp, "old fogey", middle_age = 4),
+        ac.Card(vanilla_atk, vanilla_hp, "vanilla 2")
+    ]
+
 # try only perturbing the mechanic stats
 # if no curse of dimensionality, try perturbing hp/atk too
 def opt_fun(
