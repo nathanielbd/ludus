@@ -3,6 +3,8 @@ import analysis.metrics as metrics
 import logging
 import pickle
 
+log = logging.getLogger(__name__)
+
 ACCEPTABLE_GROUP_SIZE = 256
 ITERATIONS = 128
 
