@@ -79,6 +79,7 @@ EXPERIMENTS = (
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.WARNING)
+    log.setLevel(logging.INFO)
     sa.log.setLevel(logging.INFO)
     for (experiment, name) in EXPERIMENTS:
         log.info("running experiment %s\n\n", name)
