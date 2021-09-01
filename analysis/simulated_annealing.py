@@ -10,6 +10,19 @@ import auto_chess as ac
 
 from functools import partial
 
+from auto_chess.explode_on_death import ExplodeOnDeath
+from auto_chess.friendly_vampire import FriendlyVampire
+from auto_chess.grow_on_damage import GrowOnDamage
+from auto_chess.heal_allies_on_death import HealOnDeath
+from auto_chess.healthdonor import HealthDonor
+from auto_chess.ignore_first_damage import IgnoreFirstDamage
+from auto_chess.morph_enemies import MorphOpponents
+from auto_chess.painsplitter import PainSplitter
+from auto_chess.rampage import RampAge
+from auto_chess.survivalist import Survivalist
+from auto_chess.threshold import ThreshOld
+from auto_chess.ticking_time_bomb import TimeBomb
+
 
 import logging
 
@@ -29,19 +42,6 @@ def build_cards(
         target_age: int,
         detonation_time: int,
 ) -> list[ac.Card]:
-    from auto_chess.explode_on_death import ExplodeOnDeath
-    from auto_chess.friendly_vampire import FriendlyVampire
-    from auto_chess.grow_on_damage import GrowOnDamage
-    from auto_chess.heal_allies_on_death import HealOnDeath
-    from auto_chess.healthdonor import HealthDonor
-    from auto_chess.ignore_first_damage import IgnoreFirstDamage
-    from auto_chess.morph_enemies import MorphOpponents
-    from auto_chess.painsplitter import PainSplitter
-    from auto_chess.rampage import RampAge
-    from auto_chess.survivalist import Survivalist
-    from auto_chess.threshold import ThreshOld
-    from auto_chess.ticking_time_bomb import TimeBomb
-
     # improve smoothness of function by decreasing the percent magnitudes
     heal_percent *= 10
     dmg_percent *= 10

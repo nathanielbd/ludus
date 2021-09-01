@@ -67,7 +67,7 @@ def vanilla_cards_expt():
 
 
 EXPERIMENTS = (
-    (vanilla_cards_expt, "vanilla_cards"),
+    # (vanilla_cards_expt, "vanilla_cards"),
     (optimize_five_atkhp, "optimize_five_atkhp"),
     (set_rotation, "set_rotation"),
     (lambda: optimize_five_atkhp(initval=1), "optimize_five_start_at_one"),
