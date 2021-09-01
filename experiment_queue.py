@@ -4,6 +4,9 @@ import logging
 import pickle
 
 
+log = logging.getLogger(__name__)
+
+
 GROUP_SIZE = 256
 
 
