@@ -143,8 +143,16 @@ def show_minima(x):
 
 
 def optimize(metric, group_size, initval, build_cards_fn, num_decks=None):
+    def step(x):
+        return opt_fun(
+            metric=metric,
+            build_cards_fn=build_cards_fn,
+            group_size=group_size,
+            num_decks=num_decks,
+            x0=x,
+        )
     res = minimize(
-        partial(opt_fun, build_cards_fn, metric, group_size, num_decks),
+        step,
         initval,
         bounds=[(1, 10)] * len(initval),
         options={
