@@ -146,7 +146,7 @@ def optimize(metric, group_size, initval, build_cards_fn, num_decks=None):
     res = minimize(
         partial(opt_fun, build_cards_fn, metric, group_size, num_decks),
         initval,
-        bounds=[(1, 10)] * 10,
+        bounds=[(1, 10)] * len(initval),
         options={
             "eps": 1,
         },
