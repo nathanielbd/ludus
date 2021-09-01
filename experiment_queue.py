@@ -33,7 +33,7 @@ def set_rotation():
         first_set_res = pickle.load(picklein)
     first_set_vector = first_set_res.x
     first_set = sa.cards_with_atkhp(*first_set_vector)
-    def set_two_cards(stats):
+    def set_two_cards(*stats):
         return first_set + sa.other_cards_with_atkhp(*stats)
     return sa.optimize(
         metric=metrics.std_dev_metric,
