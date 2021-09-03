@@ -11,6 +11,7 @@ pytest-timeout = "*"
 pipfile = "*"
 scipy = "*"
 matplotlib = "*"
+pygad = "*"
 
 [dev-packages]
 mypy = "*"

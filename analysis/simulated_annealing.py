@@ -161,3 +161,28 @@ def optimize(metric, group_size, initval, build_cards_fn, num_decks=None):
     )
     log.info(f"found minumum {res.x} after {res.nit} iterations; {res}")
     return res
+
+
+import pygad
+
+
+def genetic_optimize(metric, group_size, num_genes, build_cards_fn, num_decks=None):
+    def fitness_func(params, idx):
+        return -opt_fun(metric, build_cards_fn, group_size, num_decks, params)
+    ga = pygad.GA(
+        num_generations=128,
+        num_parents_mating=8,
+        # num_generations=1,
+        # num_parents_mating=2,
+        fitness_func=fitness_func,
+        sol_per_pop=16,
+        # sol_per_pop=4,
+        num_genes=num_genes,
+        gene_type=int,
+        init_range_low=1,
+        init_range_high=10
+    )
+    ga.run()
+    sol, sol_fitness, sol_idx = ga.best_solution()
+    log.info(f'found minimum {sol} with fitness {sol_fitness} at index {sol_idx}')
+    return sol
