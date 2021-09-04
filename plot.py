@@ -6,6 +6,7 @@ import run_tournament as tourney
 import analysis.metrics as metrics
 import numpy as np
 import matplotlib.pyplot as plt
+import pickle
 
 log = logging.getLogger(__name__)
 
@@ -22,6 +23,11 @@ def run_group(cards):
 if __name__ == "__main__":
     logging.basicConfig(level=logging.WARNING)
     log.setLevel(logging.WARNING)
+
+    with open("group_size_256/trial_0", "rb") as picklein:
+        print(pickle.load(picklein))
+
+    exit(0)
 
     base_cards = [tourney.BEAR, tourney.TANK, tourney.BRUISER, tourney.EXPLODE_ON_DEATH, tourney.RAMPAGE, tourney.FRIENDLY_VAMPIRE]
 
