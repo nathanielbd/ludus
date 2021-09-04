@@ -11,35 +11,45 @@ log = logging.getLogger(__name__)
 GROUP_SIZE = 256
 
 
-def optimize_five_atkhp(initval=5):
-    return sa.optimize(
+def optimize_rand_atkhp():
+    return sa.genetic_optimize(
         metric=metrics.std_dev_metric,
         group_size=GROUP_SIZE,
-        initval=[initval] * 12,
-        build_cards_fn=sa.cards_with_atkhp,
+        num_genes=12,
+        build_cards_fn=sa.cards_with_atkhp
+    )
+
+
+def only_special_opt():
+    return sa.genetic_optimize(
+        metric=metrics.std_dev_metric,
+        group_size=GROUP_SIZE,
+        num_genes=10,
+        build_cards_fn=sa.build_cards
     )
 
 
 def round_robin_optimize():
-    return sa.optimize(
+    return sa.genetic_optimize(
         metric=metrics.std_dev_metric,
         group_size=2000,
-        initval=[5] * 10,
-        build_cards_fn=sa.build_cards,
+        num_genes=10,
+        build_cards_fn=sa.build_cards
     )
+
 
 def set_rotation():
     with open("optimize_five_atkhp.pickle", "rb") as picklein:
         first_set_res = pickle.load(picklein)
-    first_set_vector = first_set_res.x
+    first_set_vector = first_set_res
     first_set = sa.cards_with_atkhp(*first_set_vector)
     def set_two_cards(*stats):
         return first_set + sa.other_cards_with_atkhp(*stats)
-    return sa.optimize(
+    return sa.genetic_optimize(
         metric=metrics.std_dev_metric,
         group_size=GROUP_SIZE,
-        initval=[5] * 14,
-        build_cards_fn=set_two_cards,
+        num_genes=14,
+        build_cards_fn=set_two_cards
     )
 
 
@@ -58,19 +68,20 @@ def vanilla_cards(
 
 
 def vanilla_cards_expt():
-    return sa.optimize(
+    return sa.genetic_optimize(
         metric=metrics.std_dev_metric,
         group_size=GROUP_SIZE,
-        initval=[1, 8, 3, 6, 5, 4, 7, 2],
-        build_cards_fn=vanilla_cards,
-)
+        num_genes=8,
+        build_cards_fn=vanilla_cards
+    )
 
 
 EXPERIMENTS = (
+    (only_special_opt, "only_special")
     (vanilla_cards_expt, "vanilla_cards"),
-    (optimize_five_atkhp, "optimize_five_atkhp"),
     (set_rotation, "set_rotation"),
-    (lambda: optimize_five_atkhp(initval=1), "optimize_five_start_at_one"),
+    (optimize_rand_atkhp, "optimize_rand_atkhp"),
+    (optimize_rand_atkhp, "optimize_rand_atkhp_again"),
 
     # leave this last!
     (round_robin_optimize, "round_robin_optimize"),

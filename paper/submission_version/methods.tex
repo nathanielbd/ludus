@@ -10,29 +10,97 @@
 % 	- there is some correlation in the win rate dictionary
 % 	distribution, as cards appear alongside other cards
 
-% a section to describe the engine itself?
-\subsection{Playtesting simulation}
+\subsection{Playtesting simulator}
 
+To serve as a data source for quantitative analysis, we create
+a playtesting simulator of a simplified auto battler game. 
+This simulator is designed for research. It allows the user to 
+create cards with new mechanics and run tournaments between
+arbitrary decks. 
 
+Cards have nonnegative integer statistics including health points, 
+attack, and statistics pertaining to a special mechanism. Such statistics
+developed include the following:
+
+\begin{itemize}
+	\item Explosion damage. When the card dies, it damages
+	each of the opponent's cards by this many health points.
+	\item Heal amount. Prior to entering combat, the card 
+	restores this many health points to its player's rightmost
+	card
+	\item Attack growth per hit. When the card takes damage, its
+	attack increases by this many points.
+	\item Explosion heal. When the card dies, it heals
+	each of its player's other cards by this many health points.
+	\item Heal donation percent. When the card would be healed,
+	it instead restores this many percent of the health points
+	to itself and donates the remaining health points to its
+	player's other cards evenly.
+	\item Armor points. The card starts with this many armor points.
+	When the card would be damaged, it instead loses an armor point.
+	When the card has zero armor points, it may be damaged normally.
+	\item Damage split percent. When the card would be damaged,
+	it instead receives this many percent of the damage to itself
+	and splits the remaining damage evenly to its player's other cards.
+	\item Middle age. Prior to entering combat, the card increases its
+	attack by 1 if it has not participated in this many combat phases.
+	After this many combat phases, the card decreases its attack by 1
+	before entering combat.
+	\item Target age. When the card dies, if it participated in this many
+	combat phases, deal this many damage points to each of the opponent's
+	cards. If the card participated in fewer than this many combat phases, 
+	heal each of its player's other cards by health points equal to the
+	number of combat phases in which the card participated.
+	\item Detonation time. When the card has been healed or damaged this
+	many times, the card and its opponent both die.
+\end{itemize}
+
+Other card mechanics without statistics include the ability to copy the 
+attack of the opponent's cards (morphing enemies) and the ability to swap 
+its health points and attack whenever its attack is greater than its health 
+points (survivalist).
+
+For the simulator, gameplay proceeds as follows:
+
+\begin{enumerate}
+	\item Each player in a tournament selects an ordered list
+	of cards to be their deck.
+	\item Prior to combat, the deck is arranged left-to-right.
+	\item Each combat phase pits the leftmost surviving card
+	of each player against each other. The cards take damage by 
+	reducing their health points by their opponent card's attack.
+	Cards with zero or fewer health points are dead. Surviving cards
+	are arranged to be the rightmost card of their respective decks.
+	\item Repeat combat until one or fewer players has a surviving card
+	or the maximum number of combat phases allowed has been reached.
+	If both or neither players a surviving card, the game is a tie.
+	Otherwise, the player with a surviving card wins.
+	\item Proceed with the tournament in a round-robin fashion. Each 
+	player plays a game with each other player once.
+\end{enumerate}
 
 \subsection{Metrics}
 
-% can instead just reiterate motivation
-We first describe the quantitative measures of metagame health. 
-Playtesting outputs a data vector $v$.
+Quantitative measures of metagame health are needed to guide 
+card statistic optimization. We present metrics built upon the
+output data of the playtesting simulator described previously.
+
+The playtesting simulation outputs a data vector $v$.
 Each entry $v_i \in [-1, 1]$ represents the average payoff of
 the deck at index $i$ during the last round of playtesting in
 the optimization process. A payoff of 1 indicates a win. A
 payoff of 0 means a tie, and a loss results in a payoff of -1.
+The average of these payoffs over the course of the simulated
+tournament for a deck make up the entries of $v$.
 % additional sentence to clarify that the vector is averaged
 
 % explicitly say that n is the length of w in its own sentence
 % use d instead of n as it is the number of decks
 % avoid using the word dictionary -- just stick to vector only
-We then transform $v$ into another vector which maps a card to the
+We then transform $v$ into another vector of length $n$ which maps a card to the
 average win rate of the decks in which the card appears. This
 vector $w$ has entries
-$w_j \in [0, 1], 1 \leq j \leq n$, the average win rate of the decks in which
+$w_j \in [0, 1]$, the average win rate of the decks in which
 the card at index $j$ appears. We present three metrics that 
 use this distribution of win rates among the cards.
 
@@ -41,11 +109,11 @@ use this distribution of win rates among the cards.
 % some intuition
 % run Jack's `plot.py` script
 
-\subsubsection{Per-card payoff}
+% \subsubsection{Per-card payoff}
 
-\begin{equation}
-	\mathrm{PCP} = \frac{1}{n} \sum_j \left|\mathrm{payoff}(w_j)\right|^2
-\end{equation}
+% \begin{equation}
+% 	\mathrm{PCP} = \frac{1}{n} \sum_j \left|\mathrm{payoff}(w_j)\right|^2
+% \end{equation}
 
 \subsubsection{Standard deviation metric}
 
@@ -53,7 +121,8 @@ use this distribution of win rates among the cards.
 	\mathrm{SDM} = \sqrt{\frac{1}{n} \sum_j \left|w_j - \left(\frac{1}{n}\sum_j w_j\right)\right|^2}
 \end{equation}
 
-Standard deviation of the win rates is a metric we may seek to minimize.
+Standard deviation of the win rates is a metric we may seek to minimize. Doing so may avoid decks with
+very high or low win rates compared to others.
 
 \subsubsection{Entropy metric}
 
@@ -61,14 +130,35 @@ Standard deviation of the win rates is a metric we may seek to minimize.
 	\mathrm{EM} = -\sum_j \frac{w_j}{\sum_j w_j} \log\left(\frac{w_j}{\sum_j w_j}\right)
 \end{equation}
 
+Entropy of the win rates is a metric we may seek to maximize. Doing so may avoid decks with very high or
+low win rates compared to others.
+
 \subsection{Optimization}
 
-We use the L-BFGS-B optimization algorithm included in SciPy. This will attempt to find the optimal values of 
-parameters, which may include the health points, attack points, and stats pertaining to a 
-card's special ability.
+% We use the L-BFGS-B optimization algorithm included in SciPy. This will attempt to find the optimal values of 
+% parameters, which may include the health points, attack points, and stats pertaining to a 
+% card's special ability.
+
+We use the PyGAD python library for genetic optimization algorithms. This will attempt to find the optimal values of
+parameters, which may include health points, attack, and statistics pertaining to a special mechanism, that optimizes
+the chosen metric.
+
+\subsection{Qualitative analysis}
+
+% describe Jack's plotting method
 
 \subsection{Experiments}
 
 \subsubsection{Group versus round-robin tournament}
 
-\subsubsection{Metrics comparison}
+% \subsubsection{Metrics comparison}
+
+\subsubsection{Optimizing cards without special mechanisms}
+
+\subsubsection{Optimizing only statistics for special mechanisms}
+
+\subsubsection{Optimizing after a set rotation}
+
+\subsubsection{Optimizing health points, attack, and statistics for special mechanisms}
+
+% \subsubsection{Optimizing an exhaustive round-robin tournament}
