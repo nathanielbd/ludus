@@ -24,8 +24,19 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.WARNING)
     log.setLevel(logging.WARNING)
 
-    with open("group_size_256/trial_0", "rb") as picklein:
-        print(pickle.load(picklein))
+    values = []
+    for i in range(0, 16):
+        with open(f"group_size_1024/trial_{i}", "rb") as picklein:
+            values += list(map(lambda x: x.avg_payoff, pickle.load(picklein)))
+
+    
+    fig = plt.figure()
+    plt.hist(values, bins=75)
+    plt.title("Plot 2D array")
+    # plt.ylabel('Attack')
+    # plt.xlabel('Health')
+    # plt.colorbar()
+    fig.savefig(f"hist.png")
 
     exit(0)
 
