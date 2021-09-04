@@ -170,12 +170,12 @@ def genetic_optimize(metric, group_size, num_genes, build_cards_fn, num_decks=No
     def fitness_func(params, idx):
         return -opt_fun(metric, build_cards_fn, group_size, num_decks, params)
     ga = pygad.GA(
-        num_generations=128,
-        num_parents_mating=8,
+        num_generations=32,
+        num_parents_mating=4,
         # num_generations=1,
         # num_parents_mating=2,
         fitness_func=fitness_func,
-        sol_per_pop=16,
+        sol_per_pop=8,
         # sol_per_pop=4,
         num_genes=num_genes,
         gene_type=int,
