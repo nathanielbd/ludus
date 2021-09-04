@@ -3,12 +3,12 @@
 Deck-building games are a genre of card games where each player
 constructs a deck by combining cards from a heterogeneous pool, often
 called a \newterm{set,} according to some \newterm{deck-building
-  rules.} Players then \newterm{pilot} their decks in games against
+rules.} Players then \newterm{pilot} their decks in games against
 other players' decks by strategically selecting which cards to play as
 each unique game unfolds. Because it takes place prior to and effects
 the outcomes of multiple individual games, the deck-building process
 is often called the \newterm{metagame.}  Metagames are said to be
-\newterm{healthy} when there are many diverse \enquote{archetypes}, or
+\newterm{healthy} when there are many diverse \newterm{archetypes}, or
 categories of decks, available for players to choose between.
 % FIXME: this clause is imprecise, & invites criticism re: "how do you
 % measure how fun a game is"
@@ -37,3 +37,41 @@ Our research focuses on auto battler games, a genre pioneered in 2019
 by Drodo Studio's \textit{Dota Auto Chess}, with other notable
 examples being Blizzard Entertainment's \textit{Hearthstone
   Battlegrounds} and Good Luck Games' \textit{Storybook Brawl}.
+% TODO: cite these?
+In an auto battler, each game (sometimes called a \newterm{round} or
+\newterm{battle}) plays out automatically, with no input from the
+players. Players' only strategic decisions are made during
+deck-building, and the battles serve as automated evaluations of the
+players' deck-building choices. Typically, eight players enter a
+\newterm{queue}, where they purchase cards from a shared pool,
+iteratively improving their decks in a deck-building phase between
+each battle. In our research, we focus on balancing the individual
+battles within a queue, not the results of the queues themselves. We
+believe this makes our work more readily applicable to deck-building
+games which are not auto-battlers. Future work could evaluate the
+feasibility of modifying our approach to optimize the balance of
+entire eight-player queues (which we call metagames), rather than
+two-player matches (which we call games).
+
+Auto battlers are a natural fit for our research, as computing the
+expected payoffs of a game between two decks does not require
+developing or training an AI player agent. Also, decks in auto battler
+games tend to be significantly smaller than in active-play
+deck-building games; both \textit{Hearthstone Battlegrounds} and
+\textit{Storybook Brawl} use seven-card decks, whereas popular
+deck-building games like \textit{Magic: the Gathering},
+\textit{Yu-Gi-Oh!} and \textit{Pok\'{e}mon} tend to use 40- to 60-card
+decks.
+% TODO: do i need to cite these?
+The smaller deck size dramatically reduces the set of popular decks,
+enabling our framework to construct and evaluate every possible deck
+from a given set of cards. \citeauthor{xumining} have shown promising
+results using neural networks to identify powerful decks in an auto
+battler metagame, \cite{xumining}; integrating their techniques could
+allow our framework to more efficiently balance large metagames by
+considering only strong decks rather than evaluating the entire
+field. In addition to requiring less computation, this would better
+approximate human play patterns, since human players tend to avoid
+building weak decks, and therefore evaluating a candidate deck's
+performance against weak decks matters less.
+
