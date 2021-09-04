@@ -77,7 +77,7 @@ def vanilla_cards_expt():
 
 
 EXPERIMENTS = (
-    (only_special_opt, "only_special")
+    (only_special_opt, "only_special"),
     (vanilla_cards_expt, "vanilla_cards"),
     (set_rotation, "set_rotation"),
     (optimize_rand_atkhp, "optimize_rand_atkhp"),
