@@ -8,3 +8,4 @@ paper/submission_version/eaai22_bgmmwlf.fls
 paper/submission_version/eaai22_bgmmwlf.fdb_latexmk
 .pytest_cache/
 *.png
+.vscode/
