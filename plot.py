@@ -20,25 +20,22 @@ def run_group(cards):
                 group_size=GROUP_SIZE,
             )
 
-if __name__ == "__main__":
-    logging.basicConfig(level=logging.WARNING)
-    log.setLevel(logging.WARNING)
+def histogram():
+        values = []
+    with open(f"round_robin/trial_0", "rb") as picklein:
+        values = list(map(lambda x: x.avg_payoff, pickle.load(picklein)))
 
-    values = []
-    for i in range(0, 16):
-        with open(f"group_size_1024/trial_{i}", "rb") as picklein:
-            values += list(map(lambda x: x.avg_payoff, pickle.load(picklein)))
-
-    
     fig = plt.figure()
-    plt.hist(values, bins=75)
-    plt.title("Plot 2D array")
+    plt.hist(values, bins=50)
+    plt.title("Round Robin Average Payoffs")
     # plt.ylabel('Attack')
     # plt.xlabel('Health')
     # plt.colorbar()
     fig.savefig(f"hist.png")
 
-    exit(0)
+if __name__ == "__main__":
+    logging.basicConfig(level=logging.WARNING)
+    log.setLevel(logging.WARNING)
 
     base_cards = [tourney.BEAR, tourney.TANK, tourney.BRUISER, tourney.EXPLODE_ON_DEATH, tourney.RAMPAGE, tourney.FRIENDLY_VAMPIRE]
 

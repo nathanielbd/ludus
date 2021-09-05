@@ -1,0 +1,3 @@
+tasks:
+  - init: pyenv install
+    command: pipenv install
