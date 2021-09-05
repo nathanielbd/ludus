@@ -1,5 +1,7 @@
 % I'm writing this intro to be read following the abstract.
 
+% TODO consider subsection header placement and titles
+
 Deck-building games are a genre of card games where each player
 constructs a deck by combining cards from a heterogeneous pool, often
 called a \newterm{set,} according to some \newterm{deck-building
@@ -33,6 +35,8 @@ significant labor and time from a number of skilled players. In this
 paper, we attempt to reduce this cost by automating the balancing
 process.
 
+% TODO: expand justification!
+
 Our research focuses on auto battler games, a genre pioneered in 2019
 by Drodo Studio's \textit{Dota Auto Chess}, with other notable
 examples being Blizzard Entertainment's \textit{Hearthstone
@@ -48,10 +52,16 @@ iteratively improving their decks in a deck-building phase between
 each battle. In our research, we focus on balancing the individual
 battles within a queue, not the results of the queues themselves. We
 believe this makes our work more readily applicable to deck-building
-games which are not auto-battlers. Future work could evaluate the
-feasibility of modifying our approach to optimize the balance of
-entire eight-player queues (which we call metagames), rather than
-two-player matches (which we call games).
+games which are not auto-battlers, and we consider balancing
+eight-player queues out of scope for this exploratory essay.  Going
+forward, we will refer to a multiplayer queue as a metagame, and a
+two-player match as a game, but note that this terminology varies
+among auto battlers.
+% TODO: move this, and rephrase here that it's "out of scope", not
+% "future work", but mention that the tencent people did this
+% Future work could evaluate the feasibility of modifying our approach
+% to optimize the balance of entire eight-player queues (which we call
+% metagames), rather than two-player matches (which we call games).
 
 Auto battlers are a natural fit for our research, as computing the
 expected payoffs of a game between two decks does not require
@@ -67,11 +77,11 @@ The smaller deck size dramatically reduces the set of popular decks,
 enabling our framework to construct and evaluate every possible deck
 from a given set of cards. \citeauthor{xumining} have shown promising
 results using neural networks to identify powerful decks in an auto
-battler metagame, \cite{xumining}; integrating their techniques could
-allow our framework to more efficiently balance large metagames by
-considering only strong decks rather than evaluating the entire
-field. In addition to requiring less computation, this would better
-approximate human play patterns, since human players tend to avoid
-building weak decks, and therefore evaluating a candidate deck's
-performance against weak decks matters less.
-
+battler metagame \cite{xumining}. Integrating their strategy with our
+optimization framework could allow the designers of larger sets to
+more efficiently balance large metagames by considering only strong
+decks rather than evaluating the entire field. In addition to
+requiring less computation, this would better approximate human play
+patterns, since human players tend to avoid building weak decks, and
+therefore evaluating a candidate deck's performance against weak decks
+matters less.
