@@ -40,6 +40,12 @@ def set_atk(c, v):
 def set_health(c, v):
     c.health = v
 
+def set_rampage(c, v):
+    c.middle_age = v
+
+def noop(c, v):
+    return
+
 def f(cards):
     return metrics.std_dev_metric(run_group(cards))
 
@@ -94,6 +100,18 @@ def makeplot(data, name, title="Plot 2D array", xaxis=None, yaxis=None):
 if __name__ == "__main__":
     logging.basicConfig(level=logging.WARNING)
     log.setLevel(logging.WARNING)
+
+    bruiser = colormap([tourney.BEAR, tourney.TANK, tourney.EXPLODE_ON_DEATH, tourney.RAMPAGE, tourney.FRIENDLY_VAMPIRE, tourney.GROW_ON_DAMAGE], var1_card=tourney.BRUISER)
+    with open(f"{sys.argv[1]}/bruiser.pickle", "wb") as pickleout:
+        pickle.dump(bruiser, pickleout)
+    makeplot(bruiser, f"{sys.argv[1]}/bruiser.png", title="Bruiser", xaxis="Health", yaxis="Attack")
+
+    rampage = colormap([tourney.BEAR, tourney.TANK, tourney.BRUISER, tourney.EXPLODE_ON_DEATH, tourney.FRIENDLY_VAMPIRE, tourney.GROW_ON_DAMAGE], var1_card=tourney.RAMPAGE, var1_key=set_rampage, var2_range=range(1, 2), var2_key=noop)
+    with open(f"{sys.argv[1]}/rampage.pickle", "wb") as pickleout:
+        pickle.dump(rampage, pickleout)
+    makeplot(rampage, f"{sys.argv[1]}/rampage.png", title="Rampage", xaxis="Age")
+
+    exit(0)
 
     grow_on_damage = colormap([tourney.BEAR, tourney.TANK, tourney.BRUISER, tourney.EXPLODE_ON_DEATH, tourney.RAMPAGE, tourney.FRIENDLY_VAMPIRE], var1_card=tourney.GROW_ON_DAMAGE)
     with open(f"{sys.argv[1]}/grow_on_damage.pickle", "wb") as pickleout:

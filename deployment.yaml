@@ -32,7 +32,7 @@ spec:
       initContainers:
       - name: mkdir
         image: ubuntu:xenial
-        command: ["mkdir", "/data/01/"]
+        command: ["mkdir", "-p", "/data/03/"]
         volumeMounts:
         - mountPath: "/data"
           name: data
@@ -40,7 +40,14 @@ spec:
       - name: ludus
         image: ghcr.io/nathanielbd/ludus:master
         imagePullPolicy: Always
-        command: ["pipenv", "run", "python3", "./plot.py", "/data/01/"]
+        command: ["pipenv", "run", "python3", "./plot.py", "/data/03/"]
+        volumeMounts:
+        - mountPath: "/data"
+          name: data
+      - name: debug
+        image: ubuntu:xenial
+        command: [ "/bin/bash", "-c", "--" ]
+        args: [ "while true; do sleep 3600; done;" ]
         volumeMounts:
         - mountPath: "/data"
           name: data
