@@ -29,11 +29,18 @@ metadata:
 spec:
   template:
     spec:
+      initContainers:
+      - name: mkdir
+        image: ubuntu:xenial
+        command: ["mkdir", "/data/01/"]
+        volumeMounts:
+        - mountPath: "/data"
+          name: data
       containers:
       - name: ludus
         image: ghcr.io/nathanielbd/ludus:master
         imagePullPolicy: Always
-        command: ["pipenv", "run", "python3", "./plot.py", "/data/"]
+        command: ["pipenv", "run", "python3", "./plot.py", "/data/01/"]
         volumeMounts:
         - mountPath: "/data"
           name: data
