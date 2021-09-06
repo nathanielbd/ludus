@@ -3,12 +3,10 @@
 % 	- possibility of using the "domination graph" as data,
 % 	where decks are nodes and win rates are the directed
 % 	edges
-% 	- since we operate on discrete distributions, if you
-% 	know your "ideal" distribution, you could use the 
-% 	Wasserstein-1 metric as your loss function for
-% 	optimization
 % 	- there is some correlation in the win rate dictionary
 % 	distribution, as cards appear alongside other cards
+% 	- we don't use a Hessian or Jacobian based opt method,
+% 	which would have been useful to understand sensitivity
 
 \subsection{Playtesting simulator}
 
@@ -18,10 +16,13 @@ This simulator is designed for research. It allows the user to
 create cards with new mechanics and run tournaments between
 arbitrary decks. 
 
+\subsubsection{Simplified game definition} \label{sec:ab-game-def}
+
 Cards have nonnegative integer statistics including health points, 
-attack, and statistics pertaining to a special mechanism. Such statistics
+attack, and parameters pertaining to a special mechanism. Such special parameters
 developed include the following:
 
+% consider table instead of bullets for space
 \begin{itemize}
 	\item Explosion damage. When the card dies, it damages
 	each of the opponent's cards by this many health points.
@@ -55,10 +56,12 @@ developed include the following:
 	many times, the card and its opponent both die.
 \end{itemize}
 
-Other card mechanics without statistics include the ability to copy the 
+Other card mechanics without parameters include the ability to copy the 
 attack of the opponent's cards (morphing enemies) and the ability to swap 
 its health points and attack whenever its attack is greater than its health 
 points (survivalist).
+
+\subsubsection{Automated playtesting procedure} \label{sec:tourney}
 
 For the simulator, gameplay proceeds as follows:
 
@@ -79,7 +82,10 @@ For the simulator, gameplay proceeds as follows:
 	player plays a game with each other player once.
 \end{enumerate}
 
-\subsection{Metrics}
+Combined with a metric measuring the health of the metagame, this simulator 
+forms an approximation algorithm that estimates parity within the game.
+
+\subsection{Metrics} \label{sec:metrics}
 
 Quantitative measures of metagame health are needed to guide 
 card statistic optimization. We present metrics built upon the
@@ -92,11 +98,7 @@ the optimization process. A payoff of 1 indicates a win. A
 payoff of 0 means a tie, and a loss results in a payoff of -1.
 The average of these payoffs over the course of the simulated
 tournament for a deck make up the entries of $v$.
-% additional sentence to clarify that the vector is averaged
 
-% explicitly say that n is the length of w in its own sentence
-% use d instead of n as it is the number of decks
-% avoid using the word dictionary -- just stick to vector only
 We then transform $v$ into another vector of length $n$ which maps a card to the
 average win rate of the decks in which the card appears. This
 vector $w$ has entries
@@ -104,9 +106,6 @@ $w_j \in [0, 1]$, the average win rate of the decks in which
 the card at index $j$ appears. We present three metrics that 
 use this distribution of win rates among the cards.
 
-% what to add?
-% whether to minimize or maximize
-% some intuition
 % run Jack's `plot.py` script
 
 % \subsubsection{Per-card payoff}
@@ -121,7 +120,7 @@ use this distribution of win rates among the cards.
 	\mathrm{SDM} = \sqrt{\frac{1}{n} \sum_j \left|w_j - \left(\frac{1}{n}\sum_j w_j\right)\right|^2}
 \end{equation}
 
-Standard deviation of the win rates is a metric we may seek to minimize. Doing so may avoid decks with
+Standard deviation of the win rates is a metric we may seek to minimize. Doing so may avoid cards with
 very high or low win rates compared to others.
 
 \subsubsection{Entropy metric}
@@ -130,41 +129,48 @@ very high or low win rates compared to others.
 	\mathrm{EM} = -\sum_j \frac{w_j}{\sum_j w_j} \log\left(\frac{w_j}{\sum_j w_j}\right)
 \end{equation}
 
-Entropy of the win rates is a metric we may seek to maximize. Doing so may avoid decks with very high or
-low win rates compared to others.
+Entropy of the win rates is a metric we may seek to maximize. When entropy is maximized, we approach a uniform
+distribution of cards over win rates.
+
+\subsubsection{Other metrics}
+
+Our framework is flexible; researchers and designers alike may develop their own metrics corresponding to their
+own ideas of what constitutes a healthy metagame. For example, a game designer may know from historical data that
+a certain distribution of cards or decks over win rates corresponded to a period of celebrated parity in the metagame. 
+The designer could conceivably use the Wasserstein distance or Kullback--Leibler 
+divergence between this historical distribution and another distribution as a metric. Minimizing this metric 
+might maintain similar levels of parity through future iterations of card releases.
 
 \subsection{Optimization}
 
-% We use the L-BFGS-B optimization algorithm included in SciPy. This will attempt to find the optimal values of 
-% parameters, which may include the health points, attack points, and stats pertaining to a 
-% card's special ability.
-
-We use the PyGAD python library for genetic optimization algorithms. This will attempt to find the optimal values of
-parameters, which may include health points, attack, and statistics pertaining to a special mechanism, that optimizes
+We use the \citeauthor{gad2021pygad}'s \shortcite{gad2021pygad} PyGAD python library for genetic optimization algorithms. This will attempt to find the optimal values of
+parameters, which may include health points, attack, and special parameters, that optimizes
 the chosen metric.
 
-\subsection{Qualitative analysis}
+We constrain the genetic algorithm to consider integer values of the parameters between 1 and 10, inclusive. While hyperparameter tuning may have yielded better results,
+we chose to run the genetic algorithm with 8 solutions and 4 parents mating per population for 32 generations in each experiment.
 
-% describe Jack's plotting method
+\subsection{Qualitative analysis}
 
 Another way of understanding the landscape of the metagame is through more qualitative methods. We look at two different ways of plotting data about the game results which give insights into the health and stability of the metagame. 
 
 The first plot is a sweep over two variables, typically of the same card, although not necessarily. This gives a visual representation of the metagame throughout various configurations, and can lead to some interesting insights about the relationship between cards. 
 
+\subsection{Experiment design}
 
+% in methods: only describe the phases of experiments in a high level -- 1. build decks 2. tournaments 3. ... their common pattern
+% describe set up, techniques; write about analysis and numbers in results
 
-\subsection{Experiments}
+Our experiments share common phases.
 
-\subsubsection{Group versus round-robin tournament}
-
-% \subsubsection{Metrics comparison}
-
-\subsubsection{Optimizing cards without special mechanisms}
-
-\subsubsection{Optimizing only statistics for special mechanisms}
-
-\subsubsection{Optimizing after a set rotation}
-
-\subsubsection{Optimizing health points, attack, and statistics for special mechanisms}
-
-% \subsubsection{Optimizing an exhaustive round-robin tournament}
+\begin{enumerate}
+	\item Build decks. We generate a set of cards and their associated attack, health points, and special parameters.
+	Depending on the experiment, some or all of these variables may be varied from simulation to simulation during the optimization process.
+	From this set of cards, the decks are permutations of 3 cards from the set, allowing for duplicates.
+	\item Run tournaments. We pit the decks against each other in a round-robin tournament. For $n$ decks,
+	the number of matches is $n(n-1)/2 = O(n^2)$. A complete round-robin tournament quickly becomes prohibitively large to simulate.
+	Thus, we may want to sample from every possible matchup in order to estimate the win rates of cards and decks. We do this by 
+	partitioning the decks into groups of uniform size and running round-robin tournaments within these groups.
+	\item Optimize. These tournaments are run within each iteration of our genetic algorithm to produce a metric estimating the best
+	possible health of the metagame with respect to parameters of the built decks.
+\end{enumerate}
