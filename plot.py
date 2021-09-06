@@ -10,6 +10,8 @@ import matplotlib.pyplot as plt
 import pickle
 from typing import Callable
 import sys
+import copy
+from multiprocessing import Pool
 
 log = logging.getLogger(__name__)
 
@@ -39,6 +41,9 @@ def set_atk(c, v):
 def set_health(c, v):
     c.health = v
 
+def f(cards):
+    return metrics.std_dev_metric(run_group(cards))
+
 def colormap(
     base_cards: list[ac.Card],
     var1_card: ac.Card,
@@ -53,21 +58,21 @@ def colormap(
         row = []
         card1 = var1_card
         var1_key(card1, i)
-        
+
         for j in var2_range:
             cards = base_cards + [card1]
             if var2_card is None:
                 card2 = var1_card
                 var2_key(card2, j)    
             else:
-                card2 = var2_card
+                card2 = copy.deepcopy(var2_card)
                 var2_key(card2, j)
                 cards.append(card2)
+            print(cards)
+            row.append(cards)
 
-            res = metrics.std_dev_metric(run_group(cards))
-            row.append(res)
-            
-        results.append(row)
+        with Pool(5) as p:
+            results.append(list(p.map(f, row)))
 
     return results
 
