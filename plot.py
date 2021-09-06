@@ -15,7 +15,11 @@ from multiprocessing import Pool
 
 log = logging.getLogger(__name__)
 
-GROUP_SIZE = 64
+THREAD_COUNT = 16
+GROUP_SIZE = 96
+# Number of runs to average over
+NUM_RUNS = 32
+
 def run_group(cards):
     decks = ac.possible_decks(3, cards)
     return sampling.group_tournament(
@@ -49,7 +53,6 @@ def noop(c, v):
 def single_run(cards):
     return metrics.std_dev_metric(run_group(cards))
 
-NUM_RUNS = 32
 def mean_of_multiple_runs(cards):
     runs = []
     for i in range(0, 16):
@@ -84,7 +87,7 @@ def colormap(
             print(cards)
             row.append(cards)
 
-        with Pool(5) as p:
+        with Pool(THREAD_COUNT) as p:
             results.append(list(p.map(mean_of_multiple_runs, row)))
 
     return results
@@ -109,15 +112,15 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.WARNING)
     log.setLevel(logging.WARNING)
 
-    # bruiser = colormap([tourney.BEAR, tourney.TANK, tourney.EXPLODE_ON_DEATH, tourney.RAMPAGE, tourney.FRIENDLY_VAMPIRE, tourney.GROW_ON_DAMAGE], var1_card=tourney.BRUISER)
-    # with open(f"{sys.argv[1]}/bruiser.pickle", "wb") as pickleout:
-    #     pickle.dump(bruiser, pickleout)
-    # makeplot(bruiser, f"{sys.argv[1]}/bruiser.png", title="Bruiser", xaxis="Health", yaxis="Attack")
+    bruiser = colormap([tourney.BEAR, tourney.TANK, tourney.EXPLODE_ON_DEATH, tourney.RAMPAGE, tourney.FRIENDLY_VAMPIRE, tourney.GROW_ON_DAMAGE], var1_card=tourney.BRUISER)
+    with open(f"{sys.argv[1]}/bruiser.pickle", "wb") as pickleout:
+        pickle.dump(bruiser, pickleout)
+    makeplot(bruiser, f"{sys.argv[1]}/bruiser.png", title="Bruiser", xaxis="Health", yaxis="Attack")
 
-    # rampage = colormap([tourney.BEAR, tourney.TANK, tourney.BRUISER, tourney.EXPLODE_ON_DEATH, tourney.FRIENDLY_VAMPIRE, tourney.GROW_ON_DAMAGE], var1_card=tourney.RAMPAGE, var1_key=set_rampage, var2_range=range(1, 2), var2_key=noop)
-    # with open(f"{sys.argv[1]}/rampage.pickle", "wb") as pickleout:
-    #     pickle.dump(rampage, pickleout)
-    # makeplot(rampage, f"{sys.argv[1]}/rampage.png", title="Rampage", xaxis="Age")
+    rampage = colormap([tourney.BEAR, tourney.TANK, tourney.BRUISER, tourney.EXPLODE_ON_DEATH, tourney.FRIENDLY_VAMPIRE, tourney.GROW_ON_DAMAGE], var1_card=tourney.RAMPAGE, var1_key=set_rampage, var2_range=range(1, 2), var2_key=noop)
+    with open(f"{sys.argv[1]}/rampage.pickle", "wb") as pickleout:
+        pickle.dump(rampage, pickleout)
+    makeplot(rampage, f"{sys.argv[1]}/rampage.png", title="Rampage", xaxis="Age")
 
     grow_on_damage = colormap([tourney.BEAR, tourney.TANK, tourney.BRUISER, tourney.EXPLODE_ON_DEATH, tourney.RAMPAGE, tourney.FRIENDLY_VAMPIRE], var1_card=tourney.GROW_ON_DAMAGE)
     with open(f"{sys.argv[1]}/grow_on_damage.pickle", "wb") as pickleout:
