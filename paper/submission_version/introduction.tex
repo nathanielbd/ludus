@@ -18,29 +18,67 @@ categories of decks, available for players to choose between.
 % consider replacing with "enabling a wider array of strategic
 % deck-building decisions and more varied, and therefore more
 % interesting, individual games."
-Deck-building games pose a challenge for game designers, since a
-relatively small number of cards can be combined into a large number
-of possible decks, which in turn can be paired into an even larger
-number of match-ups. Human playtesting has repeatedly failed to
-identify card designs or sets that lead to unhealthy metagames.
+
+% TODO: why are healthy metagames important?
+Healthy metagames are desirable (or conversely, unhealthy metagames
+are undesirable) in part because they alienate players, leading to
+reduced engagement and revenues. Quantifying these risks is difficult,
+as most game studios do not publish marketing data in enough detail
+for the public to classify particular products and their metagames as
+successes or flops. However, discussions by enfranchised players on
+online forums can give us a qualitative picture of the associated
+risks, and balancing actions taken by game studios can provide
+insights into how seriously they view the danger posed by an unhealthy
+metagame. For example, \textit{Magic: the Gathering}'s set
+\textit{Throne of Eldraine} saw criticism online for being
+significantly more powerful than the other cards in Standard,
+\textit{Magic}'s most popular competitive format, and on at least one
+occasion led to tournaments being cancelled due to lack of interest
+\cite{oko-meta-drama}. Wizards of the Coast responded by banning six
+cards from \textit{Eldraine} from Standard play across three separate
+``banwaves'' \cite{mtg-banlist, mtg-bnr-nov-2019, mtg-bnr-jun-2020,
+mtg-bnr-aug-2020}; these correspond with dramatic drops in banned
+cards' prices on the secondary market
+\cite{tcgplayer-bans-financial-impact}. Even after such bans,
+high-profile professional \textit{Magic} players have taken to Twitter
+to complain about \textit{Eldraine}'s affect on the Standard metagame
+\cite{lsv-eldraine-complaints}.
+
+% TODO: should i write about any other games? should i write about the
+% companion rules change?
+
+Despite its importance, metagame balance in deck-building games poses
+a challenge for game designers, since a relatively small number of
+cards can be combined into a large number of possible decks, which in
+turn can be paired into an even larger number of
+match-ups. \textit{Magic: the Gathering} relies on human playtesting
+in advance of releasing a set \cite{designing-hod-ffl}, and digital
+card games like \textit{Hearthstone} also collect and analyze data
+after release from consumer play,
+\cite{blizzard-gamebalancetalk-keg2019}, but we are not aware of any
+studios which use automated playtesting to reduce human involvement.
+Advance human playtesting has repeatedly failed to identify card
+designs or sets that lead to unhealthy metagames, and even when it
+does successfully identify and fix unhealthy metagames, human
+playtesting is often prohibitively expensive, requiring significant
+labor and time from a number of skilled players. Analyzing consumer
+play data requires significant number of consumers to play in
+unhealthy metagames in order to identify problematic designs.
 % TODO: do we need to cite sources?
 % possible examples:
 % - hearthstone's "miracle rogue" and "grim patron" metagames
 % - magic: the gathering's "combo winter," "affinity," "caw-blade" and "oko" metagames
 % - yu-gi-oh, i assume
 % - to a lesser extent, "good boy" in storybook brawl
-Even when it does successfully identify and fix unhealthy metagames,
-human playtesting is often prohibitively expensive, requiring
-significant labor and time from a number of skilled players. In this
-paper, we attempt to reduce this cost by automating the balancing
+In this paper, we attempt to reduce the cost of playtesting without
+exposing consumers to unhealthy metagames by automating the balancing
 process.
 
-% TODO: expand justification!
-
 Our research focuses on auto battler games, a genre pioneered in 2019
-by Drodo Studio's \textit{Dota Auto Chess}, with other notable
-examples being Blizzard Entertainment's \textit{Hearthstone
-  Battlegrounds} and Good Luck Games' \textit{Storybook Brawl}.
+by \textit{Dota Auto Chess} \cite{autochess}, with other notable
+examples being \textit{Hearthstone Battlegrounds}
+\cite{hearthstone-battlegrounds} and \textit{Storybook Brawl}
+\cite{storybook-brawl}.
 % TODO: cite these?
 In an auto battler, each game (sometimes called a \newterm{round} or
 \newterm{battle}) plays out automatically, with no input from the
@@ -67,21 +105,27 @@ Auto battlers are a natural fit for our research, as computing the
 expected payoffs of a game between two decks does not require
 developing or training an AI player agent. Also, decks in auto battler
 games tend to be significantly smaller than in active-play
-deck-building games; both \textit{Hearthstone Battlegrounds} and
-\textit{Storybook Brawl} use seven-card decks, whereas popular
-deck-building games like \textit{Magic: the Gathering},
-\textit{Yu-Gi-Oh!} and \textit{Pok\'{e}mon} tend to use 40- to 60-card
+deck-building games; both \textit{Hearthstone Battlegrounds}
+\cite{hearthstone-battlegrounds} and \textit{Storybook Brawl}
+\cite{storybook-brawl} use seven-card decks, whereas popular
+deck-building games like \textit{Magic: the Gathering}
+\cite{magic-the-gathering}, \textit{Yu-Gi-Oh!} \cite{yugioh-tcg} and
+\textit{Pok\'{e}mon} \cite{pokemon-tcg} tend to use 40- to 60-card
 decks.
 % TODO: do i need to cite these?
 The smaller deck size dramatically reduces the set of popular decks,
 enabling our framework to construct and evaluate every possible deck
-from a given set of cards. \citeauthor{xumining} have shown promising
-results using neural networks to identify powerful decks in an auto
-battler metagame \cite{xumining}. Integrating their strategy with our
-optimization framework could allow the designers of larger sets to
-more efficiently balance large metagames by considering only strong
-decks rather than evaluating the entire field. In addition to
-requiring less computation, this would better approximate human play
-patterns, since human players tend to avoid building weak decks, and
-therefore evaluating a candidate deck's performance against weak decks
-matters less.
+from a given set of cards.
+
+% TODO: move to related works
+
+% \citeauthor{tencent_autobattle_lineup} have shown promising results
+% using neural networks to identify powerful decks in an auto battler
+% metagame \cite{xumining}. Integrating their strategy with our
+% optimization framework could allow the designers of larger sets to
+% more efficiently balance large metagames by considering only strong
+% decks rather than evaluating the entire field. In addition to
+% requiring less computation, this would better approximate human play
+% patterns, since human players tend to avoid building weak decks, and
+% therefore evaluating a candidate deck's performance against weak
+% decks matters less.
