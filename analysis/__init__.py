@@ -88,7 +88,17 @@ def _run_multiprocess(
 ) -> Iterable[FinishedJob]:
     """Run the jobs in parallel in multiple processes"""
     def run_job(job):
-        payoff = payoff_fn(job.deck_i, job.deck_j)
+        try:
+            payoff = payoff_fn(job.deck_i, job.deck_j)
+        except Exception as err:
+            log.error(
+                "error %s in game at %d, %d between %s, %s",
+                err,
+                job.i, job.j,
+                job.deck_i, job.deck_j,
+            )
+            # punish both players for causing an error
+            payoff = GamePayoffs(-1, -1)
         return FinishedJob(job, payoff)
 
     with mproc.ProcessPool() as pool:
