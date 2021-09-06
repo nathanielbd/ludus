@@ -154,7 +154,14 @@ we chose to run the genetic algorithm with 8 solutions and 4 parents mating per 
 
 Another way of understanding the landscape of the metagame is through more qualitative methods. We look at two different ways of plotting data about the game results which give insights into the health and stability of the metagame. 
 
-The first plot is a sweep over two variables, typically of the same card, although not necessarily. This gives a visual representation of the metagame throughout various configurations, and can lead to some interesting insights about the relationship between cards. 
+The first plot is a sweep over two variables, typically of the same card, although not necessarily. This gives a visual representation of the metagame throughout various configurations, and can lead to some interesting insights about the relationship between cards.
+
+\includegraphics[width=10cm, height=8cm]{bruiser_vs_grow} \label{fig:bruiser_vs_grow}
+
+Take, for example, the plot in Figure~\ref{fig:bruiser_vs_grow}, of the value of the standard deviation metric given various values for the attack of the bruiser card and the health of the grow on damage card. The bruiser card is a vanilla card with a high attack (although variable in this situation) and one health point. The grow on damage card has a mechanic where each time it takes damage it gains one attack. Initially this card has no attack, and in this situation has a variable amount of health. 
+
+In the figure we can see that configurations in the upper left corner, where the attack of the bruiser is greater than the health of the grow on damage card, tend to be much more favorable than the configurations in the lower right corner, where the opposite is true. This evidence supports the intuitive idea that the bruiser's high attack is a good counter to the grow on damage card, because it can quickly remove the monster before it has had enough interactions to grow its damage to a large number. This kind of information can be quite useful to a game designer, who can see very clearly that the inclusion of a high damage card can improve the metagame dramatically if the grow on damage card is found to be too powerful.
+
 
 \subsection{Experiment design}
 
