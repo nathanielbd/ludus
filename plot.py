@@ -31,9 +31,6 @@ def histogram():
     fig = plt.figure()
     plt.hist(values, bins=50)
     plt.title("Round Robin Average Payoffs")
-    # plt.ylabel('Attack')
-    # plt.xlabel('Health')
-    # plt.colorbar()
     fig.savefig(f"hist.png")
 
 def set_atk(c, v):
@@ -74,6 +71,21 @@ def colormap(
 
     return results
 
+def makeplot(data, name, title="Plot 2D array", xaxis=None, yaxis=None):
+    if len(data) < 1:
+        log.error("No Data")
+        return
+    
+    # height = len(data)
+    # width = len(data[0])
+    
+    fig = plt.figure()
+    plt.pcolormesh(np.array(data), cmap='plasma')
+    plt.title(title)
+    plt.ylabel(xaxis)
+    plt.xlabel(yaxis)
+    plt.colorbar()
+    fig.savefig(name)
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.WARNING)
@@ -82,19 +94,15 @@ if __name__ == "__main__":
     grow_on_damage = colormap([tourney.BEAR, tourney.TANK, tourney.BRUISER, tourney.EXPLODE_ON_DEATH, tourney.RAMPAGE, tourney.FRIENDLY_VAMPIRE], var1_card=tourney.GROW_ON_DAMAGE)
     with open(f"{sys.argv[1]}/grow_on_damage.pickle", "wb") as pickleout:
         pickle.dump(grow_on_damage, pickleout)
+    makeplot(grow_on_damage, f"{sys.argv[1]}/grow_on_damage.png")
     
     explode_on_death = colormap([tourney.BEAR, tourney.TANK, tourney.BRUISER, tourney.GROW_ON_DAMAGE, tourney.RAMPAGE, tourney.FRIENDLY_VAMPIRE], var1_card=tourney.EXPLODE_ON_DEATH)
     with open(f"{sys.argv[1]}/explode_on_death.pickle", "wb") as pickleout:
         pickle.dump(explode_on_death, pickleout)
+    makeplot(explode_on_death, f"{sys.argv[1]}/explode_on_death.png")
 
     bruiser_vs_grow = colormap([tourney.BEAR, tourney.TANK, tourney.BRUISER, tourney.RAMPAGE, tourney.FRIENDLY_VAMPIRE, tourney.EXPLODE_ON_DEATH], var1_card=tourney.BRUISER, var1_key=set_atk, var2_card=tourney.GROW_ON_DAMAGE, var2_key=set_health)
     with open(f"{sys.argv[1]}/bruiser_vs_grow.pickle", "wb") as pickleout:
         pickle.dump(bruiser_vs_grow, pickleout)
+    makeplot(bruiser_vs_grow, f"{sys.argv[1]}/bruiser_vs_grow.png")
 
-    # fig = plt.figure(figsize=(10,10))
-    # plt.pcolormesh(np.array(results), cmap='plasma')
-    # plt.title("Plot 2D array")
-    # plt.ylabel('Attack')
-    # plt.xlabel('Health')
-    # plt.colorbar()
-    # fig.savefig(f"{GROUP_SIZE}.png")
