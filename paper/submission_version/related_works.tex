@@ -1,0 +1,90 @@
+As the auto battler genre is still new, we were only able to find one other work
+that specifically addresses the use of AI in their design.  \citeauthor{tencent_autobattle_lineup}
+\shortcite{tencent_autobattle_lineup} focused on autonomously identifying the
+best decks that players can construct given the available cards, game rules, and
+decks that the game's designers expect to be played the most\footnote{Due to
+Tencent's own game being the specific application, they use different terminology.
+A `piece' is a `card,' and a `lineup' is a `deck'.}.  In a two-step process,
+their method first simulates play between randomly generated decks and the designers'
+expected decks to create a training dataset for a neural network---the model
+learns a mapping between a given deck and its estimated win rate against the
+designers' expected decks.  In the second step, a genetic algorithm searches for
+decks that optimize the learned win rate function under various constraints that
+define deck construction rules throughout the auto battler game.  Constraints
+account for drafting additional cards between rounds of play and rules that
+increase the strength of cards based on draft choices, which are not elements of
+our simplified auto battler game (see Section~\ref{sec:ab-game-def} for a description).
+
+The optimized decks are shared with the game designers who may use the
+analysis to evaluate whether they believe the cards are balanced and, if not, which
+cards need revision.  Our method instead revises the cards directly, optimizing
+the viability of the set of possible decks that players can construct.  This alters
+the initial efforts of the game designers to focus on the rules and some card templates
+without committing to specific grounded card instances.  Because the templates are
+a lifted representation of the actual game's cards, it is more difficult for designers
+to identify which decks are expected to be common in the metagame.  However, after
+our approach provides suggestions for grounded card instances, the game designers
+can apply \citeauthor{tencent_autobattle_lineup}'s methods for a deeper analysis
+of the suggested card designs.  If the designers have some expected decks based
+on the templates alone, then it should be possible to combine our methods to
+present alternative optimization criteria.  The information available to the game
+designers would enable them to explore not just which decks are considered the
+best for given card designs, but also how the best decks change for various card
+revisions.
+
+Aside from deck-building games in the auto battler genre, many games that support competitive
+play over the internet collect data about what and how people are playing.  Game
+designers can take advantage of various data science approaches to find trends in
+the logged data that inform them about how to balance the game \cite{nce-gameAIpro2}.
+In the virtual collectible card game Hearthstone, clusters of similar deck
+compositions implicitly describe archetypes that are currently popular in the
+metagame.  Designers can use this information to decide if some archetypes are too
+common (implying they might be too powerful) and respond through updates to card
+descriptions, releasing new cards that counter the overused archetypes, or
+releasing new cards that support the underused archetypes \cite{blizzard-gamebalancetalk-keg2019}.
+This effectively organizes human-operated playtesting at macro-scale where designers
+can iterate on their game between update releases.
+
+Because human-operated playtesting is expensive resource-wise and rarely
+exhaustive enough to identify all points of concern, automating the playtesting
+process can speed up the number of games played and discover edge cases humans
+might not consider.  For deck-building games where the players have
+agency and outcomes are nondeterministic (shuffled decks, random outcomes of effects,
+etc.), the space of possible deck combinations and game states can be immeasurable.
+Following in the footsteps of DeepMind's work on AlphaGo \cite{alphago}, Stadia
+trained a deep learning model through many games of self-play in order to develop
+a function that could evaluate the quality of a game state for a custom deck-building
+game they created called Chimera \cite{chimera-mlagent}.  The authors provide
+little information to replicate their work---it is not mentioned how their automated
+game-playing agent uses this learned model to make decisions during gameplay
+(AlphaGo uses Monte Carlo Tree Search, but self-play can also imply reinforcement
+learning of a policy), nor is it clear whether the decks used in self-play were
+the same or different throughout training.  However, they illustrated how their
+automated game-playing agent could compete against itself multiple times with
+designer-constructed decks in order to compare the overall decks' performance,
+accounting for the nondeterministic outcomes through many games as statistical
+samples.  A game designer may manually inspect the outcomes of all the matches
+to determine whether any revisions to the cards are necessary.
+
+Auto battler games lack this degree of uncertainty once the two decks begin combat.
+Thus, \citeauthor{tencent_autobattle_lineup}'s \shortcite{tencent_autobattle_lineup}
+and our methods focus automated playtesting towards a breadth of decks competing
+against each other rather than depth exploring all possible games between a few
+decks.  As there are still too many decks to consider for feasible automated
+playtesting, we present an approximation algorithm that estimates a deck's overall
+performance through random match-ups (Section~\ref{sec:auto-playtest}) while
+\citeauthor{tencent_autobattle_lineup}'s neural network estimates a deck's overall
+performance from the offline match-ups against designer-crafted decks that generate
+their training data.  Allowing designers to consider play against select decks
+rather than the entire field can more efficiently balance larger metagames.
+In addition to requiring less computation online for automated playtesting, this
+might approximate human preferences with greater accuracy because players
+tend to avoid building decks that appear weaker; our approximation algorithm
+considers all decks, including these weaker ones, during automated playtesting.
+%Integrating these methods into our optimization framework could allow designers
+%of larger sets to more efficiently balance large metagames by considering only
+%strong decks rather than evaluating the entire field. In addition to
+%requiring less computation, this would better approximate human play
+%patterns, since human players tend to avoid building weak decks, and
+%therefore evaluating a candidate deck's performance against weak decks
+%matters less.
