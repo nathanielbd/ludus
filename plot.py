@@ -15,7 +15,7 @@ from multiprocessing import Pool
 
 log = logging.getLogger(__name__)
 
-GROUP_SIZE = 32
+GROUP_SIZE = 1024
 def run_group(cards):
     decks = ac.possible_decks(3, cards)
     return sampling.group_tournament(
