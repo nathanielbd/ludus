@@ -1,0 +1,52 @@
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: ludus
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ludus-data
+  namespace: ludus
+spec:
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: 8Gi
+  storageClassName: cephfs
+
+---
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: plotting-data
+  namespace: ludus
+spec:
+  template:
+    spec:
+      initContainers:
+      - name: mkdir
+        image: ubuntu:xenial
+        command: ["mkdir", "/data/01/"]
+        volumeMounts:
+        - mountPath: "/data"
+          name: data
+      containers:
+      - name: ludus
+        image: ghcr.io/nathanielbd/ludus:master
+        imagePullPolicy: Always
+        command: ["pipenv", "run", "python3", "./plot.py", "/data/01/"]
+        volumeMounts:
+        - mountPath: "/data"
+          name: data
+      restartPolicy: Never
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: ludus-data
+  backoffLimit: 4

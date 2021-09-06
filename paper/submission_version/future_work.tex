@@ -1,2 +1,47 @@
+% more metrics, other optimization methods
+
+\subsection{Other auto battler features}
+
 % draft phase of auto battlers
+
+As mentioned in the introduction, the broader context of auto battlers is that
+players in a queue iteratively build their deck between battles by purchasing
+cards from an array of options. While our experiments were concerned with decks of size 3, 
+the ability of our framework to quantify, qualify, and optimize balance for decks with 
+more or fewer cards remains to be assessed. Additionally, we have previously only considered
+the case where any card may be replaced with any other card to create a new deck. However, 
+the purchasing value of cards may be different and future work should consider comparing decks
+which may be built after the same number of battles and purchasing phases.
+
 % cards with multiple mechanics
+
+In many auto battlers, cards have multiple mechanics which may or may not have special parameters.
+Our work only considers cards with a single mechanic, but should be extended to include such cards.
+
+% non-determinism/random effects? is this in other games besides heartstone battlegrouds?
+
+\subsection{Simulation data}
+
+All metrics we present are based off of the average win rates of decks collected from the simulator. 
+This does not take into account individual deck-versus-deck win rates, which are always 0 or 1 since
+our simplified auto battler game is deterministic. One could construct a 'domination graph' with decks
+as nodes and a directed edge to the deck that wins the head-to-head matchup. The size of the domination
+graph problematically scales with the square of the number of decks just like the round-robin tournament,
+so another sampling method would be necessary in practice. Further investigation is required to determine if perturbation of card parameters causing a degradation
+in metagame health corresponds to any phase transition in a domination graph.
+
+% We don't consider deck vs deck winrates, only average winrates
+
+% mention our original pareto idea?
+
+\subsection{Alternative optimization methods}
+
+Our choice of a genetic algorithm for optimization is somewhat arbitrary. Genetic algorithms can conveniently 
+handle the familiar integer values of card parameters. 
+
+% dumb idea as the simulation is not differentiable
+% One benefit of using a different optimization method is
+% providing sensitivity analysis; some algorithms, like the Broyden--Fletcher--Goldfarb--Shanno (BFGS) algorithm, 
+% approximate the Hessian of the optimization function, which could be useful in finding the sensitivity of the
+% metagame health with respect to card parameters. Further consideration is needed to develop a version of these
+% types of optimization 

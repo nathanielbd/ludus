@@ -6,5 +6,10 @@ paper/submission_version/eaai22_bgmmwlf.pdf
 paper/submission_version/eaai22_bgmmwlf.aux
 paper/submission_version/eaai22_bgmmwlf.fls
 paper/submission_version/eaai22_bgmmwlf.fdb_latexmk
+paper/submission_version/eaai22_bgmmwlf.bbl
+paper/submission_version/eaai22_bgmmwlf.blg
 .pytest_cache/
 *.png
+.vscode/
+paper/submission_version/.texpadtmp/
+**/*.icloud
