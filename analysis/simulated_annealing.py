@@ -24,9 +24,6 @@ from auto_chess.threshold import ThreshOld
 from auto_chess.ticking_time_bomb import TimeBomb
 
 
-import pickle
-
-
 import logging
 
 
@@ -201,12 +198,8 @@ def genetic_optimize(metric, group_size, num_genes, build_cards_fn, num_decks=No
         gene_type=int,
         init_range_low=1,
         init_range_high=10,
-        save_best_solutions=True,
-        save_solutions=True,
     )
     ga.run()
-    with open("genetic_optimize_results.pickle", "ab") as pickleout:
-        pickle.dump(ga, pickleout)
     sol, sol_fitness, sol_idx = ga.best_solution()
     log.info(f'found minimum {sol} with fitness {sol_fitness} at index {sol_idx}')
     return sol
