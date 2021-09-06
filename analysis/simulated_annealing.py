@@ -176,17 +176,18 @@ def generation_callback(ga):
 def genetic_optimize(metric, group_size, num_genes, build_cards_fn, num_decks=None):
     evaluations = {}
     def fitness_func(params, idx):
+        key = tuple(params)
         try:
-            return evaluations[params]
+            return evaluations[key]
         except KeyError:
-            evaluations[params] = -opt_fun(
+            evaluations[key] = -opt_fun(
                 metric,
                 build_cards_fn,
                 group_size,
                 num_decks,
                 params
             )
-            return evaluations[params]
+            return evaluations[key]
 
     ga = pygad.GA(
         num_generations=16,
