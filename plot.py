@@ -55,7 +55,7 @@ def single_run(cards):
 
 def mean_of_multiple_runs(cards):
     runs = []
-    for i in range(0, 16):
+    for i in range(0, NUM_RUNS):
         runs.append(single_run(cards))
     print(cards, runs, np.mean(runs))
     return np.mean(runs)
