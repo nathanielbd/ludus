@@ -24,6 +24,9 @@ from auto_chess.threshold import ThreshOld
 from auto_chess.ticking_time_bomb import TimeBomb
 
 
+import pickle
+
+
 import logging
 
 
@@ -166,23 +169,43 @@ def optimize(metric, group_size, initval, build_cards_fn, num_decks=None):
 import pygad
 
 
+def generation_callback(ga):
+    log.info(f"finished generation {ga.generations_completed}")
+
+
 def genetic_optimize(metric, group_size, num_genes, build_cards_fn, num_decks=None):
+    evaluations = {}
     def fitness_func(params, idx):
-        return -opt_fun(metric, build_cards_fn, group_size, num_decks, params)
+        try:
+            return evaluations[params]
+        except KeyError:
+            evaluations[params] = -opt_fun(
+                metric,
+                build_cards_fn,
+                group_size,
+                num_decks,
+                params
+            )
+            return evaluations[params]
+
     ga = pygad.GA(
-        num_generations=32,
-        num_parents_mating=4,
+        num_generations=16,
+        num_parents_mating=2,
         # num_generations=1,
         # num_parents_mating=2,
         fitness_func=fitness_func,
-        sol_per_pop=8,
+        sol_per_pop=4,
         # sol_per_pop=4,
         num_genes=num_genes,
         gene_type=int,
         init_range_low=1,
-        init_range_high=10
+        init_range_high=10,
+        save_best_solutions=True,
+        save_solutions=True,
     )
     ga.run()
+    with open("genetic_optimize_results.pickle", "ab") as pickleout:
+        pickle.dump(ga, pickleout)
     sol, sol_fitness, sol_idx = ga.best_solution()
     log.info(f'found minimum {sol} with fitness {sol_fitness} at index {sol_idx}')
     return sol
