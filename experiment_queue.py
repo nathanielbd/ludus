@@ -38,6 +38,16 @@ def round_robin_optimize():
     )
 
 
+def optimize_five_atkhp():
+    return sa.genetic_optimize(
+        metric=metrics.std_dev_metric,
+        group_size=GROUP_SIZE,
+        num_genes=12,
+        build_cards_fn=sa.cards_with_atkhp,
+    )
+
+
+
 def set_rotation():
     with open("optimize_five_atkhp.pickle", "rb") as picklein:
         first_set_res = pickle.load(picklein)
