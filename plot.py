@@ -31,10 +31,17 @@ def run_group(cards):
                 multiprocess=True
             )
 
-def histogram(cards, path, title="Round Robin Winrates"):
+def histogram(cards, path, title="Round Robin Winrates", deck=True):
     results = run_group(cards)
-    values = list(map(lambda x: metrics.payoff_winrate(x.avg_payoff), results))
+    if deck: 
+        values = list(map(lambda x: metrics.payoff_winrate(x.avg_payoff), results))
 
+    # case if we want the card distribution
+    if not deck:
+        values = metrics.weighted_sum_cards(results)
+        log.info(f'std: {metrics.std_dev_metric(results)}')
+        log.info(f'entropy: {metrics.entropy_metric(results)}')
+        log.info(f'per card payoff: {metrics.per_card_winrate(results, variance_key=lambda x: x**2)}')
     fig = plt.figure()
     plt.hist(values, bins=50)
     plt.title("Round Robin Average Payoffs")
@@ -116,8 +123,11 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.WARNING)
     log.setLevel(logging.WARNING)
 
-    histogram(sa.build_cards(1, 3, 4, 3, 3, 1, 7, 8, 5, 7), f"{sys.argv[1]}/special_only_1_3_4_3_3_1_7_8_5_7.png")
-    histogram(sa.build_cards(4, 5, 8, 8, 4, 8, 3, 3, 3, 5), f"{sys.argv[1]}/special_only_4_5_8_8_4_8_3_3_3_5.png")
+    # histogram(sa.build_cards(1, 3, 4, 3, 3, 1, 7, 8, 5, 7), f"{sys.argv[1]}/special_only_1_3_4_3_3_1_7_8_5_7.png")
+    # histogram(sa.build_cards(4, 5, 8, 8, 4, 8, 3, 3, 3, 5), f"{sys.argv[1]}/special_only_4_5_8_8_4_8_3_3_3_5.png")
+
+    histogram(sa.build_cards(1, 3, 4, 3, 3, 1, 7, 8, 5, 7), f"{sys.argv[1]}/special_only_1_3_4_3_3_1_7_8_5_7_cards.png", deck=False)
+    histogram(sa.build_cards(4, 5, 8, 8, 4, 8, 3, 3, 3, 5), f"{sys.argv[1]}/special_only_4_5_8_8_4_8_3_3_3_5_cards.png", deck=False)
 
     exit(0)
 
