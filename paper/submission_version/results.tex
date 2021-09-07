@@ -3,9 +3,12 @@
 % Maybe explain the group tournament in more detail
 The first experiment we ran was to determine the efficacy of our sampling method. To do this, we compared the win rates of identical decks in a complete round robin tournament (every combination of decks played) with the win rate in a tournament conducted by randomly grouping decks into groups of various sizes, and then playing every combination of the decks within those groups. See for example:
 
-\begin{figure*}[tb]
+\begin{figure}[t]
+	\centering
 	\includegraphics[width=0.9\columnwidth]{group_vs_rr_fig}
-\end{figure*}
+	\caption{Absolute value of the difference in win rate between a \textit{group tournament} of varying size and a full round-robin tournamnt of 1728 possible decks, along with error bars}
+	\label{fig:group_vs_rr}
+\end{figure}
 
 %% Table
 
@@ -15,7 +18,7 @@ We then compute the average error over all of the decks, and we can see a steady
 
  \subsection{Optimizing cards without special mechanisms}
 
-The next experiment was to optimize a set of four basic cards, with no extra mechanics. We hypothesized that the "optimal" solution in terms of the standard deviation metric would be to have 4 identical cards, because then there would be only one card and thus zero standard deviation in the winrate of one card. We also recognized, however, that due to the time constraints placed on our optimization algorithm, there was no guarantee it would find this solution. This case seemed even more interesting from a game design perspective, as a game with only a single card is obviously an uninteresting game, and we would like to see what "almost-optimal" solutions appear for this setup.
+The next experiment was to optimize a set of four basic cards, with no extra mechanics. We hypothesized that the `optimal' solution in terms of the standard deviation metric would be to have 4 identical cards, because then there would be only one card and thus zero standard deviation in the winrate of one card. We also recognized, however, that due to the time constraints placed on our optimization algorithm, there was no guarantee it would find this solution. This case seemed even more interesting from a game design perspective, as a game with only a single card is obviously an uninteresting game, and we would like to see what `almost-optimal' solutions appear for this setup.
 
  \subsection{Optimizing only statistics for special mechanics}
 

@@ -160,9 +160,11 @@ Another way of understanding the landscape of the metagame is through more quali
 
 The first plot is a sweep over two variables, typically of the same card, although not necessarily. This gives a visual representation of the metagame throughout various configurations, and can lead to some interesting insights about the relationship between cards.
 
-\begin{figure*}
-	\includegraphics[width=10cm, height=8cm]{bruiser_vs_grow} \label{fig:bruiser_vs_grow}
-\end{figure*}
+\begin{figure}[t]
+	\includegraphics[width=10cm, height=8cm]{bruiser_vs_grow} 
+	\caption{caption}
+	\label{fig:bruiser_vs_grow}
+\end{figure}
 
 Take, for example, the plot in Figure~\ref{fig:bruiser_vs_grow}, of the value of the standard deviation metric given various values for the attack of the bruiser card and the health of the grow on damage card. The bruiser card is a vanilla card with a high attack (although variable in this situation) and one health point. The grow on damage card has a mechanic where each time it takes damage it gains one attack. Initially this card has no attack, and in this situation has a variable amount of health. 
 
@@ -170,12 +172,18 @@ In the figure we can see that configurations in the upper left corner, where the
 
 The second plot explored is a histogram of the deck winrates. After running a tournament amongst all possible decks, the winrates of each deck are plotted in a histogram. The resulting distribution can have features which are indicative of the state of the health of metagame. For example, examine the difference between the distribution shown in Figure~\ref{fig:special_only_4_5_8_8_4_8_3_3_3_5} and the one shown in Figure~\ref{fig:special_only_1_3_4_3_3_1_7_8_5_7}. 
 
-\begin{figure*}
-	\includegraphics[width=8cm, height=8cm]{special_only_4_5_8_8_4_8_3_3_3_5}\label{fig:special_only_4_5_8_8_4_8_3_3_3_5}
-	\includegraphics[width=8cm, height=8cm]{special_only_1_3_4_3_3_1_7_8_5_7}\label{fig:special_only_1_3_4_3_3_1_7_8_5_7}	
-\end{figure*}
+\begin{figure}[t]
+	\includegraphics[width=8cm, height=8cm]{special_only_4_5_8_8_4_8_3_3_3_5}
+	\caption{caption}
+	\label{fig:special_only_4_5_8_8_4_8_3_3_3_5}
+\end{figure}
+\begin{figure}[t]
+	\includegraphics[width=8cm, height=8cm]{special_only_1_3_4_3_3_1_7_8_5_7}
+	\caption{caption}
+	\label{fig:special_only_1_3_4_3_3_1_7_8_5_7}	
+\end{figure}
 
-In the first figure we have a much wider and flatter distribution, where as in the second, much more of the decks are centered around a 50\% winrate. In the first distribution we also notice a spike in the winrates between approximately 0.75 and 1.00, with a few decks very close to a 100\% winrate. This indicates that there are a group of "meta decks" that occupy this 0.75 to 1.00 payoff zone, which render almost all of the other decks non-competitive. By comparison, in the second figure there are no decks with nearly as high of a winrate as in the first, and there are far less of them clustered near the top. This indicates that there is a far more healthy metagame, likely composed of many of the decks inside of the spike around 0.6 to 0.75. The critical distinction is that none of these decks are certinly dominant. This means that many of them have weaknesses to other high level decks, rendering many decks more competitive than in the game represented by the first figure. 
+In the first figure we have a much wider and flatter distribution, where as in the second, much more of the decks are centered around a 50\% winrate. In the first distribution we also notice a spike in the winrates between approximately 0.75 and 1.00, with a few decks very close to a 100\% winrate. This indicates that there are a group of `meta decks' that occupy this 0.75 to 1.00 payoff zone, which render almost all of the other decks non-competitive. By comparison, in the second figure there are no decks with nearly as high of a winrate as in the first, and there are far less of them clustered near the top. This indicates that there is a far more healthy metagame, likely composed of many of the decks inside of the spike around 0.6 to 0.75. The critical distinction is that none of these decks are certinly dominant. This means that many of them have weaknesses to other high level decks, rendering many decks more competitive than in the game represented by the first figure. 
 
 \subsection{Experiment design}
 
