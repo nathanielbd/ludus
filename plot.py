@@ -31,14 +31,14 @@ def run_group(cards):
                 multiprocess=True
             )
 
-def histogram(cards):
+def histogram(cards, path, title="Round Robin Winrates"):
     results = run_group(cards)
-    values = list(map(lambda x: x.avg_payoff, results))
+    values = list(map(lambda x: metrics.payoff_winrate(x.avg_payoff), results))
 
     fig = plt.figure()
     plt.hist(values, bins=50)
     plt.title("Round Robin Average Payoffs")
-    fig.savefig(f"{sys.argv[1]}/hist.png")
+    fig.savefig(path)
 
 def set_atk(c, v):
     c.base_atk = v
@@ -113,10 +113,11 @@ def makeplot(data, name, title="Plot 2D array", xaxis=None, yaxis=None):
     fig.savefig(name)
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.WARNING, filename=f"{sys.argv[1]}/log")
+    logging.basicConfig(level=logging.WARNING)
     log.setLevel(logging.WARNING)
 
-    histogram(sa.build_cards(4, 5, 8, 8, 4, 8, 3, 3, 3, 5))
+    histogram(sa.build_cards(1, 3, 4, 3, 3, 1, 7, 8, 5, 7), f"{sys.argv[1]}/special_only_1_3_4_3_3_1_7_8_5_7.png")
+    histogram(sa.build_cards(4, 5, 8, 8, 4, 8, 3, 3, 3, 5), f"{sys.argv[1]}/special_only_4_5_8_8_4_8_3_3_3_5.png")
 
     exit(0)
 
