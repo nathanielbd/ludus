@@ -112,9 +112,8 @@ def makeplot(data, name, title="Plot 2D array", xaxis=None, yaxis=None):
     fig.savefig(name)
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.WARNING)
+    logging.basicConfig(level=logging.WARNING, filename=f"{sys.argv[1]}/log")
     log.setLevel(logging.WARNING)
-    ac.log.setLevel(logging.DEBUG)
 
     bruiser = colormap([tourney.BEAR, tourney.TANK, tourney.EXPLODE_ON_DEATH, tourney.RAMPAGE, tourney.FRIENDLY_VAMPIRE, tourney.GROW_ON_DAMAGE], var1_card=tourney.BRUISER)
     with open(f"{sys.argv[1]}/bruiser.pickle", "wb") as pickleout:
