@@ -70,11 +70,35 @@ def compare_metrics() -> None:
         except KeyError:
             out = open(f"{trialdir}_results.txt", "w")
             out.write("# min error, low quartile, median, high quartile, max error, mean error\n")
+            outfiles[trialdir] = out
         results = list(results)
         for metric in compute_error_metrics(trialdir, trialname, results, round_robin):
             out.write(f"{metric}, ")
         out.write("\n")
 
+import matplotlib.pyplot as plt
+
+def make_figure() -> None:
+    sizes = [2**x for x in range(11)]
+    dfs = []
+    for size in sizes:
+        dfs.append(np.genfromtxt(f'group_size_{size}_results.txt', delimiter=',')[:,:-1])
+    dfs = np.array(dfs)
+    plt.errorbar(sizes, np.average(dfs[:,:,0], axis=1), yerr=np.std(dfs[:,:,0], axis=1), label='minimum errors')
+    plt.errorbar(sizes, np.average(dfs[:,:,1], axis=1), yerr=np.std(dfs[:,:,1], axis=1), label='low quartile errors')
+    plt.errorbar(sizes, np.average(dfs[:,:,2], axis=1), yerr=np.std(dfs[:,:,2], axis=1), label='median errors')
+    plt.errorbar(sizes, np.average(dfs[:,:,3], axis=1), yerr=np.std(dfs[:,:,3], axis=1), label='high quartile errors')
+    plt.errorbar(sizes, np.average(dfs[:,:,4], axis=1), yerr=np.std(dfs[:,:,4], axis=1), label='maximum errors')
+    plt.errorbar(sizes, np.average(dfs[:,:,5], axis=1), yerr=np.std(dfs[:,:,5], axis=1), label='mean errors')
+    plt.scatter([1728], [0], label='round-robin')
+    plt.legend()
+    plt.xscale('log')
+    plt.title('Group versus Round-robin tournament errors')
+    plt.xlabel('Group size (cards)')
+    plt.ylabel('Absolute Error (win rate)')
+    plt.savefig('group_vs_rr_fig.png')
+
 
 if __name__ == "__main__":
-    compare_metrics()
+    # compare_metrics()
+    make_figure()
