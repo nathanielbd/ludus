@@ -21,7 +21,7 @@ class PainSplitter(Card):
         return super().__eq__(self, other) and self.dmg_percent == other.dmg_percent
 
     def __hash__(self):
-        return hash(super().__hash__(), self.dmg_percent)
+        return hash((super().__hash__(), self.dmg_percent))
 
     def take_damage(self, monster: Monster, gamestate: GameState, damage: int) -> None:
         if damage > 0 and monster.is_alive():

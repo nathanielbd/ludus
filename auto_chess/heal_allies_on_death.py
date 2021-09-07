@@ -17,7 +17,7 @@ class HealOnDeath(Card):
         return super().__eq__(self, other) and self.explode_heal == other.explode_heal
 
     def __hash__(self):
-        return hash(super().__hash__(), self.explode_heal)
+        return hash((super().__hash__(), self.explode_heal))
 
     def on_death(self, monster: Monster, gamestate: GameState) -> None:
         log.info((f"{monster.print_at_game_state(gamestate)} "

@@ -24,7 +24,7 @@ class TimeBomb(Card):
         return super().__eq__(self, other) and self.detonation_time == other.detonation_time
 
     def __hash__(self):
-        return hash(super().__hash__(), self.detonation_time)
+        return hash((super().__hash__(), self.detonation_time))
 
     def before_combat(self, monster: Monster, gamestate: GameState) -> None:
         """If enough time has elapsed, explode!"""

@@ -22,10 +22,10 @@ NUM_RUNS = 24
 
 def run_group(cards):
     decks = ac.possible_decks(3, cards)
-    return sampling.group_tournament(
+    return sampling.round_robin(
                 ac.play_auto_chess,
                 decks,
-                group_size=GROUP_SIZE,
+                # group_size=GROUP_SIZE,
             )
 
 def histogram():
@@ -51,7 +51,9 @@ def noop(c, v):
     return
 
 def single_run(cards):
-    return metrics.std_dev_metric(run_group(cards))
+    rv = metrics.std_dev_metric(run_group(cards))
+    print(cards, rv)
+    return rv
 
 def mean_of_multiple_runs(cards):
     runs = []
@@ -88,7 +90,7 @@ def colormap(
             row.append(copy.deepcopy(cards))
         
         with Pool(THREAD_COUNT) as p:
-            results.append(list(p.map(mean_of_multiple_runs, row)))
+            results.append(list(p.map(single_run, row)))
 
     return results
 
@@ -111,6 +113,7 @@ def makeplot(data, name, title="Plot 2D array", xaxis=None, yaxis=None):
 if __name__ == "__main__":
     logging.basicConfig(level=logging.WARNING)
     log.setLevel(logging.WARNING)
+    ac.log.setLevel(logging.DEBUG)
 
     bruiser = colormap([tourney.BEAR, tourney.TANK, tourney.EXPLODE_ON_DEATH, tourney.RAMPAGE, tourney.FRIENDLY_VAMPIRE, tourney.GROW_ON_DAMAGE], var1_card=tourney.BRUISER)
     with open(f"{sys.argv[1]}/bruiser.pickle", "wb") as pickleout:

@@ -25,7 +25,7 @@ class IgnoreFirstDamage(Card):
         return super().__eq__(self, other) and self.armor_points == other.armor_points
 
     def __hash__(self):
-        return hash(super().__hash__(), self.armor_points)
+        return hash((super().__hash__(), self.armor_points))
 
     def take_damage(self, monster: Monster, gamestate: GameState, damage: int) -> None:
         if monster["armor_points"] > 0:

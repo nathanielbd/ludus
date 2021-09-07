@@ -47,7 +47,7 @@ If you want do define a new hook on Card, you must:
 
 import collections
 import itertools
-from typing import Iterable, Optional, NamedTuple, Sequence
+from typing import Iterable, Optional, NamedTuple, Sequence, Tuple, TypedDict
 import logging
 from analysis import GamePayoffs
 
@@ -446,7 +446,14 @@ class _Game:
         return TIE
 
 
+GAME_HASH_TABLE: dict[Tuple[Tuple[Card, Card, Card], Tuple[Card, Card, Card]], GamePayoffs] = {}
 
+def decks_to_tuple(deck: Iterable[Card]):
+    if len(deck) != 3:
+        log.error(f"Invalid deck length {deck}")
+        return None
+    else:
+        return tuple([deck[0], deck[1], deck[2]])
 
 def play_auto_chess(
         p0_deck: Iterable[Card],
@@ -461,8 +468,21 @@ def play_auto_chess(
     tie.
 
     """
-    return _Game(p0_deck, p1_deck).play()
+    deck0 = decks_to_tuple(p0_deck)
+    deck1 = decks_to_tuple(p1_deck)
 
+    if deck0 == None or deck1 == None:
+        return _Game(p0_deck, p1_deck).play()
+
+    cached = GAME_HASH_TABLE.get((deck0, deck1))
+    if cached != None:
+        log.debug(f"Using cached value {cached} for decks {(deck0, deck1)}")
+        return cached
+
+    result = _Game(p0_deck, p1_deck).play()
+    GAME_HASH_TABLE[(deck0, deck1)] = result
+    log.debug(f"Cached new value {result} for decks {(deck0, deck1)}")
+    return result
 
 def possible_decks(deck_size: int, cards: Sequence[Card]) -> list[Sequence[Card]]:
     return list(itertools.product(cards, repeat=deck_size))

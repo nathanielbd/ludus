@@ -23,7 +23,7 @@ class RampAge(Card):
         return super().__eq__(self, other) and self.middle_age == other.middle_age
 
     def __hash__(self):
-        return hash(super().__hash__(), self.middle_age)
+        return hash((super().__hash__(), self.middle_age))
 
     def on_game_start(self, monster: Monster, gamestate: GameState) -> None:
         monster["current_age"] = 0

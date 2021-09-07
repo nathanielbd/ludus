@@ -21,7 +21,7 @@ class HealthDonor(Card):
         return super().__eq__(self, other) and self.heal_percent == other.heal_percent
 
     def __hash__(self):
-        return hash(super().__hash__(), self.heal_percent)
+        return hash((super().__hash__(), self.heal_percent))
 
     def heal(self, monster: Monster, gamestate: GameState, health: int) -> None:
         if health > 0:
