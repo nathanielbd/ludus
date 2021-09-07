@@ -15,7 +15,7 @@ from multiprocessing import Pool
 
 log = logging.getLogger(__name__)
 
-THREAD_COUNT = 16
+THREAD_COUNT = 12
 GROUP_SIZE = 96
 # Number of runs to average over
 NUM_RUNS = 24
@@ -26,6 +26,7 @@ def run_group(cards):
                 ac.play_auto_chess,
                 decks,
                 # group_size=GROUP_SIZE,
+                multiprocess=True
             )
 
 def histogram():
