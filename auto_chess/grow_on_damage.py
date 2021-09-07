@@ -16,6 +16,12 @@ class GrowOnDamage(Card):
 
     def __str__(self) -> str:
         return f"<GrowOndamage({self.atk_per_hit}) {self.name} ({self.base_atk}/{self.health})>"
+    
+    def __eq__(self, other):
+        return super().__eq__(self, other) and self.atk_per_hit == other.atk_per_hit
+
+    def __hash__(self):
+        return hash(super().__hash__(), self.atk_per_hit)
 
     def current_atk(self, monster: Monster, gamestate: GameState) -> int:
         try:

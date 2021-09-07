@@ -19,6 +19,12 @@ class RampAge(Card):
     def __str__(self) -> str:
         return f"<RampAge({self.middle_age}) {self.name} ({self.base_atk}/{self.health})>"
 
+    def __eq__(self, other):
+        return super().__eq__(self, other) and self.middle_age == other.middle_age
+
+    def __hash__(self):
+        return hash(super().__hash__(), self.middle_age)
+
     def on_game_start(self, monster: Monster, gamestate: GameState) -> None:
         monster["current_age"] = 0
         super().on_game_start(monster, gamestate)

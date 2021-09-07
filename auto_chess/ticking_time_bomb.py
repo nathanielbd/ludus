@@ -20,6 +20,12 @@ class TimeBomb(Card):
     def __str__(self) -> str:
         return f"<TimeBomb({self.detonation_time}) {self.name} ({self.base_atk}/{self.health})>"
 
+    def __eq__(self, other):
+        return super().__eq__(self, other) and self.detonation_time == other.detonation_time
+
+    def __hash__(self):
+        return hash(super().__hash__(), self.detonation_time)
+
     def before_combat(self, monster: Monster, gamestate: GameState) -> None:
         """If enough time has elapsed, explode!"""
         if monster["current_time"] > self.detonation_time:

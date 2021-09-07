@@ -17,6 +17,12 @@ class HealthDonor(Card):
     def __str__(self) -> str:
         return f"<HealthDonor({self.heal_percent}) {self.name} ({self.base_atk}/{self.health})>"
 
+    def __eq__(self, other):
+        return super().__eq__(self, other) and self.heal_percent == other.heal_percent
+
+    def __hash__(self):
+        return hash(super().__hash__(), self.heal_percent)
+
     def heal(self, monster: Monster, gamestate: GameState, health: int) -> None:
         if health > 0:
             if len(gamestate.player.monsters) == 0:

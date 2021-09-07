@@ -15,6 +15,12 @@ class FriendlyVampire(Card):
 
     def __str__(self) -> str:
         return f"<FriendlyVampire({self.heal_amount}) {self.name} ({self.base_atk}/{self.health})>"
+    
+    def __eq__(self, other):
+        return super().__eq__(self, other) and self.heal_amount == other.heal_amount
+
+    def __hash__(self):
+        return hash(super().__hash__(), self.heal_amount)
 
     def before_combat(self, monster: Monster, gamestate: GameState) -> None:
         heal_target = None

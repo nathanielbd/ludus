@@ -12,6 +12,12 @@ class ExplodeOnDeath(Card):
 
     def __str__(self) -> str:
         return f"<ExplodeOnDeath({self.explode_damage}) {self.name} ({self.base_atk}/{self.health})>"
+    
+    def __eq__(self, other):
+        return super().__eq__(self, other) and self.explode_damage == other.explosion_damage
+
+    def __hash__(self):
+        return hash(super().__hash__(), self.explode_damage)
 
     def on_death(self, monster: Monster, gamestate: GameState) -> None:
         log.info((f"{monster.print_at_game_state(gamestate)} explodes "
