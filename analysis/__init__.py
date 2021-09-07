@@ -180,7 +180,7 @@ def round_robin(
 
     if pickle_matrix:
         with open(pickle_matrix, "wb") as picklefile:
-            pickle.dump(payoffs.tolist())
+            pickle.dump(payoffs.tolist(), picklefile)
 
     payoff_avgs = np.mean(payoffs, axis=1, dtype=np.float64)
 
