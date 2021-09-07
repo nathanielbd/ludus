@@ -87,15 +87,11 @@ def vanilla_cards_expt():
 
 
 EXPERIMENTS = (
-    (only_special_opt, "only_special"),
-    (vanilla_cards_expt, "vanilla_cards"),
     (optimize_five_atkhp, "optimize_five_atkhp"),
     (set_rotation, "set_rotation"),
-    (optimize_rand_atkhp, "optimize_rand_atkhp"),
-    (optimize_rand_atkhp, "optimize_rand_atkhp_again"),
 
     # leave this last!
-    (round_robin_optimize, "round_robin_optimize"),
+    # (round_robin_optimize, "round_robin_optimize"),
 )
 
 

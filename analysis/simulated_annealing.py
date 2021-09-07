@@ -187,12 +187,12 @@ def genetic_optimize(metric, group_size, num_genes, build_cards_fn, num_decks=No
             return evaluations[key]
 
     ga = pygad.GA(
-        num_generations=16,
+        num_generations=32,
         num_parents_mating=2,
         # num_generations=1,
         # num_parents_mating=2,
         fitness_func=fitness_func,
-        sol_per_pop=4,
+        sol_per_pop=8,
         # sol_per_pop=4,
         num_genes=num_genes,
         gene_type=int,

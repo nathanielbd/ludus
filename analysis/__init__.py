@@ -1,8 +1,9 @@
 import numpy as np
 import pathos.multiprocessing as mproc  # type: ignore
 import itertools
-from typing import Callable, Sequence, TypeVar, Iterable, NamedTuple, Any
+from typing import Callable, Sequence, TypeVar, Iterable, NamedTuple, Any, Optional
 import logging
+import pickle
 
 
 Deck = TypeVar("Deck")
@@ -142,6 +143,7 @@ def round_robin(
         decks: Sequence[Deck],
         *,
         multiprocess: bool = False,
+        pickle_matrix: Optional[str] = None,
 ) -> Iterable[DeckResults]:
     """Compute and return the Pareto optimal frontier among the decks.
 
@@ -175,6 +177,10 @@ def round_robin(
             _jobs_iterator(decks),
         ),
     )
+
+    if pickle_matrix:
+        with open(pickle_matrix, "wb") as picklefile:
+            pickle.dump(payoffs.tolist())
 
     payoff_avgs = np.mean(payoffs, axis=1, dtype=np.float64)
 
