@@ -9,9 +9,13 @@ We then compute the average error over all of the decks, and we can see a steady
 
 % Another table
 
-The next experiment we ran was to optimize a set of four basic cards, with no extra mechanics. 
+ \subsection{Optimizing cards without special mechanisms}
 
-We then ran an experiment to optimize a number of cards, each with a special mechanic. Each of these cards was assigned an intuitive value for it's attack and health, as a game designer might do. We then optimized over the stats that controlled the special mechanics of these cards. We were interested to see how well it would be possible to optimize the game with these constraints, and how impactful the special mechanics would be for the overall balance of the game. The cards used in this experiment are in Table~\ref{tab:group_vs_rr_params}.
+The next experiment was to optimize a set of four basic cards, with no extra mechanics. We hypothesized that the "optimal" solution in terms of the standard deviation metric would be to have 4 identical cards, because then there would be only one card and thus zero standard deviation in the winrate of one card. We also recognized, however, that due to the time constraints placed on our optimization algorithm, there was no guarantee it would find this solution. This case seemed even more interesting from a game design perspective, as a game with only a single card is obviously an uninteresting game, and we would like to see what "almost-optimal" solutions appear for this setup.
+
+ \subsection{Optimizing only statistics for special mechanisms}
+
+The third experiment was to optimize a number of cards, each with a special mechanic. Each of these cards was assigned an intuitive value for it's attack and health, as a game designer might do. We then optimized over the stats that controlled the special mechanics of these cards. We were interested to see how well it would be possible to optimize the game with these constraints, and how impactful the special mechanics would be for the overall balance of the game. The cards used in this experiment are in Table~\ref{tab:special_cards}.
 
 \begin{table*}[t]
 \centering
@@ -48,12 +52,54 @@ We then ran an experiment to optimize a number of cards, each with a special mec
 \label{tab:group_vs_rr_params}
 \end{table*}
 
-% \subsection{Optimizing cards without special mechanisms}
+\subsection{Optimizing health points, attack, and statistics for special mechanisms} \label{sec:first_set}
 
-% \subsection{Optimizing only statistics for special mechanisms}
+\subsection{Optimizing after a set rotation}
 
-% \subsection{Optimizing after a set rotation}
+Another common scenario encountered by designers of trading card games is that of releasing a new set or batch of cards, while maintaining the compatibility, fairness, and competitiveness of the previously released cards. To apply our toolset to this problem we first took the set of five cards and optimized solution found in Section~\ref{sec:first_set}. This represents the first set of cards released. Next we selected another five cards, described in table Table~\ref{tab:second_set}, and optimized them, while keeping the values from the first set fixed at the solution found previously. 
 
-% \subsection{Optimizing health points, attack, and statistics for special mechanisms}
+% Compare this to the solution found by treating all 10 cards as one set
+
+\begin{table*}[t]
+\centering
+\begin{tabular}{||c c c c||} 
+ \hline
+ Card & Optimized Attack & Optimized Health & Optimized Variable Mechanic (see Section~\ref{sec:ab-game-def})\\ [0.5ex]
+ \hline
+ Survivalist &  &  & N/A \\
+ \hline
+ Morph Attack &  &  & N/A \\
+ \hline
+ Ignore First Damage &  &  & \\
+ \hline
+ Explode On Death &  &  &  \\ 
+ \hline
+ Vanilla &  &  &  \\
+ \hline
+\end{tabular}
+\caption{List of cards in the first set, and their optimized solution}
+\label{tab:first_set}
+\end{table*}
+
+\begin{table*}[t]
+\centering
+\begin{tabular}{||c c c c||} 
+ \hline
+ Card & Optimized Attack & Optimized Health & Optimized Variable Mechanic (see Section~\ref{sec:ab-game-def})\\ [0.5ex]
+ \hline
+ Friendly Vampire &  &  &  \\
+ \hline
+ Grow On Damage &  &  &  \\
+ \hline
+ Heal On Death &  &  & \\
+ \hline
+ Rampage &  &  &  \\ 
+ \hline
+ Vanilla &  &  &  \\
+ \hline
+\end{tabular}
+\caption{List of cards in the second set, and their optimized solution}
+\label{tab:second_set}
+\end{table*}
 
 % \subsubsection{Optimizing an exhaustive round-robin tournament}
