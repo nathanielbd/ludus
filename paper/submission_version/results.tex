@@ -13,7 +13,7 @@ We then compute the average error over all of the decks, and we can see a steady
 
 The next experiment was to optimize a set of four basic cards, with no extra mechanics. We hypothesized that the "optimal" solution in terms of the standard deviation metric would be to have 4 identical cards, because then there would be only one card and thus zero standard deviation in the winrate of one card. We also recognized, however, that due to the time constraints placed on our optimization algorithm, there was no guarantee it would find this solution. This case seemed even more interesting from a game design perspective, as a game with only a single card is obviously an uninteresting game, and we would like to see what "almost-optimal" solutions appear for this setup.
 
- \subsection{Optimizing only statistics for special mechanisms}
+ \subsection{Optimizing only statistics for special mechanics}
 
 The third experiment was to optimize a number of cards, each with a special mechanic. Each of these cards was assigned an intuitive value for it's attack and health, as a game designer might do. We then optimized over the stats that controlled the special mechanics of these cards. We were interested to see how well it would be possible to optimize the game with these constraints, and how impactful the special mechanics would be for the overall balance of the game. The cards used in this experiment are in Table~\ref{tab:special_cards}.
 
@@ -48,18 +48,15 @@ The third experiment was to optimize a number of cards, each with a special mech
  Time Bomb & 1 & 8 & Number of interactions before it will explode during the next battle \\ 
  \hline
 \end{tabular}
-\caption{Variable and set parameters for the \textit{group versus round-robin} experiment}
+\caption{Variable and set parameters for the \textit{optimize special mechanics} experiment}
 \label{tab:group_vs_rr_params}
 \end{table*}
 
-\subsection{Optimizing health points, attack, and statistics for special mechanisms} \label{sec:first_set}
+\subsection{Optimizing health points, attack, and statistics for special mechanics} \label{sec:first_set}
 
-\subsection{Optimizing after a set rotation}
+After fixing the attack and health, and focusing solely on the special mechanics, the next logical experiment is to tune both the attack and health, as well as the special mechanics. To reduce the huge dimensionality of this experiment we selected only five cards to optimize. They are listed in Table~\ref{tab:first_set}.
 
-Another common scenario encountered by designers of trading card games is that of releasing a new set or batch of cards, while maintaining the compatibility, fairness, and competitiveness of the previously released cards. To apply our toolset to this problem we first took the set of five cards and optimized solution found in Section~\ref{sec:first_set}. This represents the first set of cards released. Next we selected another five cards, described in table Table~\ref{tab:second_set}, and optimized them, while keeping the values from the first set fixed at the solution found previously. 
-
-% Compare this to the solution found by treating all 10 cards as one set
-
+% First Set
 \begin{table*}[t]
 \centering
 \begin{tabular}{||c c c c||} 
@@ -81,6 +78,15 @@ Another common scenario encountered by designers of trading card games is that o
 \label{tab:first_set}
 \end{table*}
 
+
+
+\subsection{Optimizing after a set rotation}
+
+Another common scenario encountered by designers of trading card games is that of releasing a new set or batch of cards, while maintaining the compatibility, fairness, and competitiveness of the previously released cards. To apply our toolset to this problem we first took the set of five cards and optimized solution found in Section~\ref{sec:first_set}. This represents the first set of cards released. Next we selected another five cards, described in table Table~\ref{tab:second_set}, and optimized them, while keeping the values from the first set fixed at the solution found previously. 
+
+% Compare this to the solution found by treating all 10 cards as one set
+
+% Second Set
 \begin{table*}[t]
 \centering
 \begin{tabular}{||c c c c||} 
@@ -101,5 +107,7 @@ Another common scenario encountered by designers of trading card games is that o
 \caption{List of cards in the second set, and their optimized solution}
 \label{tab:second_set}
 \end{table*}
+
+
 
 % \subsubsection{Optimizing an exhaustive round-robin tournament}

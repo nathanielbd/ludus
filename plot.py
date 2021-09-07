@@ -12,6 +12,8 @@ from typing import Callable
 import sys
 import copy
 from multiprocessing import Pool
+import experiment_queue as exp
+import analysis.simulated_annealing as sa
 
 log = logging.getLogger(__name__)
 
@@ -29,10 +31,9 @@ def run_group(cards):
                 multiprocess=True
             )
 
-def histogram():
-    values = []
-    with open(f"round_robin/trial_0", "rb") as picklein:
-        values = list(map(lambda x: x.avg_payoff, pickle.load(picklein)))
+def histogram(cards):
+    results = run_group(cards)
+    values = list(map(lambda x: x.avg_payoff, results))
 
     fig = plt.figure()
     plt.hist(values, bins=50)
@@ -114,6 +115,10 @@ def makeplot(data, name, title="Plot 2D array", xaxis=None, yaxis=None):
 if __name__ == "__main__":
     logging.basicConfig(level=logging.WARNING, filename=f"{sys.argv[1]}/log")
     log.setLevel(logging.WARNING)
+
+    histogram(sa.build_cards(4, 5, 8, 8, 4, 8, 3, 3, 3, 5))
+
+    exit(0)
 
     bruiser = colormap([tourney.BEAR, tourney.TANK, tourney.EXPLODE_ON_DEATH, tourney.RAMPAGE, tourney.FRIENDLY_VAMPIRE, tourney.GROW_ON_DAMAGE], var1_card=tourney.BRUISER)
     with open(f"{sys.argv[1]}/bruiser.pickle", "wb") as pickleout:

@@ -8,22 +8,6 @@ metadata:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: ludus-data
-  namespace: ludus
-spec:
-  accessModes:
-    - ReadWriteOnce
-  volumeMode: Filesystem
-  resources:
-    requests:
-      storage: 8Gi
-  storageClassName: cephfs
-
----
-
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
   name: ludus-data-many
   namespace: ludus
 spec:
@@ -48,54 +32,15 @@ spec:
       initContainers:
       - name: mkdir
         image: ubuntu:xenial
-        command: ["mkdir", "-p", "/data/03/"]
+        command: ["mkdir", "-p", "/data/07/"]
         volumeMounts:
         - mountPath: "/data"
           name: data
       containers:
       - name: ludus
-        image: ghcr.io/nathanielbd/ludus:master
+        image: ghcr.io/nathanielbd/ludus:git-4dbbe1a
         imagePullPolicy: Always
-        command: ["pipenv", "run", "python3", "./plot.py", "/data/03/"]
-        volumeMounts:
-        - mountPath: "/data"
-          name: data
-      - name: debug
-        image: ubuntu:xenial
-        command: [ "/bin/bash", "-c", "--" ]
-        args: [ "while true; do sleep 3600; done;" ]
-        volumeMounts:
-        - mountPath: "/data"
-          name: data
-      restartPolicy: Never
-      volumes:
-        - name: data
-          persistentVolumeClaim:
-            claimName: ludus-data
-  backoffLimit: 4
-
----
-
-apiVersion: batch/v1
-kind: Job
-metadata:
-  name: plotting-data-with-mean
-  namespace: ludus
-spec:
-  template:
-    spec:
-      initContainers:
-      - name: mkdir
-        image: ubuntu:xenial
-        command: ["mkdir", "-p", "/data/05/"]
-        volumeMounts:
-        - mountPath: "/data"
-          name: data
-      containers:
-      - name: ludus
-        image: ghcr.io/nathanielbd/ludus:git-7f48ed3
-        imagePullPolicy: Always
-        command: ["pipenv", "run", "python3", "./plot.py", "/data/05/"]
+        command: ["pipenv", "run", "python3", "./plot.py", "/data/07/"]
         volumeMounts:
         - mountPath: "/data"
           name: data
