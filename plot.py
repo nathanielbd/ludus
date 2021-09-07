@@ -15,7 +15,11 @@ from multiprocessing import Pool
 
 log = logging.getLogger(__name__)
 
-GROUP_SIZE = 1024
+THREAD_COUNT = 16
+GROUP_SIZE = 96
+# Number of runs to average over
+NUM_RUNS = 32
+
 def run_group(cards):
     decks = ac.possible_decks(3, cards)
     return sampling.group_tournament(
@@ -46,8 +50,15 @@ def set_rampage(c, v):
 def noop(c, v):
     return
 
-def f(cards):
+def single_run(cards):
     return metrics.std_dev_metric(run_group(cards))
+
+def mean_of_multiple_runs(cards):
+    runs = []
+    for i in range(0, NUM_RUNS):
+        runs.append(single_run(cards))
+    print(cards, runs, np.mean(runs))
+    return np.mean(runs)
 
 def colormap(
     base_cards: list[ac.Card],
@@ -76,8 +87,8 @@ def colormap(
             print(cards)
             row.append(cards)
 
-        with Pool(5) as p:
-            results.append(list(p.map(f, row)))
+        with Pool(THREAD_COUNT) as p:
+            results.append(list(p.map(mean_of_multiple_runs, row)))
 
     return results
 
@@ -110,8 +121,6 @@ if __name__ == "__main__":
     with open(f"{sys.argv[1]}/rampage.pickle", "wb") as pickleout:
         pickle.dump(rampage, pickleout)
     makeplot(rampage, f"{sys.argv[1]}/rampage.png", title="Rampage", xaxis="Age")
-
-    exit(0)
 
     grow_on_damage = colormap([tourney.BEAR, tourney.TANK, tourney.BRUISER, tourney.EXPLODE_ON_DEATH, tourney.RAMPAGE, tourney.FRIENDLY_VAMPIRE], var1_card=tourney.GROW_ON_DAMAGE)
     with open(f"{sys.argv[1]}/grow_on_damage.pickle", "wb") as pickleout:

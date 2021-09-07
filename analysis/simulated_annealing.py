@@ -198,6 +198,7 @@ def genetic_optimize(metric, group_size, num_genes, build_cards_fn, num_decks=No
         gene_type=int,
         init_range_low=1,
         init_range_high=10,
+        gene_space=[list(range(1, 11))]*num_genes
     )
     ga.run()
     sol, sol_fitness, sol_idx = ga.best_solution()
