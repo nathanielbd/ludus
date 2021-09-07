@@ -10,6 +10,7 @@ paper/submission_version/eaai22_bgmmwlf.bbl
 paper/submission_version/eaai22_bgmmwlf.blg
 .pytest_cache/
 *.png
+!paper/submission_version/bruiser_vs_grow.png
 .vscode/
 paper/submission_version/.texpadtmp/
 **/*.icloud

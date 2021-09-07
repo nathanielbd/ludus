@@ -18,7 +18,7 @@ log = logging.getLogger(__name__)
 THREAD_COUNT = 16
 GROUP_SIZE = 96
 # Number of runs to average over
-NUM_RUNS = 32
+NUM_RUNS = 24
 
 def run_group(cards):
     decks = ac.possible_decks(3, cards)
@@ -36,7 +36,7 @@ def histogram():
     fig = plt.figure()
     plt.hist(values, bins=50)
     plt.title("Round Robin Average Payoffs")
-    fig.savefig(f"hist.png")
+    fig.savefig(f"{sys.argv[1]}/hist.png")
 
 def set_atk(c, v):
     c.base_atk = v
@@ -72,21 +72,21 @@ def colormap(
     results = []
     for i in var1_range:
         row = []
-        card1 = var1_card
+        card1 = copy.deepcopy(var1_card)
         var1_key(card1, i)
 
         for j in var2_range:
-            cards = base_cards + [card1]
+            cards = copy.deepcopy(base_cards)
             if var2_card is None:
-                card2 = var1_card
-                var2_key(card2, j)    
+                var2_key(card1, j)
+                cards.append(card1)
             else:
                 card2 = copy.deepcopy(var2_card)
                 var2_key(card2, j)
+                cards.append(card1)
                 cards.append(card2)
-            print(cards)
-            row.append(cards)
-
+            row.append(copy.deepcopy(cards))
+        
         with Pool(THREAD_COUNT) as p:
             results.append(list(p.map(mean_of_multiple_runs, row)))
 
