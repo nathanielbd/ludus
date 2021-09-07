@@ -3,6 +3,10 @@
 % Maybe explain the group tournament in more detail
 The first experiment we ran was to determine the efficacy of our sampling method. To do this, we compared the win rates of identical decks in a complete round robin tournament (every combination of decks played) with the win rate in a tournament conducted by randomly grouping decks into groups of various sizes, and then playing every combination of the decks within those groups. See for example:
 
+\begin{figure*}[tb]
+	\includegraphics[width=0.9\columnwidth]{group_vs_rr_fig}
+\end{figure*}
+
 %% Table
 
 We then compute the average error over all of the decks, and we can see a steady convergence of the two values.
@@ -48,7 +52,7 @@ The third experiment was to optimize a number of cards, each with a special mech
  Time Bomb & 1 & 8 & Number of interactions before it will explode during the next battle \\ 
  \hline
 \end{tabular}
-\caption{Variable and set parameters for the \textit{optimize special mechanics} experiment}
+\caption{Variable and set parameters for the `optimize special mechanics' experiment}
 \label{tab:group_vs_rr_params}
 \end{table*}
 
