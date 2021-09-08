@@ -80,7 +80,7 @@ For the simulator, gameplay proceeds as follows:
 	are arranged to be the rightmost card of their respective decks.
 	\item Repeat combat until one or fewer players has a surviving card
 	or the maximum number of combat phases allowed has been reached.
-	If both or neither players a surviving card, the game is a tie.
+	If both or neither players have at least one surviving card, the game is a tie.
 	Otherwise, the player with a surviving card wins.
 	\item Proceed with the tournament in a round-robin fashion. Each 
 	player plays a game with each other player once.
@@ -159,7 +159,7 @@ we chose to run the genetic algorithm with 8 solutions and 4 parents mating per 
 
 \subsection{Qualitative analysis}
 
-Another way of understanding the landscape of the metagame is through more qualitative methods. We look at two different ways of plotting data about the game results which give insights into the health and stability of the metagame. 
+Another way to understand the landscape of the metagame is through more qualitative methods. We look at two different ways of plotting data about the game results which give insights into the health and stability of the metagame. 
 
 The first plot is a sweep over two variables, typically of the same card, although not necessarily. This gives a visual representation of the metagame throughout various configurations, and can lead to some interesting insights about the relationship between cards.
 
@@ -169,7 +169,7 @@ The first plot is a sweep over two variables, typically of the same card, althou
 	\label{fig:bruiser_vs_grow}
 \end{figure}
 
-Take, for example, the plot in Figure~\ref{fig:bruiser_vs_grow}, of the value of the standard deviation metric given various values for the attack of the bruiser card and the health of the grow on damage card. The bruiser card is a vanilla card with a high attack (although variable in this situation) and one health point. The grow on damage card has a mechanic where each time it takes damage it gains one attack. Initially this card has no attack, and in this situation has a variable amount of health. 
+Take, for example, the plot in Figure~\ref{fig:bruiser_vs_grow}, of the value of the standard deviation metric given various values for the attack of the bruiser card and the health of the grow on damage card. The bruiser card is a vanilla card with a high attack (although variable in this situation) and one health point. The grow on damage card has a mechanic where each time it takes damage it gains one attack. Initially this card has no attack, and in this situation has a variable amount of health. If the grow on damage card is able to consistently become a powerful threat, it can become too strong, and a necessity for high level play, leading to an unbalanced metagame.
 
 In the figure we can see that configurations in the upper left corner, where the attack of the bruiser is greater than the health of the grow on damage card, tend to be much more favorable than the configurations in the lower right corner, where the opposite is true. This evidence supports the intuitive idea that the bruiser's high attack is a good counter to the grow on damage card, because it can quickly remove the monster before it has had enough interactions to grow its damage to a large number. This kind of information can be quite useful to a game designer, who can see very clearly that the inclusion of a high damage card can improve the metagame dramatically if the grow on damage card is found to be too powerful.
 
@@ -182,7 +182,7 @@ The second plot explored is a histogram of the deck winrates. After running a to
 	\label{fig:special_only_dist}
 \end{figure}
 
-In the first figure we have a much wider and flatter distribution, where as in the second, much more of the decks are centered around a 50\% winrate. In the first distribution we also notice a spike in the winrates between approximately 0.75 and 1.00, with a few decks very close to a 100\% winrate. This indicates that there are a group of `meta decks' that occupy this 0.75 to 1.00 payoff zone, which render almost all of the other decks non-competitive. By comparison, in the second figure there are no decks with nearly as high of a winrate as in the first, and there are far less of them clustered near the top. This indicates that there is a far more healthy metagame, likely composed of many of the decks inside of the spike around 0.6 to 0.75. The critical distinction is that none of these decks are certinly dominant. This means that many of them have weaknesses to other high level decks, rendering many decks more competitive than in the game represented by the first figure. 
+In the first figure on the left we have a much wider and flatter distribution, where as in the one on the right, much more of the decks are centered around a 50\% winrate. 
 
 \subsection{Experiment design}
 
