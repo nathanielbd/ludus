@@ -12,7 +12,7 @@ To achieve the goals outlined in the introduction, we built a simple auto-battle
 
 Beyond the auto-battler itself, we also constructed an optimization framework to find configurations of available cards which are balanced, fair, and fun. These criteria are obviously quite subjective, so new metrics are easily pluggable into the existing framework, as game designers develop new ways of capturing their goals and preferences about the metagame. A few simple options are explored within this paper as well.
 
-\subsection{Playtesting simulator}
+\subsection{Playtesting simulator} \label{sec:sim}
 
 To serve as a data source for quantitative analysis, we create
 a playtesting simulator of a simplified auto battler game. 
@@ -65,7 +65,7 @@ attack of the opponent's cards (morphing enemies) and the ability to swap
 its health points and attack whenever its attack is greater than its health 
 points (survivalist).
 
-\subsubsection{Automated playtesting procedure} \label{sec:tourney}
+\subsubsection{Match procedure} \label{sec:game}
 
 For the simulator, gameplay proceeds as follows:
 
@@ -82,8 +82,21 @@ For the simulator, gameplay proceeds as follows:
 	or the maximum number of combat phases allowed has been reached.
 	If both or neither players have at least one surviving card, the game is a tie.
 	Otherwise, the player with a surviving card wins.
-	\item Proceed with the tournament in a round-robin fashion. Each 
-	player plays a game with each other player once.
+\end{enumerate}
+
+\subsubsection{Tournament procedure} \label{sec:tourney}
+
+Over the course of a simulation, these matches are run within one of two types of tournaments:
+
+\begin{enumerate}
+	\item Round-robin tournament. Each deck plays one match against every other deck.
+	For $n$ decks, this results in $n(n-1)/2 = n^2/2 - n/2 = O(n^2)$ matches.
+	\item Group tournament. Due to the quadratic scalling of the number of matches in round-robin
+	tournaments, they quickly become prohibitively large to simulate. Thus, we may want to sample from every possible 
+	matchup in order to estimate the win rates of cards and decks. We do this by 
+	partitioning the decks into groups of uniform size and running round-robin tournaments within these groups.
+	For a group tournament with $k$ groups and $n$ total decks, this results in $k(n/k)(n/k - 1)/2 = n^2/(2k) - n/2$ matches in the case where 
+	$n$ is divisible by $k$, which is the worst case in terms of number of matches.
 \end{enumerate}
 
 Combined with a metric measuring the health of the metagame, this simulator 
@@ -109,8 +122,6 @@ vector $w$ has entries
 $w_j \in [0, 1]$, the average win rate of the decks in which
 the card at index $j$ appears. We present three metrics that 
 use this distribution of win rates among the cards.
-
-% run Jack's `plot.py` script
 
 \subsubsection{Per-card payoff}
 
@@ -195,10 +206,7 @@ Our experiments share common phases.
 	\item Build decks. We generate a set of cards and their associated attack, health points, and special parameters.
 	Depending on the experiment, some or all of these variables may be varied from simulation to simulation during the optimization process.
 	From this set of cards, the decks are permutations of 3 cards from the set, allowing for duplicates.
-	\item Run tournaments. We pit the decks against each other in a round-robin tournament. For $n$ decks,
-	the number of matches is $n(n-1)/2 = O(n^2)$. A complete round-robin tournament quickly becomes prohibitively large to simulate.
-	Thus, we may want to sample from every possible matchup in order to estimate the win rates of cards and decks. We do this by 
-	partitioning the decks into groups of uniform size and running round-robin tournaments within these groups.
+	\item Run tournaments. This will be either be a group or a round-robin tournament as described in Section~\ref{sec:tourney}.
 	\item Optimize. These tournaments are run within each iteration of our genetic algorithm to produce a metric estimating the best
 	possible health of the metagame with respect to parameters of the built decks.
 \end{enumerate}

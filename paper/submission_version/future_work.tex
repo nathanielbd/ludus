@@ -39,7 +39,8 @@ in metagame health corresponds to any phase transition in a domination graph.
 Our choice of a genetic algorithm for optimization is somewhat arbitrary. Genetic algorithms can conveniently 
 handle the familiar integer values of card parameters, unlike other optimization methods. Gradient- and Hessian-based
 methods in particular are difficult to apply to this problem due to its discrete nature and our simulator not being
-differentiable.
+differentiable. Had they been applicable, they would have solved an unmet need of qualifing the stability of optimization
+results with respect to the variable parameters.
 
 % dumb idea as the simulation is not differentiable
 % One benefit of using a different optimization method is
