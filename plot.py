@@ -25,17 +25,17 @@ NUM_RUNS = 24
 def run_group(cards, group_size=None):
     decks = ac.possible_decks(3, cards)
     if group_size != None:
-        return sampling.group_tournament(
+        return list(sampling.group_tournament(
             ac.play_auto_chess,
             decks,
             group_size=group_size
-        )
+        ))
     else:
-        return sampling.round_robin(
+        return list(sampling.round_robin(
                     ac.play_auto_chess,
                     decks,
                     multiprocess=True
-                )
+                ))
 
 def histogram(cards, path, picklefile=None, title="Round Robin Winrates", deck=True, group_size=None):
     results = run_group(cards, group_size=group_size)
