@@ -4,7 +4,7 @@ import itertools
 from typing import Callable, Sequence, TypeVar, Iterable, NamedTuple, Any, Optional
 import logging
 import pickle
-
+import traceback
 
 Deck = TypeVar("Deck")
 
@@ -92,7 +92,7 @@ def _run_multiprocess(
         try:
             payoff = payoff_fn(job.deck_i, job.deck_j)
         except Exception as err:
-            log.error(
+            log.exception(
                 "error %s in game at %d, %d between %s, %s",
                 err,
                 job.i, job.j,

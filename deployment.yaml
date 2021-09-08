@@ -38,7 +38,7 @@ spec:
           name: data
       containers:
       - name: ludus
-        image: ghcr.io/nathanielbd/ludus:git-fe1df60
+        image: ghcr.io/nathanielbd/ludus:git-4076126
         imagePullPolicy: Always
         command: ["pipenv", "run", "python3", "./plot.py", "/data/09/"]
         volumeMounts:
