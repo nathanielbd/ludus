@@ -150,7 +150,7 @@ very high or low win rates compared to others.
 Entropy of the win rates is a metric we may seek to maximize. When entropy is maximized, we approach a uniform
 distribution of cards over win rates.
 
-\subsubsection{Other metrics}
+\subsubsection{Other metrics} \label{sec:othermetrics}
 
 Our framework is flexible; researchers and designers alike may develop their own metrics corresponding to their
 own ideas of what constitutes a healthy metagame. For example, a game designer may know from historical data that
@@ -159,7 +159,7 @@ The designer could conceivably use the Wasserstein distance or Kullback--Leibler
 divergence between this historical distribution and another distribution as a metric. Minimizing this metric 
 might maintain similar levels of parity through future iterations of card releases.
 
-\subsection{Optimization}
+\subsection{Optimization} \label{sec:optimization}
 
 We use the \citeauthor{gad2021pygad}'s \shortcite{gad2021pygad} PyGAD python library for genetic optimization algorithms. This will attempt to find the optimal values of
 parameters, which may include health points, attack, and special parameters, that optimizes

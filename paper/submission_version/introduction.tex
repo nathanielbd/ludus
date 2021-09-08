@@ -35,16 +35,79 @@ affects multiple games, the deck-building process is called the
 
 \subsection{Balance and Metagame Health}
 % what does it mean for a metagame to be healthy?
+Deck-building games and metagames are often described as being either
+\newterm{healthy} or \newterm{unhealthy}. The health of a metagame
+depends on a variety of factors, of which we highlight
+\newterm{diversity}. Diverse metagames are those where many different
+decks coexist with similar overall win rates.
 
 % what's the state of the art on how to get there? why isn't it good
 % enough?
+Metagame balance in deck-building games poses a challenge for game
+designers, since a relatively small number of cards can be combined
+into a large number of possible decks, that in turn can be paired
+into an even larger number of match-ups. \textit{Magic: the Gathering}
+relies on human playtesting in advance of releasing a set
+\cite{designing-hod-ffl}. Advance human playtesting has repeatedly
+failed to identify card designs or sets that lead to unhealthy
+metagames. Even when it does successfully identify and fix unhealthy
+metagames, human playtesting requires significant labor and time from
+a number of skilled players.
+
+In addition, digital card games like \textit{Hearthstone} collect and
+analyze data after release from consumer play
+\cite{blizzard-gamebalancetalk-keg2019}. While inexpensive, this
+approach is insufficient on its own because it requires a significant
+number of consumers to play in unhealthy metagames in order to
+identify problematic designs.
 
 % what goes wrong when the current approaches fail? (you lose players,
 % don't gain new players, so you lose money)
 
+Healthy and diverse metagames are desirable because they lead to more
+varied, and therefore more enjoyable, battles. In a homogenous
+metagame, any two battles are relatively similar. This reduced novelty
+bores players, who may then reduce their involvement with the game and
+purchase fewer products. Also, unsatisfied players often share their
+opinions on social media, discouraging new players from joining the
+game.
+
 % (case study: eldraine)
 
+For example, \textit{Magic: the Gathering}'s set \textit{Throne of
+  Eldraine} was criticised for containing a number of overpowered
+cards. Decks which contained these powerful cards reliably beat decks
+without them. High-level players quickly converged on a small number
+of deck designs which could best utilize the powerful \textit{Throne
+  of Eldraine} cards. On at least one occasion, a tournamnt was
+canceled due to lack of interest \cite{oko-meta-drama}. Wizards of the
+Coast, the company responsible for \textit{Magic: the Gathering},
+banned a total of six cards from \textit{Throne of Eldraine} in
+response \cite{mtg-banlist, mtg-bnr-nov-2019, mtg-bnr-jun-2020,
+  mtg-bnr-aug-2020}. Even after the bans, high-profile professional
+players have complained on social media about \textit{Throne of
+  Eldraine}'s affect on the \textit{Magic: the Gathering} metagame
+\cite{lsv-eldraine-complaints}.
+
 \subsection{Our work}
+
+In this paper, we attempt to reduce the cost of playtesting without
+exposing consumers to unhealthy metagames by automating the balancing
+process. In sections \ref{sec:sim} through \ref{sec:game} develop a
+simplified auto battler game designed to facilitate AI research. In
+section \ref{sec:tourney}, we present an algorithm which efficiently
+and accurately approximates the average win rates of all the decks in
+a metagame. In section \ref{sec:metrics} define three metrics which
+evaluate the diversity of a metagame. In section
+\ref{sec:othermetrics} we theorize how game designers could define
+more precise metrics for their own games. In section
+\ref{sec:optimization}, we use a genetic optimization algorithm to
+balance a metagame. In section \ref{sec:results}, we present
+experimental results evaluating the approximation algorithm descibed
+in \ref{sec:tourney} and the genetic optimization described in
+\ref{sec:optimization}.
+% todo: change  "average win rates" to "expected payoffs" ?
+
 % in this paper, we...
 
 % introduce an auto battler game
