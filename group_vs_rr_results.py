@@ -96,7 +96,7 @@ def make_figure() -> None:
     plt.title('Group versus Round-robin tournament errors')
     plt.xlabel('Group size (cards)')
     plt.ylabel('Absolute Error (win rate)')
-    plt.savefig('group_vs_rr_fig.png')
+    plt.savefig('group_vs_rr_fig.pdf', format='pdf')
 
 
 if __name__ == "__main__":
