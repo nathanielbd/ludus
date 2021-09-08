@@ -22,17 +22,23 @@ GROUP_SIZE = 96
 # Number of runs to average over
 NUM_RUNS = 24
 
-def run_group(cards):
+def run_group(cards, group_size=None):
     decks = ac.possible_decks(3, cards)
-    return sampling.round_robin(
-                ac.play_auto_chess,
-                decks,
-                # group_size=GROUP_SIZE,
-                multiprocess=True
-            )
+    if group_size != None:
+        return sampling.group_tournament(
+            ac.play_auto_chess,
+            decks,
+            group_size=group_size
+        )
+    else:
+        return sampling.round_robin(
+                    ac.play_auto_chess,
+                    decks,
+                    multiprocess=True
+                )
 
-def histogram(cards, path, picklefile=None, title="Round Robin Winrates", deck=True):
-    results = run_group(cards)
+def histogram(cards, path, picklefile=None, title="Round Robin Winrates", deck=True, group_size=None):
+    results = run_group(cards, group_size=group_size)
     if picklefile:
         with open(picklefile, "wb") as pickleout:
             pickle.dump(results, pickleout)
@@ -132,11 +138,11 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.WARNING)
     log.setLevel(logging.WARNING)
 
-    histogram(sa.build_cards(1, 3, 4, 3, 3, 1, 7, 8, 5, 7), f"{sys.argv[1]}/special_only_1_3_4_3_3_1_7_8_5_7.png", picklefile=f"{sys.argv[1]}/special_only_1_3_4_3_3_1_7_8_5_7.pickle", deck=True)
-    histogram(sa.build_cards(4, 5, 8, 8, 4, 8, 3, 3, 3, 5), f"{sys.argv[1]}/special_only_4_5_8_8_4_8_3_3_3_5.png", picklefile=f"{sys.argv[1]}/special_only_4_5_8_8_4_8_3_3_3_5.pickle", deck=True)
+    histogram(sa.build_cards(1, 3, 4, 3, 3, 1, 7, 8, 5, 7), f"{sys.argv[1]}/special_only_1_3_4_3_3_1_7_8_5_7.png", picklefile=f"{sys.argv[1]}/special_only_1_3_4_3_3_1_7_8_5_7.pickle", deck=True, group_size=None)
+    histogram(sa.build_cards(4, 5, 8, 8, 4, 8, 3, 3, 3, 5), f"{sys.argv[1]}/special_only_4_5_8_8_4_8_3_3_3_5.png", picklefile=f"{sys.argv[1]}/special_only_4_5_8_8_4_8_3_3_3_5.pickle", deck=True, group_size=None)
 
-    histogram(sa.build_cards(1, 3, 4, 3, 3, 1, 7, 8, 5, 7), f"{sys.argv[1]}/special_only_1_3_4_3_3_1_7_8_5_7_cards.png", picklefile=f"{sys.argv[1]}/special_only_1_3_4_3_3_1_7_8_5_7_cards.pickle", deck=False)
-    histogram(sa.build_cards(4, 5, 8, 8, 4, 8, 3, 3, 3, 5), f"{sys.argv[1]}/special_only_4_5_8_8_4_8_3_3_3_5_cards.png", picklefile=f"{sys.argv[1]}/special_only_4_5_8_8_4_8_3_3_3_5_cards.pickle", deck=False)
+    histogram(sa.build_cards(1, 3, 4, 3, 3, 1, 7, 8, 5, 7), f"{sys.argv[1]}/special_only_1_3_4_3_3_1_7_8_5_7_cards.png", picklefile=f"{sys.argv[1]}/special_only_1_3_4_3_3_1_7_8_5_7_cards.pickle", deck=False, group_size=None)
+    histogram(sa.build_cards(4, 5, 8, 8, 4, 8, 3, 3, 3, 5), f"{sys.argv[1]}/special_only_4_5_8_8_4_8_3_3_3_5_cards.png", picklefile=f"{sys.argv[1]}/special_only_4_5_8_8_4_8_3_3_3_5_cards.pickle", deck=False, group_size=None)
 
     exit(0)
 
