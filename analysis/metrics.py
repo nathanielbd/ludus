@@ -87,6 +87,9 @@ def per_card_winrate(
         variance_key: Callable[[float], float] = lambda n: n,
 ) -> float:
     per_card_payoffs = weighted_sum_cards(results, key=winrate_key).values()
+    if len(per_card_payoffs) < 1:
+        log.error("No per card payoffs ?")
+        return 0.0
     return sum(
         variance_key(abs(winrate_payoff(payoff)))
         for payoff in per_card_payoffs

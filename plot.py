@@ -132,11 +132,11 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.WARNING)
     log.setLevel(logging.WARNING)
 
-    histogram(sa.build_cards(1, 3, 4, 3, 3, 1, 7, 8, 5, 7), f"{sys.argv[1]}/special_only_1_3_4_3_3_1_7_8_5_7.png", deck=True)
-    histogram(sa.build_cards(4, 5, 8, 8, 4, 8, 3, 3, 3, 5), f"{sys.argv[1]}/special_only_4_5_8_8_4_8_3_3_3_5.png", deck=True)
+    histogram(sa.build_cards(1, 3, 4, 3, 3, 1, 7, 8, 5, 7), f"{sys.argv[1]}/special_only_1_3_4_3_3_1_7_8_5_7.png", picklefile=f"{sys.argv[1]}/special_only_1_3_4_3_3_1_7_8_5_7.pickle", deck=True)
+    histogram(sa.build_cards(4, 5, 8, 8, 4, 8, 3, 3, 3, 5), f"{sys.argv[1]}/special_only_4_5_8_8_4_8_3_3_3_5.png", picklefile=f"{sys.argv[1]}/special_only_4_5_8_8_4_8_3_3_3_5.pickle", deck=True)
 
-    histogram(sa.build_cards(1, 3, 4, 3, 3, 1, 7, 8, 5, 7), f"{sys.argv[1]}/special_only_1_3_4_3_3_1_7_8_5_7_cards.png", deck=False)
-    histogram(sa.build_cards(4, 5, 8, 8, 4, 8, 3, 3, 3, 5), f"{sys.argv[1]}/special_only_4_5_8_8_4_8_3_3_3_5_cards.png", deck=False)
+    histogram(sa.build_cards(1, 3, 4, 3, 3, 1, 7, 8, 5, 7), f"{sys.argv[1]}/special_only_1_3_4_3_3_1_7_8_5_7_cards.png", picklefile=f"{sys.argv[1]}/special_only_1_3_4_3_3_1_7_8_5_7_cards.pickle", deck=False)
+    histogram(sa.build_cards(4, 5, 8, 8, 4, 8, 3, 3, 3, 5), f"{sys.argv[1]}/special_only_4_5_8_8_4_8_3_3_3_5_cards.png", picklefile=f"{sys.argv[1]}/special_only_4_5_8_8_4_8_3_3_3_5_cards.pickle", deck=False)
 
     exit(0)
 
