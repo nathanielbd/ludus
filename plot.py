@@ -49,6 +49,11 @@ def histogram(cards, path, picklefile=None, title="Round Robin Winrates", deck=T
     fig = plt.figure()
     plt.hist(values, bins=50)
     plt.title(title)
+    plt.xlabel('Win rate')
+    if deck:
+        plt.ylabel('Decks')
+    else:
+        plt.ylabel('Cards')
     fig.savefig(path)
 
 def set_atk(c, v):
