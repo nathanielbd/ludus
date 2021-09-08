@@ -24,7 +24,7 @@ The results of this experiment illustrate a different failure case of our standa
 
  \subsection{Optimizing only statistics for special mechanics}
 
-The third experiment was to optimize a number of cards, each with a special mechanic. Each of these cards was assigned an intuitive value for it's attack and health, as a game designer might do. We then optimized over the stats that controlled the special mechanics of these cards. We were interested to see how well it would be possible to optimize the game with these constraints, and how impactful the special mechanics would be for the overall balance of the game. The cards used in this experiment are in Table~\ref{tab:special_cards}.
+The third experiment was to optimize a number of cards, each with a special mechanic. Each of these cards was assigned an intuitive value for it's attack and health, as a game designer might do. We then optimized the stats that controlled the special mechanics of these cards. We were interested to see how feasible it is to optimize the game with these constraints, and how impactful the special mechanics would be for the overall balance of the game. The cards used in this experiment are described in Table~\ref{tab:special_cards}.
 
 \begin{table*}[t]
 \centering
@@ -89,11 +89,11 @@ After fixing the attack and health, and focusing solely on the special mechanics
 \label{tab:first_set}
 \end{table*}
 
-The optimizer improved the winrate standard deviation from 0.0704 to 0.0584. This minimum is approximately the same as the one achieved in the previous experiment, modifying only the values of the special mechanics. 
+The optimizer improved the winrate standard deviation from 0.0704 to 0.0584. This minimum is approximately the same as the one achieved in the previous experiment, modifying only the values of the special mechanics. One important observation, however, is that in both cases the optimizer was still making good progress in the final generations of our experiments. This indicates that these minima are not global, but that with further compute time and generations they could continue to improve.
 
 \subsection{Optimizing after a set rotation}
 
-Another common scenario encountered by designers of trading card games is that of releasing a new set or batch of cards, while maintaining the compatibility, fairness, and competitiveness of the previously released cards. To apply our toolset to this problem we first took the set of five cards and optimized solution found in Section~\ref{sec:first_set}. This represents the first set of cards released. Next we selected another five cards, described in table Table~\ref{tab:second_set}, and optimized them, while keeping the values from the first set fixed at the solution found previously. 
+Another common scenario encountered by designers of trading card games is that of releasing a new set or batch of cards, while maintaining the compatibility, fairness, and competitiveness of the previously released cards. To apply our toolset to this problem we first took the set of five cards and the optimized solution found in Section~\ref{sec:first_set}. This represents the first set of cards released. Next we selected another five cards, described in table Table~\ref{tab:second_set}, and optimized them, while keeping the values from the first set fixed at the solution found previously. 
 
 % Compare this to the solution found by treating all 10 cards as one set
 
@@ -119,6 +119,7 @@ Another common scenario encountered by designers of trading card games is that o
 \label{tab:second_set}
 \end{table*}
 
+The optimizer improved the winrate standard deviation from 0.0591 to 0.0541. This is a comparatively smaller improvement than the previous experiments, however, the initial state is already in much better condition than either of the previous experiments. This is interesting, because it could indicate that adding new cards to an already well balanced set may not disturb the balance as much as one might expect. 
 
 
 % \subsubsection{Optimizing an exhaustive round-robin tournament}
