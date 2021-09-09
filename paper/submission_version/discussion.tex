@@ -1,7 +1,10 @@
-We can see that the {\sc Ludus} framework yielded some very useful results from a game design perspective. Given a small, yet representative, set of cards, our methods were able to find a much more balanced configuration, that would likely be a far more enjoyable game to play.
+We can see that the {\sc Ludus} framework yielded some very useful results from a game design perspective. Given a small, yet representative, set of cards, our methods were able to find more balanced configurations for cards that should create a far more enjoyable auto battler game to play.
 
-We also implemented an approximation method that considerably reduces the compute time necessary to run optimizations, especially for large card sets. This method randomly chunks the tournament into smaller groups, which only compete within themselves. We tested this method, and determined that under most circumstances, the approximations it produces are close enough to the result of the larger tournament to produce satisfactory optimization results. 
+We also implemented an approximation method that considerably reduces the computation time necessary to evaluate configurations during optimization, especially for large card sets. This method randomly breaks the tournament into smaller groups that only compete within themselves. Our empirical results indicate that under most circumstances, the approximations are close enough to the %result of the
+complete tournament to produce satisfactory optimization results. 
 
-We applied the {\sc Ludus} framework to some standard problems faced by game designers, and found promising results. Notably, the algorithm was successful in optimizing a second set of cards after fixing a first, previously optimized, set.
+We applied the {\sc Ludus} framework to some standard problems game designers face and found promising results. Notably, the algorithm successfully optimized cards under various constraints from partially-designed cards to expansions of %a second set of cards after fixing a first, previously optimized, set.
+previously optimized card sets.
 
-Beyond the immediate results of this paper, we have contributed an auto battler game, and its associated tooling to the literature. Given the recent nature of this genre, we believe this is an important contribution that will aid future research in the area.
+Beyond the immediate results of this paper, we contributed an auto battler game and its associated tools. %to the literature.
+Given the recent nature of this genre, we believe this is an important contribution that will aid future research in the area.

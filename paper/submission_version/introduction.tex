@@ -1,3 +1,4 @@
+
 % INTRO:
 % \subsection{Auto Battler games}
 
@@ -8,10 +9,9 @@ within that same month was regularly seeing 70,000 concurrent players
 \cite{auto-chess-what-and-why}. By June, \textit{Dota Underlords} and
 \textit{Teamfight Tactics} were among the most popular online games in
 the world \cite{autobattler-popularity}. Since then, entries like
-\textit{Hearthstone: Battlegrounds}, \textit{Fire Emblem Heroes: Pawns
-  of Loki} \textit{Storybook Brawl} have further refined the genre
-\cite{hearthstone-battlegrounds, feh-pawnsOfLoki-video,
-  storybook-brawl}.
+\textit{Hearthstone: Battlegrounds} \cite{hearthstone-battlegrounds},
+\textit{Fire Emblem Heroes: Pawns of Loki} \cite{feh-pawnsOfLoki-video},
+and \textit{Storybook Brawl} \cite{storybook-brawl} have further refined the genre.
 
 % what are auto battlers? how do they work?
 
@@ -25,8 +25,10 @@ rounds until all but one player are eliminated. The remaining player
 wins.
 
 Auto battlers are in many ways similar to deck-building collectible
-card games like \textit{Magic: the Gathering} or \textit{Yu-Gi-Oh!}
-\cite{magic-the-gathering, yugioh-tcg}. In collectible card games, a
+card games like \textit{Magic: the Gathering} \cite{magic-the-gathering},
+\textit{Pok\'{e}mon} \cite{pokemon-tcg},
+and \textit{Yu-Gi-Oh!}
+\cite{yugioh-tcg}. In collectible card games, a
 battle between two decks is called a game. Because it encompasses and
 affects multiple games, the deck-building process is called the
 \newterm{metagame.}
@@ -44,11 +46,11 @@ decks coexist with similar overall win rates.
 % what's the state of the art on how to get there? why isn't it good
 % enough?
 Metagame balance in deck-building games poses a challenge for game
-designers, since a relatively small number of cards can be combined
-into a large number of possible decks, that in turn can be paired
-into an even larger number of match-ups. \textit{Magic: the Gathering}
+designers because a relatively small number of cards are combined
+to form a large number of possible decks, and these decks are paired
+into an even larger number of possible match-ups. \textit{Magic: the Gathering}
 relies on human playtesting in advance of releasing a set
-\cite{designing-hod-ffl}. Advance human playtesting has repeatedly
+\cite{designing-hod-ffl}, but human playtesting in advance has repeatedly
 failed to identify card designs or sets that lead to unhealthy
 metagames. Even when it does successfully identify and fix unhealthy
 metagames, human playtesting requires significant labor and time from
@@ -76,9 +78,9 @@ game.
 
 For example, \textit{Magic: the Gathering}'s set \textit{Throne of
   Eldraine} was criticized for containing a number of overpowered
-cards. Decks which contained these powerful cards reliably beat decks
+cards. Decks that contained these powerful cards reliably beat decks
 without them. High-level players quickly converged on a small number
-of deck designs which could best utilize the powerful \textit{Throne
+of deck designs that best utilized the powerful \textit{Throne
   of Eldraine} cards. On at least one occasion, a tournament was
 canceled due to lack of interest \cite{oko-meta-drama}. Wizards of the
 Coast, the company responsible for \textit{Magic: the Gathering},
@@ -86,29 +88,32 @@ banned a total of six cards from \textit{Throne of Eldraine} in
 response \cite{mtg-banlist, mtg-bnr-nov-2019, mtg-bnr-jun-2020,
   mtg-bnr-aug-2020}. Even after the bans, high-profile professional
 players have complained on social media about \textit{Throne of
-  Eldraine}'s affect on the \textit{Magic: the Gathering} metagame
+  Eldraine}'s impact on the \textit{Magic: the Gathering} metagame
 \cite{lsv-eldraine-complaints}.
 
 % \subsection{Our work}
 
 In this paper, we introduce {\sc Ludus}, a framework to reduce the cost of playtesting without
 exposing consumers to unhealthy metagames by automating the balancing
-process. In sections \ref{sec:sim} through \ref{sec:game} develop an auto battler game designed to facilitate AI research. In
-section \ref{sec:tourney}, we present an algorithm which efficiently
+process. Section~\ref{sec:sim} %through \ref{sec:game}
+develops an auto battler game we designed to facilitate artificial intelligence (AI) research. 
+Section~\ref{sec:tourney} presents an algorithm that efficiently
 and accurately approximates the average win rates of all the decks in
-a metagame. In section \ref{sec:metrics} define three metrics which
-evaluate the diversity of a metagame. In section
-\ref{sec:othermetrics} we theorize how game designers could define
-more precise metrics for their own games. In section
-\ref{sec:optimization}, we use a genetic optimization algorithm to
-balance a metagame. In section \ref{sec:results}, we present
+a metagame. Section~\ref{sec:metrics} defines three metrics that
+evaluate the diversity of a metagame, and %. In Section~\ref{sec:othermetrics},
+we theorize how game designers could define
+more precise metrics for their own games. Section~\ref{sec:optimization}
+explains how we use a genetic algorithm to balance a metagame.
+Section~\ref{sec:qualitative-analysis} explores how game designers can use {\sc Ludus} and these
+metrics for insights about their current card designs.
+Section~\ref{sec:results} presents
 experimental results evaluating the approximation algorithm described
-in \ref{sec:tourney} and the genetic optimization described in
-\ref{sec:optimization}. In section \ref{sec:discussion}, we review the
-implications of our experimental results. In section
-\ref{sec:relatedworks}, we discuss other research related to auto
-battlers and deck-building metagames. In section \ref{sec:futurework},
-we consider possible extensions to our work.
+in Section~\ref{sec:tourney} and the genetic optimization described in
+Section~\ref{sec:optimization}. Section~\ref{sec:discussion} reviews the
+implications of our experimental results. Section~\ref{sec:relatedworks}
+discusses other research related to auto
+battlers and deck-building metagames. Section~\ref{sec:futurework}
+considers possible extensions to our work.
 % todo: change  "average win rates" to "expected payoffs" ?
 
 % in this paper, we...
