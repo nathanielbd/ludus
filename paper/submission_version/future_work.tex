@@ -6,11 +6,11 @@ The genre of auto battlers is very new, as such our research only explores a nar
 
 % draft phase of auto battlers
 
-Unlike our simplified game, in some auto battlers,
+Unlike our implementation, in some auto battlers,
 players iteratively build their deck between battles by purchasing
 cards from an array of options. While our experiments were concerned with decks of size 3, 
 the ability of our framework to quantify, qualify, and optimize balance for decks with 
-more or fewer cards remains to be assessed. Additionally, we have previously only considered
+more or fewer cards remains to be assessed. We previously only considered
 the case where any card may be replaced with any other card to create a new deck. However, 
 the purchasing value of cards may be different and future work should consider comparing decks
 which may be built after the same number of battles and purchasing phases.
@@ -26,7 +26,7 @@ Our work only considers cards with a single mechanic, but should be extended to 
 
 All metrics we present are based off of the average win rates of decks collected from the simulator. 
 This does not take into account individual deck-versus-deck win rates, which are always 0 or 1 since
-our simplified auto battler game is deterministic. One could construct a \textit{domination graph} with decks
+our auto battler game is deterministic. One could construct a \textit{domination graph} with decks
 as nodes and a directed edge to the deck that wins the head-to-head matchup. The size of the domination
 graph problematically scales with the square of the number of decks just like the round-robin tournament,
 so another sampling method would be necessary in practice. Further investigation is required to determine if perturbation of card parameters causing a degradation

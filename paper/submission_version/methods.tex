@@ -8,21 +8,21 @@
 % 	- we don't use a Hessian or Jacobian based opt method,
 % 	which would have been useful to understand sensitivity
 
-To achieve the goals outlined in the introduction, we built a simple auto-battler game. In this game we implemented a small number of special cards with extra mechanics, as well as a basic `vanilla' card that only engages in standard combat and has no extra mechanics. The details of these cards and their mechanics are explained below in Section~\ref{sec:ab-game-def}. The health and attack values of all cards can be adjusted, as well as some values pertaining to the extra mechanics (such as how much damage to deal to an opponent when a card dies). Multiple cards of the same type, but with different attack, health, or other values can be put into consideration in the same game. 
+To achieve the goals outlined in the introduction, we built an auto-battler game with we a number of special cards with extra mechanics, as well as a basic `vanilla' card that only engages in standard combat and has no extra mechanics. The details of these cards and their mechanics are explained below in Section~\ref{sec:ab-game-def}. The health and attack values of all cards can be adjusted, as well as some values pertaining to the extra mechanics (such as how much damage to deal to an opponent when a card dies). Multiple cards of the same type, but with different attack, health, or other values can be put into consideration in the same game. 
 
-Beyond the auto-battler itself, we also constructed an optimization framework to find configurations of available cards which are balanced, fair, and fun. These criteria are obviously quite subjective, so new metrics are easily pluggable into the existing framework, as game designers develop new ways of capturing their goals and preferences about the metagame. A few simple options are explored within this paper as well.
+Beyond the auto-battler itself, we also constructed an optimization framework to find configurations of available cards which are balanced, fair, and fun. These criteria are obviously quite subjective, so new metrics are easily pluggable into the existing framework, as game designers develop new ways of capturing their goals and preferences about the metagame. A few options are explored within this paper as well.
 
 \subsection{Playtesting simulator} \label{sec:sim}
 
 To serve as a data source for quantitative analysis, we create
-a playtesting simulator of a simplified auto battler game. 
+a playtesting simulator of an auto battler game. 
 This simulator is designed for research. It allows the user to 
 create cards with new mechanics and run tournaments between
 arbitrary decks. 
 
 All cards are equally available to all players, and there are no restrictions on the number of copies of a card allowed in players' decks or in the entire game. Some auto-battlers have a drafting process in which cards are selected or purchased from a pool, but drafting and/or deck-building take different forms across different games \cite{hearthstone-battlegrounds,storybook-brawl,feh-pawnsOfLoki-video}. We do not explore variants of these processes in this paper, but may consider them in future work.
 
-\subsubsection{Simplified game definition} \label{sec:ab-game-def}
+\subsubsection{Game definition} \label{sec:ab-game-def}
 
 Cards have nonnegative integer statistics including health points, 
 attack, and parameters pertaining to a special mechanism. Such special parameters
@@ -86,29 +86,19 @@ For the simulator, gameplay proceeds as follows:
 	Otherwise, the player with a surviving card wins.
 \end{enumerate}
 
-\subsubsection{Tournament procedure} \label{sec:tourney}
+\subsubsection{Win rate approximation} \label{sec:tourney}
 
-Over the course of a simulation, these matches are run within one of two types of tournaments:
-
-\begin{enumerate}
-	\item Round-robin tournament. Each deck plays one match against every other deck.
-	For $n$ decks, this results in $n(n-1)/2 = n^2/2 - n/2 = O(n^2)$ matches.
-	\item Group tournament. Due to the quadratic scaling of the number of matches in round-robin
-	tournaments, they quickly become prohibitively large to simulate. Thus, we may want to sample from every possible 
-	matchup in order to estimate the win rates of cards and decks. We do this by 
-	partitioning the decks into groups of uniform size and running round-robin tournaments within these groups.
-	For a group tournament with $k$ groups and $n$ total decks, this results in $k(n/k)(n/k - 1)/2 = n^2/(2k) - n/2$ matches in the case where 
-	$n$ is divisible by $k$, which is the worst case in terms of number of matches.
-\end{enumerate}
-
-Combined with a metric measuring the health of the metagame, this simulator 
-forms an approximation algorithm that estimates parity within the game.
+We run a round-robin tournament where each deck plays one match against every other deck.
+Unfortunately, for $n$ decks, this results in $n(n-1)/2 = n^2/2 - n/2$ matches. This quickly becomes prohibitively large to simulate. We developed an approximation algorithm that runs a subset of the games in order to estimate the win rates of cards and decks. It
+randomly partitions the decks into groups of uniform size and runs round-robin tournaments within these groups.
+For a group tournament with $k$ groups and $n$ total decks, this results in an upper bound of $k(n/k)(n/k - 1)/2 = n^2/(2k) - n/2$ matches in the case where 
+$n$ is divisible by $k$.
 
 \subsection{Metrics} \label{sec:metrics}
 
 Quantitative measures of metagame health are needed to guide 
 card statistic optimization. We present metrics built upon the
-output data of the playtesting simulator described previously.
+output data of the playtesting simulator.
 
 The playtesting simulation outputs a data vector $v$.
 Each entry $v_i \in [-1, 1]$ represents the average payoff of
@@ -163,11 +153,11 @@ might maintain similar levels of parity through future iterations of card releas
 
 \subsection{Optimization} \label{sec:optimization}
 
-We use the \citeauthor{gad2021pygad}'s \shortcite{gad2021pygad} PyGAD python library for genetic optimization algorithms. This will attempt to find the optimal values of
+We use the PyGAD python library \cite{gad2021pygad} for genetic optimization algorithms. This searches for the optimal values of
 parameters, which may include health points, attack, and special parameters, that optimizes
 the chosen metric.
 
-We constrain the genetic algorithm to consider integer values of the parameters between 1 and 10, inclusive. While hyperparameter tuning may have yielded better results,
+We constrain the genetic algorithm to consider integer values between 1 and 10, inclusive. While hyperparameter tuning may have yielded better results,
 we chose to run the genetic algorithm with 8 solutions and 4 parents mating per population for 32 generations in each experiment.
 
 \subsection{Qualitative analysis}

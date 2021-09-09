@@ -2,9 +2,7 @@ As the auto battler genre is still new, we were only able to find one other work
 that specifically addresses the use of AI in their design.  \citeauthor{tencent_autobattle_lineup}
 \shortcite{tencent_autobattle_lineup} focused on autonomously identifying the
 best decks that players can construct given the available cards, game rules, and
-decks that the game's designers expect to be played the most\footnote{Due to
-Tencent's own game being the specific application, they use different terminology.
-A `piece' is a `card,' and a `lineup' is a `deck'.}.  In a two-step process,
+decks that the game's designers expect to be played the most\footnote{Their specific application uses different terminology. A `piece' is a `card,' and a `lineup' is a `deck'.}.  In a two-step process,
 their method first simulates play between randomly generated decks and the designers'
 expected decks to create a training dataset for a neural network---the model
 learns a mapping between a given deck and its estimated win rate against the
@@ -13,10 +11,10 @@ decks that optimize the learned win rate function under various constraints that
 define deck construction rules throughout the auto battler game.  Constraints
 account for drafting additional cards between rounds of play and rules that
 increase the strength of cards based on draft choices, which are not elements of
-our simplified auto battler game (see Section~\ref{sec:ab-game-def} for a description).
+our auto battler game (see Section~\ref{sec:ab-game-def} for a description).
 
 The optimized decks are shared with the game designers who may use the
-analysis to evaluate whether they believe the cards are balanced and, if not, which
+analysis to evaluate whether the cards are balanced and, if not, which
 cards need revision.  Our method instead revises the cards directly, optimizing
 the viability of the set of possible decks that players can construct.  This alters
 the initial efforts of the game designers to focus on the rules and some card templates
