@@ -31,33 +31,33 @@ The third experiment was to optimize twelve cards, each with a special mechanic.
 
 \begin{table*}[t]
 \centering
-\begin{tabular}{||c c c c||} 
+\begin{tabular}{||c c c c c||} 
  \hline
- Card & Attack & Health & Variable special parameter (see Section~\ref{sec:ab-game-def})\\ [0.5ex] 
+ Card & Attack & Health & Special parameter (see Section~\ref{sec:ab-game-def}) & Optimized Special parameter \\ [0.5ex] 
  \hline\hline
- Explode On Death & 2 & 1 & Damage dealt to enemies on death \\ 
+ Explode On Death & 2 & 1 & Explosion damage & 1\\ 
  \hline
- Friendly Vampire & 1 & 3 & Amount of heath granted to ally \\
+ Friendly Vampire & 1 & 3 & Heal amount & 3 \\
  \hline
- Grow On Damage & 0 & 5 & Attack gained per hit taken \\
+ Grow On Damage & 0 & 5 & Attack growth per hit & 4 \\
  \hline
- Heal On Death & 1 & 2 & Health granted to allies on death \\
+ Heal On Death & 1 & 2 & Explosion health & 3 \\
  \hline
- Health Donor & 1 & 4 & Percent of healing received that is split amongst allies \\
+ Health Donor & 1 & 4 & Heal donation percent & 3 \\
  \hline
- Ignore First Damage & 2 & 1 & Number of attacks which result in no damage taken \\
+ Ignore First Damage & 2 & 1 & Armor points & 1 \\
  \hline
- Morph Attack & 0 & 3 & N/A \\
+ Morph Attack & 0 & 3 & Morphing enemies & N/A \\
  \hline
- Pain Splitter & 2 & 2 & Percent of damage taken that is split amongst allies \\
+ Pain Splitter & 2 & 2 & Damage split percent & 7 \\
  \hline
- Rampage & 0 & 4 & Middle Age  \\
+ Rampage & 0 & 4 & Middle Age & 8 \\
  \hline
- Survivalist & 2 & 2 & N/A \\
+ Survivalist & 2 & 2 & Survivalist & N/A \\
  \hline
- Threshold & 2 & 2 & Number of battles it must survive to damage all opponents on death \\
+ Threshold & 2 & 2 & Target age & 5 \\
  \hline
- Time Bomb & 1 & 8 & Number of interactions before it will explode during the next battle \\ 
+ Time Bomb & 1 & 8 & Detonation time & 7 \\ 
  \hline
 \end{tabular}
 \caption{Variable and set parameters for the \textit{optimize special parameters} experiment}
