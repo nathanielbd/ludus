@@ -18,7 +18,9 @@ To serve as a data source for quantitative analysis, we create
 a playtesting simulator of a simplified auto battler game. 
 This simulator is designed for research. It allows the user to 
 create cards with new mechanics and run tournaments between
-arbitrary decks.  
+arbitrary decks. 
+
+All cards are equally available to all players, and there are no restrictions on the number of copies of a card allowed in players' decks or in the entire game. Some auto-battlers have a drafting process in which cards are selected or purchased from a pool, but drafting and/or deck-building take different forms across different games \cite{hearthstone-battlegrounds,storybook-brawl,feh-pawnsOfLoki-video}. We do not explore variants of these processes in this paper, but may consider them in future work.
 
 \subsubsection{Simplified game definition} \label{sec:ab-game-def}
 
@@ -91,7 +93,7 @@ Over the course of a simulation, these matches are run within one of two types o
 \begin{enumerate}
 	\item Round-robin tournament. Each deck plays one match against every other deck.
 	For $n$ decks, this results in $n(n-1)/2 = n^2/2 - n/2 = O(n^2)$ matches.
-	\item Group tournament. Due to the quadratic scalling of the number of matches in round-robin
+	\item Group tournament. Due to the quadratic scaling of the number of matches in round-robin
 	tournaments, they quickly become prohibitively large to simulate. Thus, we may want to sample from every possible 
 	matchup in order to estimate the win rates of cards and decks. We do this by 
 	partitioning the decks into groups of uniform size and running round-robin tournaments within these groups.
@@ -176,7 +178,7 @@ The first plot is a sweep over two variables, typically of the same card, althou
 
 \begin{figure}[t]
 	\includegraphics[width=10cm, height=8cm]{bruiser_vs_grow} 
-	\caption{Plot of standard deviation metric for various values of the attack of a card with no special parameters fixed at 1 health point (bruiser) and the health points of a card with attack growth per hit and initial attack fixed at 1 (grow on damage)}
+	\caption{Plot of standard deviation metric for various values of the attack of a card with no special parameters fixed at 1 health point (bruiser) and the health points of a card with attack growth per hit and initial attack fixed at 1 (grow on damage).}
 	\label{fig:bruiser_vs_grow}
 \end{figure}
 
@@ -184,16 +186,17 @@ Take, for example, the plot in Figure~\ref{fig:bruiser_vs_grow}, of the value of
 
 In the figure we can see that configurations in the upper left corner, where the attack of the bruiser is greater than the health of the grow on damage card, tend to be much more favorable than the configurations in the lower right corner, where the opposite is true. This evidence supports the intuitive idea that the bruiser's high attack is a good counter to the grow on damage card, because it can quickly remove the monster before it has had enough interactions to grow its damage to a large number. This kind of information can be quite useful to a game designer, who can see very clearly that the inclusion of a high damage card can improve the metagame dramatically if the grow on damage card is found to be too powerful.
 
-The second plot explored is a histogram of the deck win rates. After running a tournament amongst all possible decks, the win rates of each deck are plotted in a histogram. The resulting distribution can have features which are indicative of the state of the health of metagame. For example, examine the difference between the distributions shown in Figure~\ref{fig:special_only_dist}. 
+The second plot explored is a histogram of the deck win rates. After running a tournament amongst all possible decks, the win rates of each deck are plotted in a histogram. The resulting distribution can have features which may be useful to human game designers. For example, examine the difference between the distributions shown in Figure~\ref{fig:special_only_dist}. 
 
+% TODO: Continue generating more distribution plots, and with other metrics perhaps. And metric discrepancy between logs and pickle file. Investigate length of games.
 \begin{figure}[t]
-	\includegraphics[width=4cm, height=4cm]{special_only_4_5_8_8_4_8_3_3_3_5}
-	\includegraphics[width=4cm, height=4cm]{special_only_1_3_4_3_3_1_7_8_5_7}
-	\caption{Distribution of win rates over decks in a poorly vs well balanced metagame}
+	\includegraphics[scale=0.5]{special_only_4_5_8_8_4_8_3_3_3_5}
+	\includegraphics[scale=0.5]{special_only_1_3_4_3_3_1_7_8_5_7}
+	\caption{Two different distribution of deck win rates.}
 	\label{fig:special_only_dist}
 \end{figure}
 
-In the first figure on the left we have a much wider and flatter distribution, where as in the one on the right, much more of the decks are centered around a 50\% win rate. 
+Given playtesting input from actual players and historical data from other successful metagames, game designers can understand the what changes new cards have brought and implement changes to the game or metrics for optimization which will improve the experience of human players.
 
 \subsection{Experiment design}
 

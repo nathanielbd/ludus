@@ -18,7 +18,7 @@ class HealthDonor(Card):
         return f"<HealthDonor({self.heal_percent}) {self.name} ({self.base_atk}/{self.health})>"
 
     def __eq__(self, other):
-        return super().__eq__(self, other) and self.heal_percent == other.heal_percent
+        return super().__eq__(other) and self.heal_percent == other.heal_percent
 
     def __hash__(self):
         return hash((super().__hash__(), self.heal_percent))

@@ -55,7 +55,7 @@ def build_cards(
         IgnoreFirstDamage(2, 1, "armor", armor_points = armor_points),
         MorphOpponents(0, 3, "morph ball"),
         PainSplitter(2, 2, "bad friend", dmg_percent = dmg_percent),
-        RampAge(0, 4, "old fogey", middle_age = 4),
+        RampAge(0, 4, "old fogey", middle_age = 4), # FIXME: oops? This should use the parameter value
         Survivalist(2, 2, "coward"),
         ThreshOld(2, 2, "curmudgeon", target_age = target_age),
         TimeBomb(1, 8, "time bomb", detonation_time = detonation_time)

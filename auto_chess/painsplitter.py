@@ -18,7 +18,7 @@ class PainSplitter(Card):
         return f"<PainSplitter({self.dmg_percent}) {self.name} ({self.base_atk}/{self.health})>"
 
     def __eq__(self, other):
-        return super().__eq__(self, other) and self.dmg_percent == other.dmg_percent
+        return super().__eq__(other) and self.dmg_percent == other.dmg_percent
 
     def __hash__(self):
         return hash((super().__hash__(), self.dmg_percent))

@@ -153,7 +153,7 @@ class Card:
             and self.health == other.health
 
     def __ne__(self, other):
-        return not self.__eq__(self, other)
+        return not self.__eq__(other)
 
     def __hash__(self):
         return hash((self.name, self.base_atk, self.health))

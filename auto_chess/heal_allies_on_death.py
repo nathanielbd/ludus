@@ -14,7 +14,7 @@ class HealOnDeath(Card):
         return f"<HealOnDeath({self.explode_heal}) {self.name} ({self.base_atk}/{self.health})>"
 
     def __eq__(self, other):
-        return super().__eq__(self, other) and self.explode_heal == other.explode_heal
+        return super().__eq__(other) and self.explode_heal == other.explode_heal
 
     def __hash__(self):
         return hash((super().__hash__(), self.explode_heal))
