@@ -4,8 +4,8 @@
 
 % draft phase of auto battlers
 
-As mentioned in the introduction, the broader context of auto battlers is that
-players in a queue iteratively build their deck between battles by purchasing
+Unlike our simplified game, in some auto battlers,
+players iteratively build their deck between battles by purchasing
 cards from an array of options. While our experiments were concerned with decks of size 3, 
 the ability of our framework to quantify, qualify, and optimize balance for decks with 
 more or fewer cards remains to be assessed. Additionally, we have previously only considered
@@ -41,6 +41,17 @@ handle the familiar integer values of card parameters, unlike other optimization
 methods in particular are difficult to apply to this problem due to its discrete nature and our simulator not being
 differentiable. Had they been applicable, they would have solved an unmet need of qualifing the stability of optimization
 results with respect to the variable parameters.
+
+\subsection{Human playtesting}
+
+Human playtesting is still required to determine the health of the metagame, as we do not know if our metrics
+correspond to what humans deem as a healthy metagame. Designers
+with a historically healthy metagame can use those parameters to generate reference win rate 
+over decks and win rate over cards distributions using our framework. These distributions could then shape 
+what new metrics and their ideal values may be for parity. Human playtesting could also motivate other metrics pertaining
+to the number of turns in each match. While this is an example of how our framework
+could be readily applied by designers, researchers finding human playtesting-validated results marks an important avenue of 
+future work.
 
 % dumb idea as the simulation is not differentiable
 % One benefit of using a different optimization method is
