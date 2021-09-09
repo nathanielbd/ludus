@@ -1,3 +1,5 @@
+We explore applications of {\sc Ludus} to problems commonly faced by game designers.
+
 \subsection{Group versus round-robin tournament}
 
 % Maybe explain the group tournament in more detail
@@ -6,7 +8,8 @@ The first experiment we ran was to determine the efficacy of our sampling method
 \begin{figure}[t]
 	\centering
 	\includegraphics[width=0.9\columnwidth]{group_vs_rr_fig}
-	\caption{Absolute value of the difference in win rate between a \textit{group tournament} of varying size and a full round-robin tournament of 1728 possible decks, along with error bars.}
+	\caption{Absolute value of the difference in win rate between a \textit{group tournament} of varying size and a full round-robin tournament of 1728 possible decks. %, along with error bars.
+	}
 	\label{fig:group_vs_rr}
 \end{figure}
 
@@ -16,15 +19,15 @@ We then compare the win rates of each deck in the group tournament versus the ro
 
 % Another table
 
- \subsection{Optimizing cards without special mechanisms}
+ \subsection{Optimizing cards without special mechanics}
 
-The next experiment was to optimize a set of four basic cards, with no extra mechanics. We hypothesized that the `optimal' solution in terms of the standard deviation metric would be to have 4 identical cards, because then there would be only one card and thus zero standard deviation in the win rate of one card. We also recognized, however, that due to the limited number of generations run by our genetic algorithm, there was no guarantee it would find this solution. This case seemed even more interesting from a game design perspective, as a game with only a single card is obviously an uninteresting game, so we would like to see what `almost-optimal' solutions appear for this setup. This observation also illustrates a case where the standard deviation metric fails to fully capture the qualities we wish to optimize in our game.
+The next experiment optimized a set of four basic cards, with no extra mechanics. We hypothesized that the `optimal' solution in terms of the standard deviation metric would have 4 identical cards, because then there would be only one card and thus zero standard deviation in the win rate of one card. We also recognized, however, that due to the limited number of generations run by our genetic algorithm, there was no guarantee it would find this solution. This case seemed even more interesting from a game design perspective, as a game with only a single card is obviously an uninteresting game, so we would like to see what `almost-optimal' solutions appear for this setup. This observation also illustrates a case where the standard deviation metric fails to fully capture the qualities we wish to optimize in our game.
 
 The results of this experiment illustrate a different failure case of our standard deviation metric, one that had not been predicted. The genetic algorithm quickly found the solution (5/3), (5/4), (8/3), (8/1), where ($a$,$b$) indicates a card with $a$ attack and $b$ health points. This solution had zero standard deviation. Why? Any pairing of these cards will result in both cards being killed. Thus, every game ends after one round in a tie, and so there is no variance in win rates amongst the decks. 
 
- \subsection{Optimizing only special parameters}
+ \subsection{Optimizing only special mechanics}
 
-The third experiment was to optimize a number of cards, each with a special mechanic. Each of these cards was assigned an intuitive value for it's attack and health, as a game designer might do. We then optimized the stats that controlled the special mechanics of these cards. We were interested to see how feasible it is to optimize the game with these constraints, and how impactful the special mechanics would be for the overall balance of the game. The cards used in this experiment are described in Table~\ref{tab:special_cards}.
+The third experiment was to optimize twelve cards, each with a special mechanic. Each of these cards was assigned an intuitive value for its attack and health, as a game designer might do. We then optimized the stats that controlled the special mechanics of these cards. We were interested to see how feasible it is to optimize the game with these constraints, and how impactful the special mechanics would be for the overall balance of the game. The cards used in this experiment are described in Table~\ref{tab:special_cards}. The optimizer improved the win rate standard deviation from 0.0751 to 0.0589. 
 
 \begin{table*}[t]
 \centering
@@ -61,9 +64,7 @@ The third experiment was to optimize a number of cards, each with a special mech
 \label{tab:special_cards}
 \end{table*}
 
-The optimizer improved the win rate standard deviation from 0.0751 to 0.0589. 
-
-\subsection{Optimizing health points, attack, and special parameters} \label{sec:first_set}
+\subsection{Optimizing all parameters} \label{sec:first_set}
 
 After fixing the attack and health, and focusing solely on the special mechanics, the next logical experiment is to tune both the attack and health, as well as the special mechanics. To reduce the huge dimensionality of this experiment we selected only five cards to optimize. They are listed in Table~\ref{tab:first_set}.
 
