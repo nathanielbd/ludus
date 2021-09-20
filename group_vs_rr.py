@@ -46,10 +46,4 @@ def compare_sampling(cards: list[ac.Card], deck_size=3) -> None:
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.WARNING)
-    log.setLevel(logging.INFO)
-    ac.log.setLevel(logging.DEBUG)
-
-    game = ac.play_auto_chess([tourney.SURVIVALIST, tourney.PAINSPLITTER, tourney.EXPLODE_ON_DEATH], [tourney.SURVIVALIST, tourney.PAINSPLITTER, tourney.EXPLODE_ON_DEATH])
-    print(game)
-
-    # compare_sampling(tourney.ALL_CARDS)
+    compare_sampling(tourney.ALL_CARDS)
