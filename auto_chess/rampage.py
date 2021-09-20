@@ -20,7 +20,7 @@ class RampAge(Card):
         return f"<RampAge({self.middle_age}) {self.name} ({self.base_atk}/{self.health})>"
 
     def __eq__(self, other):
-        return super().__eq__(self, other) and self.middle_age == other.middle_age
+        return super().__eq__(other) and self.middle_age == other.middle_age
 
     def __hash__(self):
         return hash((super().__hash__(), self.middle_age))

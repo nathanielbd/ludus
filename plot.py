@@ -37,30 +37,36 @@ def run_group(cards, group_size=None):
                     multiprocess=True
                 ))
 
-def histogram(cards, path, picklefile=None, title="Round Robin Winrates", deck=True, group_size=None):
+DECK_BINS=50
+CARD_BINS=8
+def create_histogram(data, figpath, title, deck):
+    # case if we want the card distribution
+    if deck: 
+        values = list(map(lambda x: metrics.payoff_winrate(x.avg_payoff), data))
+    if not deck:
+        values = metrics.weighted_sum_cards(data).values()
+        log.info(f'std: {metrics.std_dev_metric(data)}')
+        log.info(f'entropy: {metrics.entropy_metric(data)}')
+        log.info(f'per card payoff: {metrics.per_card_winrate(data, variance_key=lambda x: x**2)}')
+    fig = plt.figure()
+    plt.hist(values, bins=DECK_BINS if deck else CARD_BINS)
+    plt.title(title)
+    plt.xlabel('Win Rate')
+    if deck:
+        plt.ylabel('Number of Decks')
+    else:
+        plt.ylabel('Number of Cards')
+    fig.savefig(figpath, format='pdf')
+
+
+def histogram(cards, figpath, picklefile=None, title="Round Robin Win Rates", deck=True, group_size=None):
     results = run_group(cards, group_size=group_size)
     if picklefile:
         with open(picklefile, "wb") as pickleout:
             pickle.dump(results, pickleout)
 
-    if deck: 
-        values = list(map(lambda x: metrics.payoff_winrate(x.avg_payoff), results))
+    create_histogram(results, figpath, title, deck)
 
-    # case if we want the card distribution
-    if not deck:
-        values = metrics.weighted_sum_cards(results)
-        log.info(f'std: {metrics.std_dev_metric(results)}')
-        log.info(f'entropy: {metrics.entropy_metric(results)}')
-        log.info(f'per card payoff: {metrics.per_card_winrate(results, variance_key=lambda x: x**2)}')
-    fig = plt.figure()
-    plt.hist(values, bins=50)
-    plt.title(title)
-    plt.xlabel('Win rate')
-    if deck:
-        plt.ylabel('Decks')
-    else:
-        plt.ylabel('Cards')
-    fig.savefig(path, format='pdf')
 
 def set_atk(c, v):
     c.base_atk = v
@@ -136,7 +142,14 @@ def makeplot(data, name, title="Plot 2D array", xaxis=None, yaxis=None):
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.WARNING)
-    log.setLevel(logging.WARNING)
+    log.setLevel(logging.INFO)
+
+    with open(f"{sys.argv[1]}/special_only_1_3_4_3_3_1_7_8_5_7.pickle", "rb") as picklein:
+        create_histogram(pickle.load(picklein), f"{sys.argv[1]}/special_only_1_3_4_3_3_1_7_8_5_7_cards.pdf", "Cards A", deck=False)
+    
+    with open(f"{sys.argv[1]}/special_only_4_5_8_8_4_8_3_3_3_5.pickle", "rb") as picklein:
+        create_histogram(pickle.load(picklein), f"{sys.argv[1]}/special_only_4_5_8_8_4_8_3_3_3_5_cards.pdf", "Cards B", deck=False)
+    exit(0)
 
     histogram(sa.build_cards(1, 3, 4, 3, 3, 1, 7, 8, 5, 7), f"{sys.argv[1]}/special_only_1_3_4_3_3_1_7_8_5_7.pdf", picklefile=f"{sys.argv[1]}/special_only_1_3_4_3_3_1_7_8_5_7.pickle", deck=True, group_size=None)
     histogram(sa.build_cards(4, 5, 8, 8, 4, 8, 3, 3, 3, 5), f"{sys.argv[1]}/special_only_4_5_8_8_4_8_3_3_3_5.pdf", picklefile=f"{sys.argv[1]}/special_only_4_5_8_8_4_8_3_3_3_5.pickle", deck=True, group_size=None)
@@ -144,7 +157,6 @@ if __name__ == "__main__":
     histogram(sa.build_cards(1, 3, 4, 3, 3, 1, 7, 8, 5, 7), f"{sys.argv[1]}/special_only_1_3_4_3_3_1_7_8_5_7_cards.pdf", picklefile=f"{sys.argv[1]}/special_only_1_3_4_3_3_1_7_8_5_7_cards.pickle", deck=False, group_size=None)
     histogram(sa.build_cards(4, 5, 8, 8, 4, 8, 3, 3, 3, 5), f"{sys.argv[1]}/special_only_4_5_8_8_4_8_3_3_3_5_cards.pdf", picklefile=f"{sys.argv[1]}/special_only_4_5_8_8_4_8_3_3_3_5_cards.pickle", deck=False, group_size=None)
 
-    exit(0)
 
     bruiser = colormap([tourney.BEAR, tourney.TANK, tourney.EXPLODE_ON_DEATH, tourney.RAMPAGE, tourney.FRIENDLY_VAMPIRE, tourney.GROW_ON_DAMAGE], var1_card=tourney.BRUISER)
     with open(f"{sys.argv[1]}/bruiser.pickle", "wb") as pickleout:

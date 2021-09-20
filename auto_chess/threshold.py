@@ -21,7 +21,7 @@ class ThreshOld(Card):
         return f"<ThreshOld({self.target_age}) {self.name} ({self.base_atk}/{self.health})>"
 
     def __eq__(self, other):
-        return super().__eq__(self, other) and self.target_age == other.target_age
+        return super().__eq__(other) and self.target_age == other.target_age
 
     def __hash__(self):
         return hash((super().__hash__(), self.target_age))

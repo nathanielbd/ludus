@@ -22,7 +22,7 @@ class IgnoreFirstDamage(Card):
         return f"<IgnoreFirstdamage({self.armor_points}) {self.name} ({self.base_atk}/{self.health})>"
 
     def __eq__(self, other):
-        return super().__eq__(self, other) and self.armor_points == other.armor_points
+        return super().__eq__(other) and self.armor_points == other.armor_points
 
     def __hash__(self):
         return hash((super().__hash__(), self.armor_points))

@@ -1,125 +1,137 @@
-\subsection{Group versus round-robin tournament}
+We explore applications of {\sc Ludus} to problems that game designers commonly face.
+
+\subsection{Group Versus Round-Robin Tournament}
 
 % Maybe explain the group tournament in more detail
-The first experiment we ran was to determine the efficacy of our sampling method. To do this, we compared the win rates of identical decks in a complete round robin tournament (every combination of decks played) with the win rate in a tournament conducted by randomly grouping decks into groups of various sizes, and then playing every combination of the decks within those groups.
+The first experiment %we ran
+investigates the efficacy of our approximation algorithm in Section~\ref{sec:tourney}. To do this, we compare the win rates %identical decks in
+of a complete round-robin tournament (every combination of decks played) with the distribution of win rates over a 16-fold tournament of %conducted by
+randomly partitioned decks into groups of various sizes, playing every combination of the decks within those groups.
 
 \begin{figure}[t]
 	\centering
 	\includegraphics[width=0.9\columnwidth]{group_vs_rr_fig}
-	\caption{Absolute value of the difference in win rate between a \textit{group tournament} of varying size and a full round-robin tournamnt of 1728 possible decks, along with error bars}
+	\caption{Absolute value of the difference in win rate between a \textit{group tournament} of varying size and a full round-robin tournament of 1,728 possible decks. %, along with error bars.
+	}
 	\label{fig:group_vs_rr}
 \end{figure}
 
 %% Table
 
-We then compute the average error over all of the decks, and we can see a steady convergence of the two values in Figure~\ref{fig:group_vs_rr}.
+Figure~\ref{fig:group_vs_rr} compares the win rates of each deck in the group tournament versus the round-robin tournament, and we can see that at a group size of 256, the mean error becomes negligible (about 0.0382). We use this group size in the other experiments rather than a round-robin of all 1,728 decks.
 
 % Another table
 
- \subsection{Optimizing cards without special mechanisms}
+ \subsection{Optimizing Cards without Special Mechanics}
 
-The next experiment was to optimize a set of four basic cards, with no extra mechanics. We hypothesized that the `optimal' solution in terms of the standard deviation metric would be to have 4 identical cards, because then there would be only one card and thus zero standard deviation in the win rate of one card. We also recognized, however, that due to the limited number of generations run by our genetic algorithm, there was no guarantee it would find this solution. This case seemed even more interesting from a game design perspective, as a game with only a single card is obviously an uninteresting game, so we would like to see what `almost-optimal' solutions appear for this setup. This observation also illustrates a case where the standard deviation metric fails to fully capture the qualities we wish to optimize in our game.
+The next experiment optimizes a set of four `vanilla' cards with no extra mechanics. We expected that the `optimal' solution in terms of the standard deviation metric would have four identical cards because the interchangeable cards should have zero standard deviation in the win rate. Due to the limited number of generations in our genetic algorithm, we recognized that there was no guarantee it would find this solution. From a game design perspective, a less-optimal solution seems more interesting in this case as a game with only a single card is obviously uninteresting. We wanted to see what `almost-optimal' solutions appear for this setup. This observation also illustrates a case where the standard deviation metric fails to fully capture the qualities we wish to optimize in our game.
 
-The results of this experiment illustrate a different failure case of our standard deviation metric, one that had not been predicted. The genetic algorithm quickly found the solution (5/3), (5/4), (8/3), (8/1), where ($a$,$b$) indicates a card with $a$ attack and $b$ health points. This solution had zero standard deviation. Why? Any pairing of these cards will result in both cards being killed. Thus, every game ends after one round in a tie, and so there is no variance in win rates amongst the decks. 
+The results of this experiment illustrate a different failure case of our standard deviation metric that we did not predict. The genetic algorithm quickly found the solution (5/3), (5/4), (8/3), (8/1) where ($a$,$b$) indicates a card with $a$ attack and $b$ health points. This solution had the optimal zero standard deviation---why? Any pairing of these cards will result in both cards killing each other simultaneously. Thus, every game ends after one round of combat phases in a tie, and there is no variance in win rates amongst the decks. 
 
- \subsection{Optimizing only special parameters}
+ \subsection{Optimizing Only Special Mechanics}
 
-The third experiment was to optimize a number of cards, each with a special mechanic. Each of these cards was assigned an intuitive value for it's attack and health, as a game designer might do. We then optimized the stats that controlled the special mechanics of these cards. We were interested to see how feasible it is to optimize the game with these constraints, and how impactful the special mechanics would be for the overall balance of the game. The cards used in this experiment are described in Table~\ref{tab:special_cards}.
+The third experiment optimizes only the special mechanic parameters of twelve cards. We assigned each card an intuitive value for its attack and health, which a game designer might do for initial context. {\sc Ludus} then optimized the parameters for the special mechanics of these partially-designed cards. We were interested to see how it %feasible it is to optimize the game with
+optimized under these constraints and how impactful the special mechanics would be for the overall balance. %of the game.
+Table~\ref{tab:special_cards} describes the cards used in this experiment. The optimizer improved the win rate standard deviation from 0.0751 to 0.0589. 
 
 \begin{table*}[t]
 \centering
-\begin{tabular}{||c c c c||} 
+\caption{Variable and Fixed Parameters for the \textit{Optimize Special Mechanics} Experiment}
+\label{tab:special_cards}
+\begin{tabular}{||c c c c c||} 
  \hline
- Card & Attack & Health & Variable special parameter (see Section~\ref{sec:ab-game-def})\\ [0.5ex] 
+ Card & Attack & Health & Special Parameter (see Section~\ref{sec:ab-game-def}) &  Optimized Special parameter\\ [0.5ex] 
  \hline\hline
- Explode On Death & 2 & 1 & Damage dealt to enemies on death \\ 
+ Explode On Death & 2 & 1 & Explosion Damage & 1\\ 
  \hline
- Friendly Vampire & 1 & 3 & Amount of heath granted to ally \\
+ Friendly Vampire & 1 & 3 & Heal Amount & 3 \\
  \hline
- Grow On Damage & 0 & 5 & Attack gained per hit taken \\
+ Grow On Damage & 0 & 5 & Attack Growth Per Hit & 4 \\
  \hline
- Heal On Death & 1 & 2 & Health granted to allies on death \\
+ Heal On Death & 1 & 2 & Explosion Health & 3 \\
  \hline
- Health Donor & 1 & 4 & Percent of healing received that is split amongst allies \\
+ Health Donor & 1 & 4 & Heal Donation Percent & 3 \\
  \hline
- Ignore First Damage & 2 & 1 & Number of attacks which result in no damage taken \\
+ Ignore First Damage & 2 & 1 & Armor Points & 1 \\
  \hline
- Morph Attack & 0 & 3 & N/A \\
+ Morph Attack & 0 & 3 & Morphing Enemies & N/A \\
  \hline
- Pain Splitter & 2 & 2 & Percent of damage taken that is split amongst allies \\
+ Pain Splitter & 2 & 2 & Damage Split Percent & 7 \\
  \hline
- Rampage & 0 & 4 & Middle Age  \\
+ Rampage & 0 & 4 & Middle Age & 8 \\
  \hline
- Survivalist & 2 & 2 & N/A \\
+ Survivalist & 2 & 2 & Survivalist & N/A \\
  \hline
- Threshold & 2 & 2 & Number of battles it must survive to damage all opponents on death \\
+ Threshold & 2 & 2 & Target Age & 5 \\
  \hline
- Time Bomb & 1 & 8 & Number of interactions before it will explode during the next battle \\ 
+ Time Bomb & 1 & 8 & Detonation Time & 7 \\ 
  \hline
 \end{tabular}
-\caption{Variable and set parameters for the \textit{optimize special parameters} experiment}
-\label{tab:special_cards}
 \end{table*}
 
-The optimizer improved the win rate standard deviation from 0.0751 to 0.0589. 
+\subsection{Optimizing All Parameters} \label{sec:first_set}
 
-\subsection{Optimizing health points, attack, and special parameters} \label{sec:first_set}
-
-After fixing the attack and health, and focusing solely on the special mechanics, the next logical experiment is to tune both the attack and health, as well as the special mechanics. To reduce the huge dimensionality of this experiment we selected only five cards to optimize. They are listed in Table~\ref{tab:first_set}.
+After fixing the attack and health to focus solely on the special mechanics, the next experiment tunes the attack, health, and special mechanics all at once. To reduce the huge dimensionality of this experiment, we selected only five of the twelve cards to optimize. They are listed in Table~\ref{tab:first_set}.
 
 % First Set
 \begin{table*}[t]
 \centering
+\caption{List of Cards in the First Set and Their Optimized Solution}
+\label{tab:first_set}
 \begin{tabular}{||c c c c||} 
  \hline
- Card & Optimized Attack & Optimized Health & Optimized Variable Mechanic (see Section~\ref{sec:ab-game-def})\\ [0.5ex]
+ Card & Optimized Attack & Optimized Health & Optimized Special Mechanic (see Section~\ref{sec:ab-game-def})\\ [0.5ex]
+ \hline\hline
+ Survivalist & 9 & 1 & N/A \\
  \hline
- Survivalist &  &  & N/A \\
+ Morph Attack & 5 & 5 & N/A \\
  \hline
- Morph Attack &  &  & N/A \\
+ Ignore First Damage & 6 & 8 & 1 \\
  \hline
- Ignore First Damage &  &  & \\
+ Explode On Death & 4 & 1 & 3 \\ 
  \hline
- Explode On Death &  &  &  \\ 
- \hline
- Vanilla &  &  &  \\
+ Vanilla & 7 & 2 & N/A \\
  \hline
 \end{tabular}
-\caption{List of cards in the first set, and their optimized solution}
-\label{tab:first_set}
 \end{table*}
 
-The optimizer improved the win rate standard deviation from 0.0704 to 0.0584. This minimum is approximately the same as the one achieved in the previous experiment, modifying only the values of the special mechanics. One important observation, however, is that in both cases the optimizer was still making good progress in the final generations of our experiments. This indicates that these minima are not global, but that with further compute time and generations they could continue to improve.
+The optimizer improved the win rate standard deviation from 0.0704 to 0.0584. This minimum is approximately the same as the one achieved in the previous experiment, modifying only the values of the special mechanics. One important observation we made is that the optimizer was still making good progress in the final generations of both our experiments. This indicates that these might not be minima, %are not global, but that with
+and compute time for additional generations could continue to improve the card designs.
 
-\subsection{Optimizing after a set rotation}
+\subsection{Optimizing After a Set Rotation}
 
-Another common scenario encountered by designers of trading card games is that of releasing a new set or batch of cards, while maintaining the compatibility, fairness, and competitiveness of the previously released cards. To apply our toolset to this problem we first took the set of five cards and the optimized solution found in Section~\ref{sec:first_set}. This represents the first set of cards released. Next we selected another five cards, described in table Table~\ref{tab:second_set}, and optimized them, while keeping the values from the first set fixed at the solution found previously. 
+Another common scenario designers of deck-building games encounter is releasing a new set %or batch
+of cards that maintain the compatibility, fairness, and competitiveness with the previously released cards. %These expansions add new content to the game to keep it fresh.
+To apply {\sc Ludus} to this problem, we took the set of five cards from Section~\ref{sec:first_set} with their optimized solution as %This represents
+the first set of cards released. Next, we selected five additional cards, described in table Table~\ref{tab:second_set}, and optimized them alongside %, while keeping the values from
+the first set fixed at the solution found previously---this is ten cards with variable parameters for only the second set of cards. 
 
 % Compare this to the solution found by treating all 10 cards as one set
 
 % Second Set
 \begin{table*}[t]
 \centering
+\caption{List of Cards in the Second Set and Their Optimized Solution}
+\label{tab:second_set}
 \begin{tabular}{||c c c c||} 
  \hline
- Card & Optimized Attack & Optimized Health & Optimized Variable Mechanic (see Section~\ref{sec:ab-game-def})\\ [0.5ex]
+ Card & Optimized Attack & Optimized Health & Optimized Special Mechanic (see Section~\ref{sec:ab-game-def})\\ [0.5ex]
+ \hline\hline
+ Friendly Vampire & 7 & 7 & 8 \\
  \hline
- Friendly Vampire &  &  &  \\
+ Grow On Damage & 2 & 6 & 9 \\
  \hline
- Grow On Damage &  &  &  \\
+ Heal On Death & 3 & 9 & 1 \\
  \hline
- Heal On Death &  &  & \\
+ Rampage & 6 & 7 & 5 \\ 
  \hline
- Rampage &  &  &  \\ 
- \hline
- Vanilla &  &  &  \\
+ Vanilla & 7 & 6 & N/A \\
  \hline
 \end{tabular}
-\caption{List of cards in the second set, and their optimized solution}
-\label{tab:second_set}
 \end{table*}
 
-The optimizer improved the win rate standard deviation from 0.0591 to 0.0541. This is a comparatively smaller improvement than the previous experiments, however, the initial state is already in much better condition than either of the previous experiments. This is interesting, because it could indicate that adding new cards to an already well balanced set may not disturb the balance as much as one might expect. 
+The optimizer improved the win rate standard deviation from 0.0591 to 0.0541. This is a comparatively smaller improvement than the previous experiments, %however,
+but the initial state was already in much better condition than any of the previous experiments. This is interesting because it could indicate that adding new cards to an already well-balanced set may not disturb the balance as much as one might expect. 
 
 
 % \subsubsection{Optimizing an exhaustive round-robin tournament}

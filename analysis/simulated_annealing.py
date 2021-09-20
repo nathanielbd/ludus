@@ -55,7 +55,7 @@ def build_cards(
         IgnoreFirstDamage(2, 1, "armor", armor_points = armor_points),
         MorphOpponents(0, 3, "morph ball"),
         PainSplitter(2, 2, "bad friend", dmg_percent = dmg_percent),
-        RampAge(0, 4, "old fogey", middle_age = 4),
+        RampAge(0, 4, "old fogey", middle_age = 4), # FIXME: oops? This should use the parameter value
         Survivalist(2, 2, "coward"),
         ThreshOld(2, 2, "curmudgeon", target_age = target_age),
         TimeBomb(1, 8, "time bomb", detonation_time = detonation_time)
@@ -187,12 +187,12 @@ def genetic_optimize(metric, group_size, num_genes, build_cards_fn, num_decks=No
             return evaluations[key]
 
     ga = pygad.GA(
-        num_generations=32,
+        num_generations=64,
         num_parents_mating=2,
         # num_generations=1,
         # num_parents_mating=2,
         fitness_func=fitness_func,
-        sol_per_pop=8,
+        sol_per_pop=16,
         # sol_per_pop=4,
         num_genes=num_genes,
         gene_type=int,

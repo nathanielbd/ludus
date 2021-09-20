@@ -21,7 +21,7 @@ class TimeBomb(Card):
         return f"<TimeBomb({self.detonation_time}) {self.name} ({self.base_atk}/{self.health})>"
 
     def __eq__(self, other):
-        return super().__eq__(self, other) and self.detonation_time == other.detonation_time
+        return super().__eq__(other) and self.detonation_time == other.detonation_time
 
     def __hash__(self):
         return hash((super().__hash__(), self.detonation_time))

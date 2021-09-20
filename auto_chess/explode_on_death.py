@@ -14,7 +14,7 @@ class ExplodeOnDeath(Card):
         return f"<ExplodeOnDeath({self.explode_damage}) {self.name} ({self.base_atk}/{self.health})>"
     
     def __eq__(self, other):
-        return super().__eq__(self, other) and self.explode_damage == other.explosion_damage
+        return super().__eq__(other) and self.explode_damage == other.explode_damage
 
     def __hash__(self):
         return hash((super().__hash__(), self.explode_damage))
