@@ -19,10 +19,10 @@ def compare_sampling(cards: list[ac.Card], deck_size=3) -> None:
         with open(subdir + "/trial_" + str(trial_number), "wb") as outfile:
             pickle.dump(list(data), outfile)
 
-    for i in range(1, math.floor(math.log2(len(decks)))):
-        group_size = 2**i
+    for grp_frac in [2, 3, 4, 6, 12] # some of the more interesting factor
+        group_size = 1788 / grp_frac
 
-        subdir = "group_size_" + str(group_size)
+        subdir = "group_v_rr_res/group_size_" + str(group_size)
 
         for trial in range(0, 16):
             data = sampling.group_tournament(
@@ -40,7 +40,7 @@ def compare_sampling(cards: list[ac.Card], deck_size=3) -> None:
         multiprocess=True,
     )
 
-    output_trial_data("round_robin", 0, real_results)
+    output_trial_data("group_v_rr_res/round_robin", 0, real_results)
 
 
 if __name__ == "__main__":
