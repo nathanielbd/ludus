@@ -13,3 +13,6 @@ paper/submission_version/eaai22_bgmmwlf.blg
 .vscode/
 paper/submission_version/.texpadtmp/
 **/*.icloud
+.local/
+.cache/
+.virtualenvs

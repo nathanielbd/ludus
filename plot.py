@@ -144,12 +144,19 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.WARNING)
     log.setLevel(logging.INFO)
 
+    with open(f"/ludus/round_robin/trial_0", "rb") as picklein:
+        data = pickle.load(picklein)
+        print(metrics.top_ten_percent_metric(data, metric=metrics.std_dev_metric))
+        print(metrics.std_dev_metric(data))
+
+    exit(0)
+
     with open(f"{sys.argv[1]}/special_only_1_3_4_3_3_1_7_8_5_7.pickle", "rb") as picklein:
         create_histogram(pickle.load(picklein), f"{sys.argv[1]}/special_only_1_3_4_3_3_1_7_8_5_7_cards.pdf", "Cards A", deck=False)
     
     with open(f"{sys.argv[1]}/special_only_4_5_8_8_4_8_3_3_3_5.pickle", "rb") as picklein:
         create_histogram(pickle.load(picklein), f"{sys.argv[1]}/special_only_4_5_8_8_4_8_3_3_3_5_cards.pdf", "Cards B", deck=False)
-    exit(0)
+    
 
     histogram(sa.build_cards(1, 3, 4, 3, 3, 1, 7, 8, 5, 7), f"{sys.argv[1]}/special_only_1_3_4_3_3_1_7_8_5_7.pdf", picklefile=f"{sys.argv[1]}/special_only_1_3_4_3_3_1_7_8_5_7.pickle", deck=True, group_size=None)
     histogram(sa.build_cards(4, 5, 8, 8, 4, 8, 3, 3, 3, 5), f"{sys.argv[1]}/special_only_4_5_8_8_4_8_3_3_3_5.pdf", picklefile=f"{sys.argv[1]}/special_only_4_5_8_8_4_8_3_3_3_5.pickle", deck=True, group_size=None)
