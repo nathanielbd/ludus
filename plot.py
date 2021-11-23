@@ -148,6 +148,7 @@ if __name__ == "__main__":
         data = pickle.load(picklein)
         print(metrics.top_ten_percent_metric(data, metric=metrics.std_dev_metric))
         print(metrics.std_dev_metric(data))
+        print(metrics.punish_draws_metric(data))
 
     exit(0)
 

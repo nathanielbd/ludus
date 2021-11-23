@@ -3,12 +3,26 @@ import analysis.metrics as metrics
 import logging
 import pickle
 import auto_chess as ac
+from typing import Callable, Dict, Iterable
+from analysis import DeckResults
 
 
 log = logging.getLogger(__name__)
 
 
-GROUP_SIZE = 256
+GROUP_SIZE = 4 # 256
+
+def tt_sd(results: Iterable[DeckResults],
+        *,
+        key: Callable[[float], float] = lambda n: n,
+) -> float:
+    return metrics.top_ten_percent_metric(results, metric=metrics.std_dev_metric)
+
+def tt_ent(results: Iterable[DeckResults],
+        *,
+        key: Callable[[float], float] = lambda n: n,
+) -> float:
+    return metrics.top_ten_percent_metric(results, metric=metrics.entropy_metric)
 
 
 def optimize_rand_atkhp():
@@ -31,8 +45,9 @@ def only_special_opt():
 
 def round_robin_optimize():
     return sa.genetic_optimize(
-        metric=metrics.std_dev_metric,
-        group_size=2000,
+        # metric=metrics.std_dev_metric,
+        metric=tt_ent,
+        group_size=64, # 2000,
         num_genes=10,
         build_cards_fn=sa.build_cards
     )
@@ -46,15 +61,13 @@ def optimize_five_atkhp():
         build_cards_fn=sa.cards_with_atkhp,
     )
 
-
-
-def set_rotation():
-    with open("optimize_five_atkhp.pickle", "rb") as picklein:
+def set_rotation(first = "optimize_five_atkhp", second = sa.other_cards_with_atkhp):
+    with open(f"{first}.pickle", "rb") as picklein:
         first_set_res = pickle.load(picklein)
     first_set_vector = first_set_res
     first_set = sa.cards_with_atkhp(*first_set_vector)
     def set_two_cards(*stats):
-        return first_set + sa.other_cards_with_atkhp(*stats)
+        return first_set + second(*stats)
     return sa.genetic_optimize(
         metric=metrics.std_dev_metric,
         group_size=GROUP_SIZE,
@@ -86,12 +99,32 @@ def vanilla_cards_expt():
     )
 
 
+def rr_tt_ent():
+    return sa.genetic_optimize(
+        # metric=metrics.std_dev_metric,
+        metric=tt_ent,
+        group_size=64, # 2000,
+        num_genes=10,
+        build_cards_fn=sa.build_cards
+    )
+
+def rr_tt():
+    return sa.genetic_optimize(
+        # metric=metrics.std_dev_metric,
+        metric=metric.entropy_metric,
+        group_size=64, # 2000,
+        num_genes=10,
+        build_cards_fn=sa.build_cards
+    )
+
 EXPERIMENTS = (
-    (optimize_five_atkhp, "optimize_five_atkhp"),
-    (set_rotation, "set_rotation"),
+    # (optimize_five_atkhp, "optimize_five_atkhp"),
+    # (set_rotation, "set_rotation"),
 
     # leave this last!
-    # (round_robin_optimize, "round_robin_optimize"),
+    # (round_robin_optimize, "round_robin_optimize_tt_test"),
+    (rr_tt_ent, "rr_tt_ent"),
+    (rr_tt, "rr_tt")
 )
 
 

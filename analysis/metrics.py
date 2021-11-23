@@ -110,6 +110,7 @@ def entropy_metric(
 ) -> float:
     # S = \sum{p_i ln(p_i)}
     cards = weighted_sum_cards(results, key=key)
+    print(cards)
     sum = 0.0
     for card in cards:
         sum += cards[card]
@@ -121,7 +122,6 @@ def entropy_metric(
 
     return entropy
 
-
 def top_ten_percent_metric(
         results: Iterable[DeckResults],
         *,
@@ -130,4 +130,11 @@ def top_ten_percent_metric(
 ) -> float:
     s = sorted(results, key=lambda res: res.avg_payoff, reverse=True)
     tt = s[-1 * math.ceil(len(s) / 10) : -1]
+    print("ALL ===================================================================================== \n:", s, "\n\n\n\n\n\n TOP TEN ======================================================================= \n", tt)
     return metric(tt)
+
+def punish_draws_metric(results: Iterable[DeckResults],
+        *,
+        key: Callable[[float], float] = lambda n: n) -> float:
+    print(list(map(lambda res: abs(res.avg_payoff), results)))
+    

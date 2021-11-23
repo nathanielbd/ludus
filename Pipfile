@@ -9,7 +9,7 @@ numpy = "*"
 pathos = "*"
 pytest-timeout = "*"
 pipfile = "*"
-scipy = "*"
+# scipy = "*"
 matplotlib = "*"
 pygad = "*"
 

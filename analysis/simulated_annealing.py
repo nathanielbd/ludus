@@ -1,4 +1,4 @@
-from scipy.optimize import minimize  # type: ignore
+# from scipy.optimize import minimize  # type: ignore
 import numpy as np
 import random
 import analysis.sampling as sampling
@@ -76,7 +76,6 @@ def cards_with_atkhp(
         ac.Card(vanilla_atk, vanilla_hp, "vanilla")
     ]
 
-
 def other_cards_with_atkhp(
         vamp_atk, vamp_hp, heal_amount,
         grow_atk, grow_hp, atk_per_hit,
@@ -90,6 +89,35 @@ def other_cards_with_atkhp(
         HealOnDeath(cleric_atk, cleric_hp, "suicidal cleric", explode_heal = explode_heal),
         RampAge(ramp_atk, ramp_hp, "old fogey", middle_age = 4),
         ac.Card(vanilla_atk, vanilla_hp, "vanilla 2")
+    ]
+
+def cards_with_atkhp2(
+        surv_atk, surv_hp,
+        morph_atk, morph_hp,
+        grow_atk, grow_hp, atk_per_hit,
+        bomb_atk, bomb_hp, explode_damage,
+        vanilla_atk, vanilla_hp,
+) -> list[ac.Card]:
+    return [
+        FriendlyVampire(vamp_atk, vamp_hp, "friendly vampire", heal_amount = heal_amount),
+        MorphOpponents(morph_atk, morph_hp, "morph ball"),
+        GrowOnDamage(grow_atk, grow_hp, "bezerker", atk_per_hit = atk_per_hit),
+        ExplodeOnDeath(bomb_atk, bomb_hp, "volatile", explode_damage = explode_damage),
+        ac.Card(vanilla_atk, vanilla_hp, "vanilla")
+    ]
+
+def other_cards_with_atkhp2(
+        vamp_atk, vamp_hp, heal_amount,
+        cleric_atk, cleric_hp, explode_heal,
+        armor_atk, armor_hp, armor_points,
+        ramp_atk, ramp_hp, middle_age,
+        vanilla_atk, vanilla_hp,
+):
+    return [
+        Survivalist(surv_atk, surv_hp, "coward"),
+        HealOnDeath(cleric_atk, cleric_hp, "suicidal cleric", explode_heal = explode_heal),
+        IgnoreFirstDamage(armor_atk, armor_hp, "armor", armor_points = armor_points),
+        RampAge(ramp_atk, ramp_hp, "old fogey", middle_age = 4),
     ]
 
 # try only perturbing the mechanic stats
