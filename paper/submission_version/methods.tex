@@ -173,7 +173,7 @@ The first plot sweeps over two variables, typically of the same card, although n
 
 \begin{figure}[t]
 	\includegraphics[width=10cm, height=8cm]{bruiser_vs_grow} 
-	\caption{Plot of standard deviation metric for various values of the attack of a card with no special parameters fixed at 1 health point (bruiser) and the health points of a card with attack growth per hit and initial attack fixed at 1 (grow on damage).}
+	\caption{Plot showing how changes in the attack of the bruiser card and the health of the grow-on-damage card affect the metric value.}
 	\label{fig:bruiser_vs_grow}
 \end{figure}
 
@@ -183,14 +183,17 @@ In the figure, we can see that configurations in the upper left corner, where th
 
 The second plot is a histogram of the deck win rates after running a tournament amongst all possible decks. %, the win rates of each deck are plotted in a histogram.
 The resulting distribution can have features that may be informative to human game designers. For example, examine the difference between the distributions %shown
-in Figure~\ref{fig:special_only_dist} from tournaments using two configurations of the same card parameters. 
+in Figure~\ref{fig:special_only_dist_before} and Figure~\ref{fig:special_only_dist_after} from tournaments using two configurations of the same card parameters. 
 
 % TODO: Continue generating more distribution plots, and with other metrics perhaps. And metric discrepancy between logs and pickle file. Investigate length of games.
 \begin{figure}[t]
 	\includegraphics[scale=0.5]{special_only_4_5_8_8_4_8_3_3_3_5}
+	\caption{Distribution of deck winrates before optimization. }
+	\label{fig:special_only_dist_before}
+
 	\includegraphics[scale=0.5]{special_only_1_3_4_3_3_1_7_8_5_7}
-	\caption{Two different distributions of deck win rates.}
-	\label{fig:special_only_dist}
+	\caption{Distribution of deck winrates after optimization. }
+	\label{fig:special_only_dist_after}
 \end{figure}
 
 Given playtesting input from actual players and historical data from other successful metagames, game designers can interpret the %understand the what

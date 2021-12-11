@@ -32,15 +32,15 @@ spec:
       initContainers:
       - name: mkdir
         image: ubuntu:xenial
-        command: ["mkdir", "-p", "/data/09/"]
+        command: ["mkdir", "-p", "/data/rr_tt/"]
         volumeMounts:
         - mountPath: "/data"
           name: data
       containers:
       - name: ludus
-        image: ghcr.io/nathanielbd/ludus:git-4076126
+        image: ghcr.io/nathanielbd/ludus:git-f7b7bc1
         imagePullPolicy: Always
-        command: ["pipenv", "run", "python3", "./plot.py", "/data/09/"]
+        command: ["pipenv", "run", "python3", "./experiment_queue.py", "/data/rr_tt/"]
         volumeMounts:
         - mountPath: "/data"
           name: data
