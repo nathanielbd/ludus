@@ -4,6 +4,10 @@ import pickle
 import os
 import run_tournament
 import numpy as np
+import matplotlib.pyplot as plt
+
+
+results_dir = "group_v_rr_res"
 
 
 def deckresults_dict(results: Iterable[DeckResults]) -> dict[Deck, float]:
@@ -16,12 +20,14 @@ def read_trial(path: str) -> list[DeckResults]:
 
 
 def trial_iterator() -> Iterable[tuple[str, str, list[DeckResults]]]:
-    for subdir in os.listdir("."):
-        if subdir.startswith("group_size_") and os.path.isdir(subdir):
-            for trialname in os.listdir(subdir):
-                fullpath = f"{subdir}/{trialname}"
+    print(os.listdir(results_dir))
+    for subdir in os.listdir(results_dir):
+        subpath = f"{results_dir}/{subdir}"
+        if subdir.startswith("group_size_") and os.path.isdir(subpath):
+            for trialname in os.listdir(subpath):
+                fullpath = f"{subpath}/{trialname}"
                 if trialname.startswith("trial_") and os.path.isfile(fullpath):
-                    yield (subdir, trialname, read_trial(fullpath))
+                    yield (subpath, trialname, read_trial(fullpath))
 
 
 def output_metric(outfile: IO[str], name: str, value: float) -> None:
@@ -56,11 +62,12 @@ def compute_error_metrics(
 
 
 def rr_numbers() -> Iterable[DeckResults]:
-    with open("round_robin/trial_0", "rb") as infile:
+    with open(f"{results_dir}/round_robin/trial_0", "rb") as infile:
         return list(pickle.load(infile))
 
 
 def compare_metrics() -> None:
+    print("running compare_metrics")
     round_robin = deckresults_dict(list(rr_numbers()))
 
     outfiles = {}
@@ -68,15 +75,14 @@ def compare_metrics() -> None:
         try:
             out = outfiles[trialdir]
         except KeyError:
-            out = open(f"{trialdir}_results.txt", "w")
+            fname = f"{trialdir}_results.txt"
+            out = open(fname, "w")
             out.write("# min error, low quartile, median, high quartile, max error, mean error\n")
             outfiles[trialdir] = out
         results = list(results)
         for metric in compute_error_metrics(trialdir, trialname, results, round_robin):
             out.write(f"{metric}, ")
         out.write("\n")
-
-import matplotlib.pyplot as plt
 
 def make_figure() -> None:
     sizes = [2**x for x in range(11)]
@@ -102,5 +108,5 @@ def make_figure() -> None:
 
 
 if __name__ == "__main__":
-    # compare_metrics()
+    compare_metrics()
     make_figure()

@@ -22,10 +22,9 @@ def compare_sampling(cards: list[ac.Card], deck_size=3) -> None:
             pickle.dump(list(data), outfile)
 
     for grp_frac in [12, 6, 4, 3, 2]:
-        # some of the more interesting factor
-        group_size = deck_count / grp_frac
-        assert group_size % 1 == 0
-
+        group_size = deck_count // grp_frac
+        assert deck_count % group_size == 0
+        
         group_size = int(group_size)
 
         subdir = "group_v_rr_res/group_size_" + str(group_size)
