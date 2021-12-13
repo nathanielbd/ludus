@@ -101,7 +101,7 @@ Quantitative measures of metagame health are needed to guide
 card statistic optimization. We present metrics built upon the
 output data of the playtesting simulator.
 
-The playtesting simulation outputs a data vector $v$.
+The playtesting simulation outputs a data vector $v$, the \emph{deck payoff vector}.
 Each entry $v_i \in [-1, 1]$ represents the average payoff of
 the deck at index $i$ during the last round of playtesting in
 the optimization process. A payoff of 1 indicates a win. A
@@ -111,11 +111,13 @@ tournament for a deck make up the entries of $v$.
 
 We then transform $v$ into another vector of length $n$ that maps a card to the
 average win rate of the decks in which the card appears. This
-vector $w$ has entries
+vector $w$, the \emph{card win rate vector}, has entries
 $w_j \in [0, 1]$, the average win rate of the decks in which
 the card at index $j$ appears. We present three metrics that 
-evaluate the uniformity of %use
+evaluate the uniformity of 
 this distribution of win rates among the cards.
+
+Each of the following metrics operate on the card win rate vector.
 
 \subsubsection{Per-card Payoff}
 
@@ -123,8 +125,8 @@ this distribution of win rates among the cards.
 	\mathrm{PCP} = \frac{1}{n} \sum_j \left|\mathrm{payoff}(w_j)\right|^2
 \end{equation}
 
-Since average payoffs are equal to 0 when a deck wins as many matches as it loses, this is a metric to 
-minimize if we want to punish overly competitive or terrible decks.
+Since average payoffs are equal to 0 when a deck a card appears in wins as many matches as it loses, this is a metric to 
+minimize if we want to punish overly powerful or terrible cards. The squared term disproportionately attacks outliers.
 
 \subsubsection{Standard Deviation Metric}
 
@@ -160,7 +162,7 @@ Metrics could also evaluate other measurable elements like average turns per mat
 We use the PyGAD python library \cite{gad2021pygad} for genetic %optimization
 algorithms. This searches for the optimal values of
 specified parameters, which may include health points, attack, and special parameters, with respect to %that optimizes
-the chosen metric.
+the chosen metric. For our experiments, we use the standard deviation metric.
 
 We constrain the genetic algorithm to consider integer values between 1 and 10, inclusive. While hyperparameter tuning may have yielded better results,
 we chose to run the genetic algorithm with 8 solutions and 4 parents mating per population for 32 generations in each experiment.
@@ -173,11 +175,11 @@ The first plot sweeps over two variables, typically of the same card, although n
 
 \begin{figure}[t]
 	\includegraphics[width=10cm, height=8cm]{bruiser_vs_grow} 
-	\caption{Plot showing how changes in the attack of the bruiser card and the health of the grow-on-damage card affect the metric value.}
+	\caption{Heatmap showing how changes in the attack of the bruiser card and the health of the grow-on-damage card, while all other card parameters remain fixed, affect the standard deviation metric.}
 	\label{fig:bruiser_vs_grow}
 \end{figure}
 
-Take, for example, the plot in Figure~\ref{fig:bruiser_vs_grow} of the value of the standard deviation metric given various values for the attack of the bruiser card and the health of the grow on damage card. The bruiser card is a vanilla card with a high attack (although variable in this situation) and one health point. The grow on damage card has a mechanic where each time it takes damage it gains one attack. Initially this card has one attack, and in this situation has a variable amount of health. If the grow on damage card is able to consistently become a powerful threat, it can become too strong and a necessity for high-level play, leading to an unbalanced metagame.
+Take, for example, the plot in Figure~\ref{fig:bruiser_vs_grow} of the value of the standard deviation metric given various values for the attack of the bruiser card and the health of the grow-on-damage card. The bruiser card is a vanilla card with a high attack (although variable in this situation) and one health point. The grow-on-damage card has one attack growth per hit. Initially this card has one attack, and in this situation has a variable amount of health. If the grow on damage card is able to consistently become a powerful threat, it can become too strong and a necessity for high-level play, leading to an unbalanced metagame.
 
 In the figure, we can see that configurations in the upper left corner, where the attack of the bruiser is greater than the health of the grow on damage card, tend to be much more favorable than the configurations in the lower right corner, where the opposite is true. This evidence supports the intuitive idea that the bruiser's high attack is a good counter to the grow on damage card because the bruiser card can quickly remove the grow on damage card before it has had enough interactions to grow its damage to a large number. This kind of information can be quite useful to a game designer, who can see very clearly that the inclusion of a high-damage card can improve the metagame dramatically if the grow on damage card is found to be too powerful.
 
