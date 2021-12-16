@@ -2,7 +2,9 @@ As the auto battler genre is still new, we were only able to find one other work
 that specifically addresses the use of AI in their design.  \citeauthor{tencent_autobattle_lineup}
 \shortcite{tencent_autobattle_lineup} focused on autonomously identifying the
 best decks that players can construct given the available cards, game rules, and
-decks that the game's designers expect to be played the most\footnote{Their specific auto battler application uses different terminology. A `piece' is a `card,' and a `lineup' is a `deck'.}.  In a two-step process,
+decks that the game's designers expect to be played the most\footnote{Their specific auto battler %application
+uses `piece' instead of `card.'}. %different terminology. A `piece' is a `card,' and a `lineup' is a `deck'.}.
+In a two-step process,
 their method first simulates play between randomly generated decks and the designers'
 expected decks to create a training dataset for a neural network---the model
 learns a mapping between a given deck and its estimated win rate against the
