@@ -83,6 +83,64 @@ month={May},
 pages={15510--15517}
 }
 
+@inproceedings{bldwth_fdg18,
+author = {Bhatt, Aditya and Lee, Scott and de Mesentier Silva, Fernando and Watson, Connor W. and Togelius, Julian and Hoover, Amy K.},
+title = {Exploring the Hearthstone Deck Space},
+year = {2018},
+isbn = {9781450365710},
+publisher = {Association for Computing Machinery},
+location = {New York, NY, USA},
+url = {https://doi.org/10.1145/3235765.3235791},
+doi = {10.1145/3235765.3235791},
+abstract = {A significant issue in game balancing is understanding the game itself. For simple games end-to-end optimization approaches can help explore the game's design space, but for more complex games it is necessary to isolate and explore its parts. Hearthstone, Blizzard's popular two-player turn-taking adversarial card game, has two distinct game-playing challenges: choosing when and how to play cards, and selecting which cards a player can access during the game (deckbuilding). Focusing on deckbuilding, four experiments are conducted to computationally explore the design of Hearthstone. They address the difficulty of constructing good decks, the specificity and generality of decks, and the transitivity of decks. Results suggest it is possible to find decks with an Evolution Strategy (ES) that convincingly beat other decks available in the game, but that they also exhibit some generality (i.e. they perform well against unknown decks). Interestingly, a second ES experiment is performed where decks are evolved against opponents playing the originally evolved decks. Since the originally evolved decks beat the starter decks, and the twice evolved decks beat the originally evolved decks, some degree of transitivity of the deck space is shown. While only a preliminary study with restrictive conditions, this paper paves the way for future work computationally identifying properties of cards important for different gameplay strategies and helping players build decks to fit their personal playstyles without the need for in-depth domain knowledge.},
+booktitle = {Proceedings of the Thirteenth International Conference on the Foundations of Digital Games},
+articleno = {18},
+numpages = {10},
+pages = {1--10},
+keywords = {evolutionary computation, hearthstone, evolution strategies, deck building, game balancing},
+address = {Malm\"{o}, Sweden},
+series = {FDG '18}
+}
+
+@article{zhr_arxiv_mcts,
+  author    = {Zook, Alexander and Harrison, Brent and Riedl, Mark O.},
+  title     = {Monte-Carlo Tree Search for Simulation-based Strategy Analysis},
+  journal   = {CoRR},
+  volume    = {abs/1908.01423},
+  year      = {2019},
+  url       = {http://arxiv.org/abs/1908.01423},
+  pages     = {1--9},
+  eprinttype = {arXiv},
+  eprint    = {1908.01423},
+}
+
+@inproceedings{jmalkp_aiide12,
+author = {Jaffe, Alexander and Miller, Alex and Andersen, Erik and Liu, Yun-En and Karlin, Anna and Popovi\'{c}, Zoran},
+title = {Evaluating Competitive Game Balance with Restricted Play},
+year = {2012},
+publisher = {AAAI Press},
+abstract = {Game balancing is the fine-tuning phase in which a functioning game is adjusted to be deep, fair, and interesting. Balancing is difficult and time-consuming, as designers must repeatedly tweak parameters, and run lengthy playtests to evaluate the effects of these changes. If designers could receive immediate feedback on their designs, they could explore a vast space of variations, and select only the most promising games for playtesting. Such automated design feedback has been difficult to achieve, as there is no mathematical formulation of game balance that unifies many of its forms. We argue for a formulation in which carefully restricted agents are played against standard agents. We develop this restricted-play balance framework, and evaluate its utility by building a tool capable of calculating measures of balance for a large family of games. By applying this tool to an educational card game, we demonstrate how the framework and tool allow designers to rapidly evaluate and iterate on the balance of their games.},
+booktitle = {Proceedings of the Eighth AAAI Conference on Artificial Intelligence and Interactive Digital Entertainment},
+pages = {26–-31},
+numpages = {6},
+address = {Stanford, California, USA},
+series = {AIIDE'12}
+}
+
+@inproceedings{cg_aiide20,
+title={{C}haos {C}ards: {C}reating Novel Digital Card Games through Grammatical Content Generation and Meta-Based Card Evaluation},
+volume={16},
+url={https://ojs.aaai.org/index.php/AIIDE/article/view/7430},
+abstractNote={&lt;p class=&quot;abstract&quot;&gt;We present a novel framework to procedurally generate executable cards for &lt;em&gt;Hearthstone&lt;/em&gt;-like digital card games, along with an approach for evaluating card strengths using an evolved match environment. Here we introduce &lt;em&gt;Chaos Cards&lt;/em&gt;, a digital card game in the style of &lt;em&gt;Hearthstone&lt;/em&gt;, but designed to support the procedural generation of cards, including their diverse effects, via a grammatical model. To understand the potential performance of procedurally generated cards in actual games, we integrate a simulation-based approach to evaluate card strengths, and train a neural network model for fast card strength prediction. Because the strength of a card is most meaningful when considered in the context of the pool of competitive decks (know as the meta) it plays in and against, we propose an evolutionary evaluation approach which simultaneously evaluates card strength and refines the environment in which cards are tested. We showcase some example cards generated by our framework, along with their strength evaluations. Additionally, we conduct tests between evaluations from meta game environments and random game environments to show the importance of the environment in evaluating card strengths. Lastly, we show our neural network is able to learn the strength of important cards in a meta environments with largely positive correlation.&lt;/p&gt;},
+issue={1},
+booktitle={Proceedings of the AAAI Conference on Artificial Intelligence and Interactive Digital Entertainment},
+author={Chen, Tiannan and Guy, Stephen},
+year={2020},
+month=oct,
+pages={196--202},
+address={Worchester, Massachusetts, USA}
+}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%% Games to Cite %%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

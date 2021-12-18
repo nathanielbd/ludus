@@ -165,9 +165,9 @@ and \textit{Storybook Brawl} \cite{storybook-brawl} have further refined the gen
 In an auto battler, a number of players (typically eight) compete to
 build the best lineup of cards through a number of rounds. Each round consists of
 a deck-building phase and a battle. In the deck-building phase, each
-player improves their lineup by selecting cards from a shared pool. In
+player improves their lineup by selecting cards from a shared pool and arranging their order. In
 the battle phase, two players' lineups compete automatically. Players
-who loose too many of these battles are eliminated. Play proceeds in
+who lose too many of these battles are eliminated. Play proceeds in
 rounds until all but one player are eliminated. The remaining player
 wins.
 
@@ -197,7 +197,7 @@ designers because a relatively small number of cards are combined
 to form a large number of possible decks, and these decks are paired
 into an even larger number of possible match-ups. \textit{Magic: the Gathering}
 relies on human playtesting in advance of releasing a set
-\cite{designing-hod-ffl}, but human playtesting in advance has repeatedly
+\cite{designing-hod-ffl}, but human playtesting before release has repeatedly
 failed to identify card designs or sets that lead to unhealthy
 metagames. Even when it does successfully identify and fix unhealthy
 metagames, human playtesting requires significant labor and time from
@@ -242,10 +242,11 @@ players have complained on social media about \textit{Throne of
 
 In this paper, we introduce {\sc Ludus}, a framework to reduce the cost of playtesting without
 exposing consumers to unhealthy metagames by automating the balancing
-process. Section~\ref{sec:sim} %through \ref{sec:game}
-develops an auto battler game we designed to facilitate artificial intelligence (AI) research.
+process.
 Section~\ref{sec:relatedworks} discusses other research related to auto battlers and deck-building metagames. 
-Section~\ref{sec:tourney} presents an algorithm that efficiently
+Section~\ref{sec:sim} %through \ref{sec:game}
+develops an auto battler game we designed to facilitate artificial intelligence (AI) research %. Section~\ref{sec:tourney}
+and presents an algorithm that efficiently
 and accurately approximates the average win rates of all the lineups in
 a metagame. Section~\ref{sec:metrics} defines three metrics that
 evaluate the diversity of a metagame, and %. In Section~\ref{sec:othermetrics},
@@ -262,13 +263,14 @@ implications of our experimental results. Section~\ref{sec:futurework}
 considers possible extensions to our work.
 
 % write background and related work as a subsection?
-\section{Related Works}
+\section{Related Works \label{sec:relatedworks}}
 As the auto battler genre is still new, we were only able to find one other work
 that specifically addresses the use of AI in their design.  \citeauthor{tencent_autobattle_lineup}
 \shortcite{tencent_autobattle_lineup} focused on autonomously identifying the
 best lineups that players can construct given the available cards, game rules, and
-lineups that the game's designers expect to be played the most\footnote{Their specific auto battler %application
-uses `piece' instead of `card.'}. %different terminology. A `piece' is a `card,' and a `lineup' is a `deck'.}.
+lineups that the game's designers expect to be played the most.
+\footnote{Their specific auto battler %%application
+uses `piece' instead of `card.'}. %%different terminology. A `piece' is a `card,' and a `lineup' is a `deck'.}.
 In a two-step process,
 their method first simulates play between randomly generated lineups and the designers'
 expected lineups to create a training dataset for a neural network---the model
@@ -303,7 +305,8 @@ best, %for given card designs,
 but also how the best lineups change for various card
 revisions.
 
-Aside from deck-building games in the auto battler genre, many games that support competitive
+%Aside from deck-building games in the auto battler genre,
+Many games that support competitive
 play over the internet collect data about what and how people are playing.  Game
 designers can take advantage of various data science approaches to find trends in
 the logged data that inform them about how to balance the game \cite{nce-gameAIpro2}.
@@ -325,25 +328,48 @@ agency and outcomes are nondeterministic (shuffled decks, random outcomes of eff
 etc.), the space of possible deck combinations and game states can be immeasurable.
 Following in the footsteps of DeepMind's work on AlphaGo \cite{alphago}, Stadia
 trained a deep learning model through many games of self-play in order to develop
-a function that could evaluate the quality of a game state for a custom deck-building
-game they created called Chimera \cite{chimera-mlagent}.  The authors provide
+a function that could evaluate the quality of a game state for a %custom
+deck-building
+game \cite{chimera-mlagent}. %they created called Chimera .
+\if{false}
+The authors provide
 little information to replicate their work---it is not mentioned how their automated
 game-playing agent uses this learned model to make decisions during gameplay
 (AlphaGo uses Monte Carlo Tree Search, but self-play can also imply reinforcement
 learning of a policy), nor is it clear whether the decks used in self-play were
-the same or different throughout training.  However, they illustrated how their
-automated game-playing agent could compete against itself multiple times with
+the same or different throughout training.  However, they illustrated how t
+\fi
+Their
+automated game-playing agent %could
+then competed against itself with %multiple times with
 designer-constructed decks in order to compare the overall decks' performance,
 accounting for the nondeterministic outcomes through many games as statistical
 samples.  A game designer may manually inspect the outcomes of all the matches
 to determine whether any revisions to the cards are necessary.
+
+\citeauthor{bldwth_fdg18} \shortcite{bldwth_fdg18} investigated the deck-building aspect of Hearthstone
+with genetic algorithms evolving the decks to optimize defeating a specified
+opposing deck.  Their game-playing agents used a greedy, myopic search algorithm
+as an experimental control while the evolving decks were the experimental cases.
+The resulting evolutionary paths yield insights into the diversity of the metagame.
+In contrast, \citeauthor{zhr_arxiv_mcts} \shortcite{zhr_arxiv_mcts} altered the
+parameters of Monte Carlo Tree Search to study how different types of players
+performed with fixed decks in their own collectible card game.  It revealed balance
+issues from the perspective of the game's rules, such as a clear advantage to
+the player with the first turn.  To investigate more specific scenarios, \citeauthor{jmalkp_aiide12} \shortcite{jmalkp_aiide12}
+enabled designers to specify restrictions on player parameters and available cards.
+Their simulator ran multiple games and summarized the results with respect to
+checking various features of the win percentages and play logs.  \citeauthor{cg_aiide20} \shortcite{cg_aiide20}
+considered both simulating multiple games and training a deep learning model to
+assess the metagame as they procedurally generated new cards using grammars.
 
 \if{false}
 Auto battler games lack this degree of uncertainty once the two lineups begin combat.
 Thus, \citeauthor{tencent_autobattle_lineup}'s \shortcite{tencent_autobattle_lineup}
 and our methods focus automated playtesting towards a breadth of lineups competing
 against each other rather than depth exploring all possible games between a few
-lineups.  As there are still too many lineups to consider for feasible automated
+lineups.
+As there are still too many lineups to consider for feasible automated
 playtesting, we present a sampling-based approximation that estimates a lineup's overall
 performance through random match-ups (Section~\ref{sec:sim}) while
 \citeauthor{tencent_autobattle_lineup}'s neural network estimates a lineup's overall
@@ -359,7 +385,7 @@ considers all lineups, including these weaker ones, during automated playtesting
 \section{Methods} \label{sec:methods}
 To achieve the goals outlined in the introduction, {\sc Ludus} contains an auto battler game with a number of special cards with extra mechanics and a basic `vanilla' card that only engages in standard combat without extra mechanics. The details of these cards and their mechanics are explained below in Section~\ref{sec:ab-game-def}. The health and attack values of all cards can be adjusted as well as some values pertaining to the extra mechanics (such as how much damage to deal to an opponent's card when a card dies). Multiple cards of the same type that have different attack, health, or other values can be considered in the same game. 
 
-Beyond the auto battler itself, {\sc Ludus} also contains an optimization framework to find configurations of available cards that are balanced, fair, and fun. These criteria are obviously quite subjective; so game designers can easily plug new metrics into the existing framework as they develop new ways of capturing their goals and preferences describing the metagame. This paper explores a few options as well.
+Beyond the auto battler itself, {\sc Ludus} also contains an optimization framework to find configurations of available cards that are balanced, fair, and elicit desired play experiences. These criteria are obviously quite subjective; so game designers can easily plug new metrics into the existing framework as they develop new ways of capturing their goals and preferences describing the metagame. This paper explores a few options as well.
 
 \subsection{Playtesting Simulator} \label{sec:sim}
 
@@ -428,7 +454,8 @@ Gameplay proceeds as follows in the simulator:
 	of each player against each other. The cards take damage equal to %by 
 	%reducing their health points by
         their opponent card's attack.
-	Cards with zero or fewer health points die, and surviving cards
+	Cards with %zero or fewer
+        0 or less health points die, and surviving cards
 	are rearranged to be the rightmost card of their respective lineups.
 	\item Repeat the combat phase until one or fewer players has a surviving card
 	or the maximum number of combat phases has been reached.
@@ -534,17 +561,18 @@ Take, for example, the plot in Figure~\ref{fig:bruiser_vs_grow} of the value of 
 In the figure, we can see that configurations in the upper left corner, where the attack of the bruiser is greater than the health of the grow on damage card, tend to be much more favorable than the configurations in the lower right corner, where the opposite is true. This evidence supports the intuitive idea that the bruiser's high attack is a good counter to the grow on damage card because the bruiser card can quickly remove the grow on damage card before it has had enough interactions to grow its damage to a large number. This kind of information can be quite useful to a game designer, who can see very clearly that the inclusion of a high-damage card can improve the metagame dramatically if the grow on damage card is found to be too powerful.
 
 The second plot is a histogram of the lineup win rates after running a tournament amongst all possible lineups. %, the win rates of each lineup are plotted in a histogram.
-The resulting distribution can have features that may be informative to human game designers. For example, examine the difference between the distributions %shown
-in Figure~\ref{fig:special_only_dist_before} and Figure~\ref{fig:special_only_dist_after} from tournaments using two configurations of the same card parameters. 
+The resulting distribution can have features that may be informative to %human
+game designers. For example, examine the difference between the distributions %shown
+in Figures~\ref{fig:special_only_dist_before} and~\ref{fig:special_only_dist_after} from tournaments using two configurations of the same card parameters. 
 
 % TODO: Continue generating more distribution plots, and with other metrics perhaps. And metric discrepancy between logs and pickle file. Investigate length of games.
 \begin{figure}[t]
 	\includegraphics[scale=0.5]{special_only_4_5_8_8_4_8_3_3_3_5}
-	\caption{Distribution of lineup winrates before optimization. }
+	\caption{Distribution of win rates before optimization. }
 	\label{fig:special_only_dist_before}
 
 	\includegraphics[scale=0.5]{special_only_1_3_4_3_3_1_7_8_5_7}
-	\caption{Distribution of lineup winrates after optimization. }
+	\caption{Distribution of win rates after optimization. }
 	\label{fig:special_only_dist_after}
 \end{figure}
 
@@ -748,8 +776,9 @@ This does not take into account individual lineup-versus-lineup win rates, which
 our auto battler game is deterministic. One could represent these relations via a
 \textit{domination graph} with lineups
 as nodes and a directed edge to the lineup that wins the head-to-head matchup \cite{gkmmmf_eaai21},
-game matrices with each lineup as a strategy, and more.  The size of these data structures
-scale quadratically with the number of lineups just like the round-robin tournament, which means more sampling-based approximation would be necessary in practice.
+game matrices with each lineup as a strategy, and more.
+%The size of these data structures
+%scale quadratically with the number of lineups just like the round-robin tournament, which means more sampling-based approximation would be necessary in practice.
 Further investigation is required to determine whether perturbations of card parameters causing a degradation
 in metagame health correspond to any changes in these representations.  There are also game design factors to consider besides win rates, such as game durations and intensity levels.
 \if{false}
@@ -771,7 +800,7 @@ handle the familiar integer values of card parameters, unlike other optimization
 methods in particular are difficult to apply to this problem due to its discrete nature and our simulator not being
 differentiable. Had they been applicable, they would have solved an unmet need of %qualifying
 validating the stability of optimization
-results with respect to the variable parameters.
+results. %with respect to the variable parameters.
 
 \subsection{Human Playtesting}
 
@@ -784,6 +813,9 @@ such as the number of turns. %in each match.
 While this work is an example of how designers can readily apply the {\sc Ludus} framework,
 researching human playtesting-validated results marks an important avenue of 
 future work.
+
+\section{Acknowledgments}
+The authors would like the thank the anonymous reviewers for their helpful feedback, Nathan Ringo for providing computational resources to run the experiments, and everyone at SIFT for their support.
 
 \bibliography{eaai22_bgmmwlf}
 \end{document}
