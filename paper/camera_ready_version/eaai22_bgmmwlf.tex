@@ -113,13 +113,13 @@
     %Submission \# 40
 %\if{false}
     % Authors
-    Nathaniel Budijono\equalcontrib,\textsuperscript{\rm 1}
-    Phoebe Goldman\equalcontrib, \textsuperscript{\rm 2}
-    Jack Maloney\equalcontrib, \textsuperscript{\rm 3} \\
-    Joseph B. Mueller, \textsuperscript{\rm 4,5}
-    Phillip Walker, \textsuperscript{\rm 5}
-    Jack Ladwig, \textsuperscript{\rm 5}
-    Richard G. Freedman \textsuperscript{\rm 5}
+    Nathaniel Budijono\equalcontrib\textsuperscript{\rm 1},
+    Phoebe Goldman\equalcontrib\textsuperscript{\rm 2},
+    Jack Maloney\equalcontrib\textsuperscript{\rm 3}, \\
+    Joseph B. Mueller\textsuperscript{\rm 4,5},
+    Phillip Walker\textsuperscript{\rm 5},
+    Jack Ladwig\textsuperscript{\rm 5},
+    Richard G. Freedman\textsuperscript{\rm 5}
 %\fi
 }
 \affiliations {
@@ -632,10 +632,9 @@ The third experiment optimizes only the special mechanic parameters of twelve ca
 optimized under these constraints and how impactful the special mechanics would be for the overall balance. %of the game.
 Table~\ref{tab:special_cards} describes the cards used in this experiment. The optimizer improved the win rate standard deviation from 0.0751 to 0.0589. 
 
+\if{false}
 \begin{table*}[t]
 \centering
-\caption{Variable and Fixed Parameters for the \textit{Optimize Special Mechanics} Experiment}
-\label{tab:special_cards}
 \begin{tabular}{||c c c c c||} 
  \hline
  Card & Attack & Health & Special Parameter (see Section~\ref{sec:ab-game-def}) &  Optimized Special parameter\\ [0.5ex] 
@@ -665,17 +664,48 @@ Table~\ref{tab:special_cards} describes the cards used in this experiment. The o
  Time Bomb & 1 & 8 & Detonation Time & 7 \\ 
  \hline
 \end{tabular}
+\caption{Variable and Fixed Parameters for the \textit{Optimize Special Mechanics} Experiment\label{tab:special_cards}}
 \end{table*}
+\fi
 
 \subsection{Optimizing All Parameters} \label{sec:first_set}
 
 After fixing the attack and health to focus solely on the special mechanics, the next experiment tunes the attack, health, and special mechanics all at once. To reduce the huge dimensionality of this experiment, we selected only five of the twelve cards to optimize. They are listed in Table~\ref{tab:first_set}.
 
-% First Set
 \begin{table*}[t]
 \centering
-\caption{List of Cards in the First Set and Their Optimized Solution}
-\label{tab:first_set}
+\begin{tabular}{||c c c c c||} 
+ \hline
+ Card & Attack & Health & Special Parameter (see Section~\ref{sec:ab-game-def}) &  Optimized Special parameter\\ [0.5ex] 
+ \hline\hline
+ Explode On Death & 2 & 1 & Explosion Damage & 1\\ 
+ \hline
+ Friendly Vampire & 1 & 3 & Heal Amount & 3 \\
+ \hline
+ Grow On Damage & 0 & 5 & Attack Growth Per Hit & 4 \\
+ \hline
+ Heal On Death & 1 & 2 & Explosion Health & 3 \\
+ \hline
+ Health Donor & 1 & 4 & Heal Donation Percent & 3 \\
+ \hline
+ Ignore First Damage & 2 & 1 & Armor Points & 1 \\
+ \hline
+ Morph Attack & 0 & 3 & Morphing Enemies & N/A \\
+ \hline
+ Pain Splitter & 2 & 2 & Damage Split Percent & 7 \\
+ \hline
+ Rampage & 0 & 4 & Middle Age & 8 \\
+ \hline
+ Survivalist & 2 & 2 & Survivalist & N/A \\
+ \hline
+ Threshold & 2 & 2 & Target Age & 5 \\
+ \hline
+ Time Bomb & 1 & 8 & Detonation Time & 7 \\ 
+ \hline
+\end{tabular}
+\caption{Variable and Fixed Parameters for the \textit{Optimize Special Mechanics} Experiment\label{tab:special_cards}}
+$ $\newline
+% First Set
 \begin{tabular}{||c c c c||} 
  \hline
  Card & Optimized Attack & Optimized Health & Optimized Special Mechanic (see Section~\ref{sec:ab-game-def})\\ [0.5ex]
@@ -691,13 +721,12 @@ After fixing the attack and health to focus solely on the special mechanics, the
  Vanilla & 7 & 2 & N/A \\
  \hline
 \end{tabular}
+\caption{List of Cards in the First Set and Their Optimized Solution\label{tab:first_set}}
 %\end{table*}
-
+$ $\newline
 % Second Set
 %\begin{table*}[t]
 %\centering
-\caption{List of Cards in the Second Set and Their Optimized Solution}
-\label{tab:second_set}
 \begin{tabular}{||c c c c||} 
  \hline
  Card & Optimized Attack & Optimized Health & Optimized Special Mechanic (see Section~\ref{sec:ab-game-def})\\ [0.5ex]
@@ -713,6 +742,7 @@ After fixing the attack and health to focus solely on the special mechanics, the
  Vanilla & 7 & 6 & N/A \\
  \hline
 \end{tabular}
+\caption{List of Cards in the Second Set and Their Optimized Solution\label{tab:second_set}}
 \end{table*}
 
 
@@ -771,7 +801,7 @@ Our work only considers cards with a single mechanic, but this should be extende
 
 \subsection{Simulation Data}
 
-All metrics we present are based off of the average win rates of lineups collected from the simulator. 
+All metrics we present are based on the average win rates of lineups collected from the simulator. 
 This does not take into account individual lineup-versus-lineup win rates, which are always 0 or 1 since
 our auto battler game is deterministic. One could represent these relations via a
 \textit{domination graph} with lineups
@@ -797,9 +827,12 @@ in metagame health corresponds to any phase transition in a domination graph.
 
 Our choice of a genetic algorithm for optimization is somewhat arbitrary. Genetic algorithms can conveniently 
 handle the familiar integer values of card parameters, unlike other optimization methods. Gradient- and Hessian-based
-methods in particular are difficult to apply to this problem due to its discrete nature and our simulator not being
+methods %in particular
+are difficult to apply to this problem due to %its discrete nature and
+our parameters %simulator
+not being
 differentiable. Had they been applicable, they would have solved an unmet need of %qualifying
-validating the stability of optimization
+validating the %stability of optimization
 results. %with respect to the variable parameters.
 
 \subsection{Human Playtesting}
@@ -814,7 +847,7 @@ While this work is an example of how designers can readily apply the {\sc Ludus}
 researching human playtesting-validated results marks an important avenue of 
 future work.
 
-\section{Acknowledgments}
+\section*{Acknowledgments}
 The authors would like the thank the anonymous reviewers for their helpful feedback, Nathan Ringo for providing computational resources to run the experiments, and everyone at SIFT for their support.
 
 \bibliography{eaai22_bgmmwlf}
